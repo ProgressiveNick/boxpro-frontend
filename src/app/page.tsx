@@ -12,7 +12,7 @@ import { RecentlyViewedBlock } from "@/widgets/recently-viewed-block";
 
 // ISR: ревалидация каждые 24 часа (86400 секунд)
 export const revalidate = 86400;
-
+//тестовый коммит
 export const metadata: Metadata = generateSEO({
   title: "BoxPro - упаковочное и производственное оборудование | Главная",
   description:

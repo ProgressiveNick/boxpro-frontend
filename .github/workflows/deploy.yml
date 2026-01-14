@@ -65,13 +65,8 @@ jobs:
             git fetch origin
             git checkout main
             git pull origin main
-            # Копируем .env.frontend в .env.local для Next.js
-            if [ -f "../.env.frontend" ]; then
-              cp ../.env.frontend .env.local
-              echo "✅ .env.frontend скопирован в .env.local"
-            else
-              echo "⚠️  .env.frontend не найден, используем переменные из docker-compose"
-            fi
+            # .env.frontend уже используется в docker-compose через env_file
+            echo "✅ .env.frontend используется через env_file в docker-compose"
             # Восстанавливаем storage если он был удален
             LATEST_BACKUP=$(ls -td /tmp/storage-backup-* 2>/dev/null | head -1)
             if [ ! -d "public/storage" ] && [ -n "$LATEST_BACKUP" ] && [ -d "$LATEST_BACKUP" ]; then
