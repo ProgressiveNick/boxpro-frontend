@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 // Валидация переменных окружения в самом начале загрузки приложения
+// CI/CD: автоматический деплой при коммитах в main
 import "@/shared/lib/env-validation/init";
 
 import "@/shared/styles/globals.css";
