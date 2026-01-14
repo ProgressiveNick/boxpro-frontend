@@ -12,11 +12,20 @@ import { validateEnvVariablesOrThrow } from "./validate";
 /**
  * Выполняет валидацию переменных окружения при загрузке модуля
  * Выбрасывает ошибку, если валидация не прошла
+ * 
+ * ВАЖНО: Валидация пропускается во время сборки (build time), 
+ * так как переменные окружения доступны только во время выполнения (runtime)
  */
 try {
-  // Валидация выполняется только на сервере
+  // Пропускаем валидацию во время сборки Next.js
+  // NEXT_PHASE может быть 'phase-production-build' или 'phase-development'
+  const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                      process.env.NEXT_PHASE === 'phase-development' ||
+                      process.argv.includes('build');
+  
+  // Валидация выполняется только на сервере и только во время выполнения (runtime)
   // На клиенте Next.js автоматически предоставляет NEXT_PUBLIC_* переменные
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined" && !isBuildTime) {
     validateEnvVariablesOrThrow();
   }
 } catch (error) {
