@@ -1,0 +1,24 @@
+@use "@/shared/styles/mixins" as *;
+@use "@/shared/styles/variables" as *;
+
+.wrapper {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+
+  @media (max-width: 640px) {
+    gap: 6px;
+  }
+}
+
+.tab {
+  min-width: min-content;
+  height: fit-content;
+
+  @media (max-width: 640px) {
+    min-width: min-content;
+    flex: 1 1 calc(50% - 3px);
+  }
+}

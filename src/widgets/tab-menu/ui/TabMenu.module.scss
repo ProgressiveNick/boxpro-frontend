@@ -1,0 +1,124 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss" as *;
+
+.container {
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  vertical-align: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 0px;
+
+  @include container;
+}
+
+.tabMenuContainer {
+  width: 100%;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 60px;
+  position: relative;
+
+  @media (max-width: 640px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.slideTab {
+  width: min-content !important;
+}
+
+.slideTab a {
+  display: flex;
+  width: min-content;
+}
+
+.tablineTab {
+  padding: 6px 12px;
+  border: 1px var(--DarkBackgroundDark) solid;
+  color: var(--DarkBackgroundDark);
+  border-radius: 12px;
+  width: max-content;
+  background-color: transparent;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.tablineTab:hover {
+  background-color: var(--DarkBackgroundDark);
+  color: var(--WhiteColorFont);
+}
+
+.promoTab {
+  cursor: pointer;
+  background-color: var(--Yellow);
+  color: var(--DarkBackgroundDark);
+  border: 0px black solid;
+}
+
+.promoTab:hover {
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  background-color: var(--Yellow);
+  color: var(--DarkBackgroundDark);
+  border: 0px black solid;
+}
+
+/* Добавляем стили для кастомных кнопок навигации */
+.customSwiperButtonNext,
+.customSwiperButtonPrev {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 30px;
+  height: 100%;
+  border-radius: 3px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  opacity: 0.3;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @media screen and (min-width: 1210px) {
+    display: none;
+  }
+}
+
+.customSwiperButtonNext {
+  right: 0px;
+
+  @media screen and (max-width: 640px) {
+    display: none;
+  }
+}
+
+.customSwiperButtonPrev {
+  left: 0px;
+
+  @media screen and (max-width: 640px) {
+    display: none;
+  }
+}
+
+.categoriesWrapper {
+  //   display: flex;
+}

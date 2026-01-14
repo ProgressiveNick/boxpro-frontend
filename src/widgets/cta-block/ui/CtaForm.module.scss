@@ -1,0 +1,122 @@
+.block {
+  background-color: #4d01c7;
+  padding: 60px 60px;
+  border-radius: 32px;
+  width: 100%;
+  margin-top: 60px;
+  margin-bottom: 60px;
+
+  & h2 {
+    font-size: 48px;
+    color: var(--WhiteColorFont);
+    margin-bottom: 15px;
+
+    @media screen and (max-width: 760px) {
+      font-size: 32px;
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    padding: 30px;
+  }
+}
+
+.text {
+  color: var(--WhiteColorFont);
+  font-size: 20px;
+  font-family: "Roboto", Arial, sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+  max-width: 680px;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 60px;
+  gap: 15px;
+  height: auto;
+
+  @media screen and (max-width: 768px) {
+    & {
+      flex-direction: column;
+    }
+
+    & .input {
+      width: 100%;
+      height: 50px;
+    }
+
+    & .button {
+      width: 100%;
+    }
+  }
+}
+
+.input {
+  height: 50px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  padding: 15px 15px;
+  font-size: 16px;
+  flex: 1;
+  min-width: 200px;
+  width: 100%;
+}
+
+.phoneInput {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.flag {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.button {
+  height: 50px;
+  width: 200px;
+  background-color: #4a93ff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 15px;
+}
+
+.button:hover {
+  background-color: #387cd1; /* Цвет при наведении */
+}
+
+.privacyPolicy {
+  font-size: 12px;
+  color: #ffffff;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.link {
+  color: #ffda00;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.button:disabled {
+  background-color: grey;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}

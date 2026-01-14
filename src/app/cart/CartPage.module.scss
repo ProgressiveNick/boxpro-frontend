@@ -1,0 +1,320 @@
+@use "@/shared/styles/variables" as *;
+@use "@/shared/styles/mixins" as *;
+
+.container {
+  @include container;
+  padding-top: $padding-small;
+  padding-bottom: $padding-big;
+
+  @media screen and (max-width: 768px) {
+    padding-bottom: 140px; // Отступ для фиксированного виджета
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-tiny;
+}
+
+.breadcrumbsWrapper {
+  margin-bottom: 15px;
+
+  :global(.container) {
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
+  }
+
+  :global(.wrapper) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+  }
+
+  :global(.nav) {
+    width: 100%;
+  }
+
+  :global(.breadcrumbs) {
+    justify-content: flex-start !important;
+  }
+}
+
+.title {
+  @include headline-2;
+  color: $color-black;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 400px;
+  gap: $padding-big;
+
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.itemsGrid {
+  grid-column: 1 / 3;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $padding-small;
+  align-items: start;
+
+  @media screen and (max-width: 1200px) {
+    grid-column: 1 / 3;
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-column: 1;
+    grid-template-columns: 1fr;
+  }
+}
+
+.orderWidget {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-medium;
+  position: sticky;
+  top: $padding-big;
+  height: fit-content;
+  background-color: $color-background-white;
+  padding: $padding-medium;
+  border-radius: $border-radius-small;
+
+  @media screen and (max-width: 1200px) {
+    grid-column: 1 / 3;
+    position: relative;
+    top: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-column: 1;
+    position: relative;
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
+.mobileOrderWidget {
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $padding-small;
+    position: fixed;
+    bottom: 72px;
+    left: 0;
+    right: 0;
+    background-color: $color-background-white;
+    padding: $padding-small $padding-medium;
+    border-top: 1px solid $color-border-white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+}
+
+.mobileTotalPrice {
+  @include text-2;
+  color: $color-black;
+  flex: 1;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+
+  b {
+    font-weight: 600;
+  }
+}
+
+.orderSummary {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-small;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.orderTitle {
+  @include headline-3;
+  color: $color-black;
+  margin-bottom: $padding-small;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-3-mobile;
+  }
+}
+
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-tiny;
+  margin-bottom: $padding-small;
+}
+
+.orderItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $padding-small;
+  padding-bottom: $padding-tiny;
+  border-bottom: 1px solid $color-border-white;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.itemName {
+  @include text-3;
+  color: $color-black;
+  flex: 1;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}
+
+.itemPrice {
+  @include text-3;
+  color: $color-black;
+  font-weight: 600;
+  white-space: nowrap;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}
+
+.totalPrice {
+  @include text-2;
+  color: $color-black;
+  padding-top: $padding-small;
+  border-top: 1px solid $color-border-white;
+  margin-top: $padding-small;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+
+  b {
+    font-weight: 600;
+  }
+}
+
+.orderButton {
+  background-color: $color-blue;
+  color: white;
+  border: none;
+  padding: $padding-small $padding-medium;
+  border-radius: $border-radius-tiny;
+  font-size: $text-3;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+
+  @media screen and (max-width: 1200px) {
+    font-size: $text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: $text-3-mobile;
+  }
+
+  &:hover {
+    background-color: $color-blue-secondr;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.mobileOrderWidget .orderButton {
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: block;
+    width: auto;
+    min-width: 160px;
+    flex-shrink: 0;
+  }
+}
+
+.orderWidget .orderButton {
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.emptyText {
+  @include text-2;
+  color: $color-black;
+  opacity: 0.7;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+
+
+

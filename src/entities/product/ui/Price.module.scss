@@ -1,0 +1,56 @@
+.priceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.currentPriceWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.oldPrice {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--DarkColorFont);
+  opacity: 0.5;
+  text-decoration: line-through;
+  line-height: 1.2;
+}
+
+.currentPrice {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--DarkColorFont);
+  width: max-content;
+  text-wrap: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.rubleSign {
+  font-family: "Arial", sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--DarkColorFont);
+  margin-left: 4px;
+  margin-bottom: 6px;
+}
+
+.priceArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transform: scaleX(0.5) scaleY(1.2);
+}
+
+.priceUp {
+  color: #22c55e;
+}
+
+.priceDown {
+  color: #ef4444;
+}
+

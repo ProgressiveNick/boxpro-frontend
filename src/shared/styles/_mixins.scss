@@ -1,0 +1,95 @@
+@use "@/shared/styles/variables" as *;
+
+@mixin container {
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0 $padding-small;
+}
+
+@mixin headline-2 {
+  font-size: $headline-2;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin headline-2-tablet {
+  font-size: $headline-2-tablet;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin headline-2-mobile {
+  font-size: $headline-2-mobile;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+
+  line-height: 1.23;
+}
+
+@mixin headline-3 {
+  font-size: $headline-3;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin headline-3-tablet {
+  font-size: $headline-3-tablet;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin headline-3-mobile {
+  font-size: $headline-3-mobile;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin text-2 {
+  font-size: $text-2;
+  font-weight: 300;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin text-2-tablet {
+  font-size: $text-2-tablet;
+  font-weight: 300;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin text-2-mobile {
+  font-size: $text-2-mobile;
+  font-weight: 300;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}
+
+@mixin text-3 {
+  font-size: $text-3;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+
+  line-height: 1.23;
+}
+
+@mixin text-3-tablet {
+  font-size: $text-3-tablet;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+
+  line-height: 1.23;
+}
+
+@mixin text-3-mobile {
+  font-size: $text-3-tablet;
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  line-height: 1.23;
+}

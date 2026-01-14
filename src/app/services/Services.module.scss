@@ -1,0 +1,140 @@
+.container {
+  max-width: 100%;
+  flex-direction: row;
+  vertical-align: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 10px;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.cover {
+  width: 100%;
+  background-image: url("/img/banners/banner.jpg");
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  padding: 60px 30px;
+
+  display: flex;
+  justify-content: space-between;
+
+  @media screen and (max-width: 760px) {
+    height: auto;
+    gap: 15px;
+    flex-direction: column;
+  }
+}
+
+.title {
+  color: var(--WhiteColorFont);
+  max-width: 70%;
+  @media screen and (max-width: 760px) {
+    max-width: 100%;
+  }
+}
+
+.desk {
+  font-size: 18px;
+  line-height: 155%;
+  opacity: 0.8;
+  color: var(--WhiteColorFont);
+  max-width: 450px;
+}
+
+.text {
+  color: var(--DarkColorFont);
+  font-size: 20px;
+  font-family: "Roboto", Arial, sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+  max-width: 680px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-top: 60px;
+
+  @media screen and (max-width: 960px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 760px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  & .text {
+    max-width: 450px;
+  }
+
+  & .image {
+    margin-bottom: 15px;
+  }
+}
+
+.factTitle {
+  color: var(--AccentColorBlue);
+  font-size: 32px;
+  font-family: "Bebas Neue", sans-serif;
+
+  line-height: 120%;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  margin-bottom: 15px;
+}
+
+.serviceCard {
+  width: 100%;
+  height: 300px;
+  border-radius: 22px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: var(--AccentColorBlue);
+
+  & .factTitle {
+    color: var(--WhiteColorFont);
+  }
+
+  & .text {
+    color: var(--WhiteColorFont);
+
+    max-height: 0px;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.7s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &:hover {
+    background-color: var(--AccentColorBlueHover);
+    transition: all 0.7s ease-in-out;
+    cursor: pointer;
+    & .text {
+      transition: all 0.7s ease-in-out;
+      max-height: 300px;
+      opacity: 100;
+    }
+  }
+}

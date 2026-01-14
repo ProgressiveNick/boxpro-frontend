@@ -1,0 +1,56 @@
+.iconsContainer__item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.iconsContainer__item p {
+  margin: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--DarkColorFont);
+}
+
+.shopIcon {
+  height: 24px;
+  width: 24px;
+  margin-bottom: 3px;
+}
+
+.shopIcon:before {
+  background-color: black;
+  content: "";
+  height: 24px;
+  width: 24px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: absolute;
+  left: calc(50% - 12px);
+  -webkit-mask: url("../../../../public/icons/shop.svg") no-repeat 50% 50%;
+  mask: url("../../../../public/icons/shop.svg") no-repeat 50% 50%;
+}
+
+.shopCounter {
+  width: min-content;
+  height: min-content;
+  background-color: var(--AccentColorBlue);
+  position: absolute;
+  left: calc(50% + 2px);
+  top: -8px;
+  opacity: 1;
+  border-radius: 22px;
+}
+
+.iconsContainer__item:hover .shopIcon::before {
+  background-color: var(--AccentColorBlue);
+}
+
+.shopCounter p {
+  margin: 4px 6px;
+  font-size: 12px;
+  color: white;
+}

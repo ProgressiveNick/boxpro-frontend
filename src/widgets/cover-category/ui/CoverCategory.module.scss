@@ -1,0 +1,37 @@
+.cover {
+  width: 100%;
+  background-image: url("/img/banners/banner.jpg");
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  padding: 34px 30px 30px;
+
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  @media (max-width: 640px) {
+    & {
+      height: 250px;
+      padding: 30px 30px;
+    }
+  }
+}
+
+.title {
+  color: var(--WhiteColorFont);
+  max-width: 70%;
+  @media screen and (max-width: 760px) {
+    max-width: 100%;
+  }
+}
+
+.desk {
+  font-size: 18px;
+  line-height: 155%;
+  opacity: 0.8;
+  color: var(--WhiteColorFont);
+  max-width: 450px;
+}

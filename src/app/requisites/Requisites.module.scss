@@ -1,0 +1,115 @@
+.container {
+    max-width: 100%;
+    flex-direction: row;
+    vertical-align: center;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 1920px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.cover {
+    width: 100%;
+    background-image: url('/img/requizites/cover.jpg');
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    padding: 60px 30px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    color: var(--WhiteColorFont);
+    max-width: 70%;
+    @media screen and (max-width: 760px) {
+        max-width: 100%;
+    }
+}
+
+.desk {
+    font-size: 18px;
+    line-height: 155%;
+    opacity: 0.8;
+    color: var(--WhiteColorFont);
+    max-width: 450px;
+}
+
+.text {
+    color: var(--DarkColorFont);
+    font-size: 20px;
+    font-family: 'Roboto', Arial, sans-serif;
+    line-height: 1.4;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    opacity: 0.8;
+    margin-bottom: 15px;
+    max-width: 680px;
+}
+
+.block {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-top: 60px;
+
+    border-bottom: 1px var(--DarkBackgroundLight) solid;
+    padding-bottom: 60px;
+
+    @media screen and (max-width: 760px) {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    & .title {
+        color: var(--DarkColorFont);
+        margin-bottom: 30px;
+    }
+}
+
+
+.image{
+    margin-bottom: 30px;
+
+    @media screen and (max-width:920px) {
+        width: 400px;
+        height: 200px;
+    }
+    @media screen and (max-width: 760px) {
+        width: 100%;
+        height: auto;
+    }
+}
+
+
+.reqRow{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 25px 15px;
+
+    margin-bottom: 15px;
+
+    border: 2px var(--DarkBackgroundLight) dotted  ;
+    
+    border-radius: 12px; 
+
+    align-items: center;
+}
+
+.reqName{
+    font-weight: bold;
+}

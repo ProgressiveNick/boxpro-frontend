@@ -1,0 +1,154 @@
+@use "@styles/_mixins.scss" as *;
+@use "@styles/_variables.scss" as *;
+
+.container {
+  @include container;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+
+  @media screen and (max-width: 760px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.title {
+  margin-bottom: 20px;
+  @include headline-2;
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.desk {
+  @include text-2;
+  opacity: 0.8;
+  color: var(--DarkColorFont);
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.contactBlock {
+  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--CardBGGray);
+  width: 100%;
+  border-radius: 12px;
+  min-height: 150px;
+}
+
+.headline {
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 2;
+
+  max-width: 60%;
+  margin-bottom: 30px;
+  margin-top: 30px;
+
+  @media screen and (max-width: 1200px) {
+    max-width: 80%;
+  }
+
+  @media screen and (max-width: 760px) {
+    max-width: 100%;
+  }
+}
+
+.map {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.phone {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+.mail {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+.adress {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+.timejob {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+.value {
+  @include headline-2;
+  line-height: 1.2;
+  letter-spacing: 0.8px;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.valueSecond {
+  @include headline-2-mobile;
+  line-height: 1.2;
+  letter-spacing: 0.8px;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-mobile;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.label {
+  @include text-3;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0.7;
+  margin-bottom: 10px;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}

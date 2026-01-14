@@ -1,0 +1,204 @@
+@use "@/shared/styles/mixins" as *;
+@use "@/shared/styles/variables" as *;
+
+.container {
+  padding: 24px;
+  min-height: 100vh;
+  background: #f9fafc;
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1c2234;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #6f768b;
+  margin-bottom: 32px;
+}
+
+.form {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(15, 26, 58, 0.08);
+}
+
+.productsList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.productReview {
+  padding: 24px;
+  border: 1px solid #eceef5;
+  border-radius: 12px;
+  background: #f9fafc;
+}
+
+.productName {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1c2234;
+  margin-bottom: 24px;
+}
+
+.ratingSection {
+  margin-bottom: 24px;
+}
+
+.ratingSlider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #eef0f7;
+  outline: none;
+  margin: 12px 0;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fc7b08;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fc7b08;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+.ratingValue {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fc7b08;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.field {
+  margin-bottom: 24px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4d5464;
+  margin-bottom: 8px;
+}
+
+.optional {
+  font-weight: 400;
+  color: #9aa0b5;
+  font-size: 12px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #dbe1f1;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+
+  &:focus {
+    outline: none;
+    border-color: #fc7b08;
+  }
+}
+
+.fileUpload {
+  margin-top: 8px;
+}
+
+.formActions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  padding-top: 24px;
+  border-top: 1px solid #eceef5;
+}
+
+.cancelButton {
+  background: transparent;
+  color: #6f768b;
+  border: 1px solid #dbe1f1;
+
+  &:hover {
+    background: #f9fafc;
+  }
+}
+
+.submitButton {
+  background: #fc7b08;
+  color: #fff;
+
+  &:hover {
+    background: #e66a00;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.loading,
+.errorState,
+.successState {
+  text-align: center;
+  padding: 48px;
+}
+
+.loading {
+  font-size: 18px;
+  color: #6f768b;
+}
+
+.errorText {
+  font-size: 18px;
+  color: #e74c3c;
+  margin-bottom: 24px;
+}
+
+.successState {
+  background: #fff;
+  border-radius: 12px;
+  padding: 48px;
+  box-shadow: 0 8px 32px rgba(15, 26, 58, 0.08);
+}
+
+.successTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #27ae60;
+  margin-bottom: 16px;
+}
+
+.successText {
+  font-size: 16px;
+  color: #6f768b;
+}
+
+.backButton {
+  margin: 0 auto;
+}

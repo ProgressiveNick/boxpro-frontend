@@ -1,0 +1,85 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss";
+
+.wrapper {
+  background-color: var(--PageBGSecond);
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+
+  flex: 1 1 auto;
+
+  & a {
+    display: flex;
+    height: 100%;
+    justify-content: space-between;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &:hover {
+    -webkit-box-shadow: 12px 4px 32px -7px rgba(34, 60, 80, 0.21);
+    -moz-box-shadow: 12px 4px 32px -7px rgba(34, 60, 80, 0.21);
+    box-shadow: 12px 4px 32px -7px rgba(34, 60, 80, 0.21);
+  }
+}
+
+.title {
+  margin-top: 10px;
+  flex-wrap: wrap;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 2.3rem;
+  color: $color-black;
+}
+
+.comparisonsBtn {
+  position: absolute;
+  right: 58px;
+  top: 25px;
+  background-color: var(--DarkColorFont);
+  opacity: 0.6;
+
+  width: 24px;
+  height: 24px;
+  padding: 20px;
+  border-radius: 8px;
+  margin-right: 5px;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.comparisonsBtn::before {
+  background-color: white;
+  content: "";
+  height: 24px;
+  width: 24px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 4px;
+  position: absolute;
+  left: calc(50% - 12px);
+  top: calc(50% - 12px);
+  -webkit-mask: url("../../../../public/img/srav.svg") no-repeat 50% 50%;
+  mask: url("../../../../public/img/srav.svg") no-repeat 50% 50%;
+}
+
+.oldPprice {
+  margin-top: 10px;
+  color: var(--AccentColorBlue);
+  font-size: 14px;
+  text-decoration: line-through;
+}

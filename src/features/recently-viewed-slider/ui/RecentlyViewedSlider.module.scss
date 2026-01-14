@@ -1,0 +1,33 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss" as *;
+
+.titleWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  @include headline-2;
+  margin: 0;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.container {
+  position: relative; // Для абсолютного позиционирования кнопок
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.sliderWrapper {
+  width: 100%;
+  position: relative;
+}

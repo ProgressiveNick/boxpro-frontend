@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*,
+*:before,
+*:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+:focus,
+:active {
+  outline: none;
+}
+a:focus,
+a:active {
+  outline: none;
+}
+
+nav,
+footer,
+header,
+aside {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+button {
+  cursor: pointer;
+}
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+a,
+a:visited {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+ul li {
+  list-style: none;
+}
+img {
+  vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+
+:root {
+  --Headder1-size: 48px;
+  --SmallText-size: 14px;
+  --VerySmallText-size: 12px;
+  --DarkColorFont: #323232;
+  --WhiteColorFont: #fafafa;
+  --PageBackground: #fbfbfb;
+  --PageBGSecond: #f2f2f2;
+  --CardBGGray: #e9e9e9;
+  --AccentColorBlue: #594ead;
+  --AccentColorBlueHover: #4538a5;
+  --Yellow: #ffd600;
+  --DarkBackgroundLight: #292b2e;
+  --DarkBackgroundDark: #1c1d1f;
+
+  --PageMarginTop: 0px;
+  --PageContentMargin: 40px;
+
+  --marginTopSection: 80px;
+}
+
+body {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  background-color: var(--PageBackground);
+}
+
+h1 {
+  font-size: var(--Headder1-size);
+  font-weight: 600;
+  color: var(--DarkColorFont);
+  opacity: 0.9;
+  line-height: 58px;
+}
+
+@media screen and (max-width: 760px) {
+  h1 {
+    font-size: 36px;
+    line-height: 135%;
+  }
+}
+
+h2 {
+  font-weight: 600;
+  color: var(--DarkBackgroundDark);
+  font-size: 36px;
+  line-height: 1.23;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+h4 {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.very-small-text {
+  font-size: var(--VerySmallText-size);
+  font-weight: 300;
+  color: var(--DarkColorFont);
+  opacity: 0.8;
+  line-height: 120%;
+}
+
+.overflow-hidden {
+  overflow-y: hidden;
+}
+
+/* Отступ для мобильного нижнего меню */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 80px;
+  }
+}
+
+.badge {
+  max-width: 100% !important;
+}

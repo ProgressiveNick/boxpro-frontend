@@ -1,0 +1,124 @@
+.container {
+    max-width: 100%;
+    flex-direction: row;
+    vertical-align: center;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    margin-bottom: 80px;
+
+    margin-top: var(--PageMarginTop);
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 1920px;
+    margin-right: auto;
+    margin-left: auto;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+
+    @media screen and (max-width: 760px) {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.desk {
+    font-size: 18px;
+    font-family: "Roboto", Arial, sans-serif;
+    line-height: 1.6;
+    font-weight: 400;
+    opacity: 0.8;
+    color: var(--DarkColorFont);
+}
+
+.contactBlock {
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--CardBGGray);
+    width: 100%;
+    border-radius: 12px;
+    min-height: 150px;
+}
+
+.headline {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+
+    max-width: 60%;
+    margin-bottom: 30px;
+    margin-top: 30px;
+
+    @media screen and (max-width: 760px) {
+        max-width: 100%;
+    }
+}
+
+.map {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+.phone {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
+
+.mail {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+.adress {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+.timejob {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
+
+.value {
+    font-size: 32px;
+    font-family: "Roboto", Arial, sans-serif;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--DarkColorFont);
+}
+
+.valueSecond {
+    font-size: 22px;
+    font-family: "Roboto", Arial, sans-serif;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--DarkColorFont);
+}

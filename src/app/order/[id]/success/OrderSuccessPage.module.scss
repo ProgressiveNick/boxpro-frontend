@@ -1,0 +1,273 @@
+@use "@/shared/styles/variables" as *;
+@use "@/shared/styles/mixins" as *;
+
+.container {
+  @include container;
+  padding-top: $padding-big;
+  padding-bottom: $padding-big;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-big;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.breadcrumbsWrapper {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.successContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: $padding-big;
+  background-color: $color-background-white;
+  border-radius: $border-radius-small;
+}
+
+.successIcon {
+  color: #28a745;
+  margin-bottom: $padding-medium;
+  animation: successPulse 0.6s ease-in-out;
+}
+
+.successTitle {
+  @include headline-2;
+  color: $color-black;
+  margin-bottom: $padding-small;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.orderNumber {
+  @include text-2;
+  color: $color-black;
+  margin-bottom: $padding-medium;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+
+  b {
+    font-weight: 600;
+  }
+}
+
+.successMessage {
+  @include text-2;
+  color: #666;
+  line-height: 1.5;
+  max-width: 600px;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.stagesSection {
+  background-color: $color-background-white;
+  padding: $padding-big;
+  border-radius: $border-radius-small;
+}
+
+.stagesTitle {
+  @include headline-3;
+  color: $color-black;
+  margin-bottom: $padding-big;
+  text-align: center;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-3-mobile;
+  }
+}
+
+.stagesList {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-medium;
+}
+
+.stageItem {
+  display: flex;
+  align-items: center;
+  gap: $padding-medium;
+  padding: $padding-medium;
+  border-radius: $border-radius-tiny;
+  border: 2px solid $color-border-white;
+  transition: all 0.2s ease;
+
+  &.completed {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.05);
+  }
+
+  &.current {
+    border-color: $color-blue;
+    background-color: rgba(89, 78, 173, 0.05);
+  }
+}
+
+.stageIcon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: $color-background-white;
+
+  .stageItem.completed & {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  .stageItem.current & {
+    color: $color-blue;
+    background-color: rgba(89, 78, 173, 0.1);
+  }
+
+  .stageItem:not(.completed):not(.current) & {
+    color: #999;
+  }
+}
+
+.stageContent {
+  flex: 1;
+}
+
+.stageLabel {
+  @include text-2;
+  color: $color-black;
+  font-weight: 600;
+  margin-bottom: 4px;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.stageStatus {
+  @include text-3;
+  color: $color-blue;
+  font-weight: 600;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: $padding-medium;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.backButton,
+.homeButton {
+  @include text-3;
+  padding: $padding-small $padding-medium;
+  border-radius: $border-radius-tiny;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-block;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.backButton {
+  background-color: $color-blue;
+  color: white;
+
+  &:hover {
+    background-color: $color-blue-secondr;
+    transform: translateY(-1px);
+  }
+}
+
+.homeButton {
+  background-color: transparent;
+  color: $color-black;
+  border: 2px solid $color-border-white;
+
+  &:hover {
+    border-color: $color-blue;
+    color: $color-blue;
+  }
+}
+
+.loading {
+  @include text-2;
+  color: $color-black;
+  text-align: center;
+  padding: $padding-big;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+
+

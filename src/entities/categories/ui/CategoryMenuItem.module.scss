@@ -1,0 +1,88 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss";
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
+  border: 1px #e7e7e7 solid;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 98%;
+  height: min-content;
+  margin: 5px 0px;
+  margin-right: 10px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #ececec;
+  }
+}
+
+.imageWrapper {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.mobleImg {
+  width: 52px;
+  height: 52px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.title {
+  padding-top: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+  color: $color-black;
+
+  @media screen and (max-width: 1200px) {
+    font-size: 14px;
+  }
+}
+
+.description {
+  font-size: 12px;
+  margin: 2px 0 0;
+  line-height: 1.4;
+  color: var(--DarkBackgroundDark);
+  padding-top: 5px;
+  padding-bottom: 5px;
+  height: 100%;
+  max-width: 300px;
+  overflow: hidden;
+}
+
+.arrowButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: auto;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 5px;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}

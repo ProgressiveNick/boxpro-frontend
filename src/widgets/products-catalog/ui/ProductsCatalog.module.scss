@@ -1,0 +1,110 @@
+@use "@/shared/styles/mixins" as *;
+@use "@/shared/styles/variables" as *;
+
+.container {
+  width: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.mobileFilterButton {
+  display: none !important; // Скрываем по умолчанию
+  position: fixed;
+  bottom: 80px; // Над нижним меню (MobileBottomMenu ~60px + отступ)
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  // Стили в соответствии с виджетом фильтров
+  background-color: rgb(36, 36, 36);
+  color: #e3e3e3;
+  border: 1px solid rgb(74, 74, 74);
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-family: Arial, sans-serif;
+
+  &:hover {
+    background-color: rgb(53, 53, 53);
+    border-color: rgb(100, 100, 100);
+  }
+
+  &:active {
+    transform: translateX(-50%) scale(0.98);
+  }
+
+  // Показываем кнопку только на совсем маленьких экранах
+  // На планшетах (480-767px) показываем сворачивающиеся фильтры
+  @media (max-width: 479px) {
+    display: flex !important;
+  }
+
+  // Явно скрываем на десктопе
+  @media (min-width: 480px) {
+    display: none !important;
+  }
+}
+
+.wrapper {
+  max-width: 1920px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+  // Убеждаемся что нет overflow который ломает sticky
+  overflow: visible;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.wrapperFullWidth {
+  grid-template-columns: 1fr;
+}
+
+.filtersColumn {
+  // Выравниваем начало колонки для правильной работы sticky
+  align-self: start;
+  height: fit-content;
+  position: sticky;
+  // Отступ ниже шапки (header ~80px + TabMenu ~40px + отступ 20px = 140px)
+  top: 100px;
+  z-index: 10; // Убеждаемся что фильтры поверх контента
+
+  @media (max-width: 992px) {
+    order: 2;
+    position: static; // На мобильных отключаем sticky
+  }
+
+  @media (max-width: 767px) {
+    order: 1; // Фильтры над карточками на мобильной версии
+    width: 100%;
+  }
+
+  // Скрываем фильтры только на совсем маленьких экранах, где используется кнопка
+  @media (max-width: 479px) {
+    display: none; // Скрываем обычные фильтры, используем FilterDrawer
+  }
+}
+
+.contentColumn {
+  min-width: 0; // Предотвращает переполнение
+
+  @media (max-width: 767px) {
+    order: 2; // Карточки под фильтрами на мобильной версии
+  }
+}

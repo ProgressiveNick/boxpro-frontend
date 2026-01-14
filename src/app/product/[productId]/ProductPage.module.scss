@@ -1,0 +1,628 @@
+@use "@/shared/styles/variables" as *;
+@use "@/shared/styles/mixins" as *;
+
+.container {
+  max-width: 100%;
+  flex-direction: row;
+  vertical-align: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 10px;
+
+  @include container;
+}
+
+.productTitle {
+  @include headline-3;
+  max-width: 100%;
+  margin-right: auto;
+  margin-left: 0;
+  text-align: left;
+  word-wrap: break-word;
+  // word-break: break-all;
+  white-space: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-overflow: ellipsis;
+  // max-width: 100%;
+
+  display: block;
+  margin-bottom: 10px;
+  width: 100%;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-3-mobile;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 36px;
+    max-width: 100%;
+  }
+}
+
+.productTitleTabs {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-left: 12px;
+  flex-wrap: wrap;
+  vertical-align: top;
+
+  @media (max-width: 640px) {
+    margin-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.productCardFull {
+  & .productCardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    & .productArticle {
+      opacity: 0.6;
+    }
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      text-align: left;
+    }
+  }
+}
+
+.productCardTopLeft {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.productCardTopRight {
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+
+  @media (max-width: 640px) {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+.productLogo {
+  width: 110px;
+  height: auto;
+  object-fit: contain;
+
+  @media (max-width: 640px) {
+    width: 100px;
+  }
+}
+
+.promoBannerWrapper {
+  height: 100%;
+  width: 100%;
+  background-color: var(--PageBackground);
+  border-radius: 12px;
+}
+
+.emptyWrapper {
+  height: 500px;
+  width: calc(100vw - 30px);
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #c2c2c2;
+  padding: 15px;
+  border-radius: 12px;
+
+  @include container;
+}
+
+.productInfo {
+  margin-top: 30px;
+}
+
+.productInfoTitle {
+  margin-bottom: 20px;
+}
+
+.productInfoSubWrapper {
+  width: 100%;
+}
+
+// Стили для скелета загрузки
+.breadcrumbsSkeleton {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding: 0 15px;
+
+  @include container;
+}
+
+.skeletonBreadcrumb {
+  height: 16px;
+  width: 80px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+
+  &:nth-child(2) {
+    width: 120px;
+  }
+
+  &:nth-child(3) {
+    width: 200px;
+  }
+}
+
+.productCardBuySkeleton {
+  width: 100%;
+  background-color: var(--PageBGSecond);
+  height: auto;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 15px;
+
+  @media screen and (max-width: 1280px) {
+    display: block;
+  }
+}
+
+.imagesSkeleton {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  grid-column: 1 / 2;
+  width: 100%;
+
+  @media screen and (max-width: 1280px) {
+    margin-bottom: 30px;
+  }
+
+  @media screen and (max-width: 580px) {
+    flex-direction: column-reverse;
+  }
+}
+
+.gallerySliderSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 480px;
+  width: max-content;
+
+  @media screen and (max-width: 580px) {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: none;
+    width: 100%;
+    gap: 12px;
+    padding-bottom: 8px;
+  }
+}
+
+.mainImageSkeleton {
+  width: 100%;
+  border-radius: 8px;
+  background-color: white;
+  padding: 20px;
+
+  @media screen and (max-width: 1280px) {
+    width: 100% !important;
+    height: auto;
+    max-height: 480px;
+    max-width: 100%;
+  }
+}
+
+.thumbnailSkeleton {
+  min-height: 80px;
+  border-radius: 8px;
+
+  @media screen and (max-width: 580px) {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+}
+
+.productInfoSkeleton {
+  grid-column: 2 / 3;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (max-width: 1280px) {
+    grid-column: auto;
+  }
+}
+
+.productBuyWrapperMainSkeleton {
+  padding: 16px 24px;
+  border-radius: 12px;
+  background-color: white;
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+
+.productMainCharacteristicsWrapperSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 15px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+.characteristicsColumnSkeleton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonViewAllLink {
+  height: 14px;
+  width: 100px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeletonProductArticle {
+  height: 14px;
+  width: 120px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.productTabsSkeleton {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.skeletonTab {
+  height: 40px;
+  width: 120px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.productBuyWrapperSkeleton {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+  margin-top: 15px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+.skeletonPrice {
+  height: 28px;
+  width: 150px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.actionsRowSkeleton {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
+
+.skeletonButton {
+  height: 50px;
+  width: 100%;
+  max-width: 450px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.actionsRowMobileSkeleton {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    order: 2;
+    width: 100%;
+    flex: none;
+  }
+}
+
+.actionButtonsSkeleton {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    order: 3;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    width: auto;
+  }
+}
+
+.skeletonIconButton {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.infoCardsWrapperSkeleton {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+
+  > * {
+    flex: 1;
+  }
+
+  @media (max-width: 580px) {
+    flex-direction: column;
+
+    > * {
+      flex: none;
+    }
+  }
+}
+
+.skeletonInfoCard {
+  height: 120px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeletonProductInfoCards {
+  height: 80px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeletonProductTitle {
+  height: 48px;
+  width: 70%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 10px;
+
+  @media (max-width: 640px) {
+    height: 36px;
+    width: 85%;
+  }
+}
+
+.skeletonLogo {
+  border-radius: 4px;
+}
+
+.productInfoBlockSkeleton {
+  margin-top: 30px;
+  background-color: var(--PageBGSecond);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.productInfoHeadSkeleton {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+}
+
+.skeletonInfoTab {
+  height: 24px;
+  width: 120px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.productInfoContentSkeleton {
+  min-height: 200px;
+}
+
+.productReviewsBlockSkeleton {
+  margin-top: 30px;
+  background-color: var(--PageBGSecond);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.tabsHeadSkeleton {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+}
+
+.skeletonReviewTab {
+  height: 24px;
+  width: 100px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.reviewsContentSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summaryCardSkeleton {
+  display: flex;
+  gap: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+.summaryRatingSkeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.summaryProgressSkeleton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewsListSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reviewCardSkeleton {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reviewHeaderSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.relatedProductsSkeleton {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+}
+
+.skeletonSectionTitle {
+  height: 28px;
+  width: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.recentlyViewedSkeleton {
+  margin-top: 30px;
+}
+
+.recentlyViewedProductsSkeleton {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

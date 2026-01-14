@@ -1,0 +1,67 @@
+.wrapper {
+  display: inline-flex;
+  padding: 12px 1px 12px 0px;
+  align-items: flex-start;
+  gap: 0px;
+  align-items: center;
+  max-height: 44px;
+  width: auto;
+  border-radius: 4px;
+  background: var(--AccentColorBlue);
+
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  @media (max-width: 920px) {
+    & {
+      padding: 12px 2px 12px 2px;
+    }
+    & p {
+      display: none;
+    }
+  }
+}
+
+.wrapper:hover {
+  background: var(--AccentColorBlueHover);
+}
+
+.ham7 {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 400ms;
+  user-select: none;
+}
+.ham7 path {
+  fill: none;
+  transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
+  stroke: #eeeeee;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+}
+.ham7.active {
+  transform: rotate(45deg);
+}
+.ham7 .top {
+  stroke-dasharray: 40 82;
+}
+.ham7 .middle {
+  stroke-dasharray: 40 111;
+}
+.ham7 .bottom {
+  stroke-dasharray: 40 161;
+}
+.ham7.active .top {
+  stroke-dasharray: 17 82;
+  stroke-dashoffset: -62px;
+}
+.ham7.active .middle {
+  stroke-dashoffset: 23px;
+}
+.ham7.active .bottom {
+  stroke-dashoffset: -83px;
+}

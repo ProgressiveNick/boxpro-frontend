@@ -1,0 +1,64 @@
+@use "@/shared/styles/variables" as *;
+@use "@/shared/styles/mixins" as *;
+
+.container {
+  @include container;
+  padding-top: $padding-small;
+  padding-bottom: $padding-big;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-small;
+}
+
+.breadcrumbsWrapper {
+  margin-bottom: 10px;
+  padding-left: 0px !important;
+}
+
+.title {
+  @include headline-2;
+  color: $color-black;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $padding-tiny;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.emptyText {
+  @include text-2;
+  color: $color-black;
+  opacity: 0.7;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}

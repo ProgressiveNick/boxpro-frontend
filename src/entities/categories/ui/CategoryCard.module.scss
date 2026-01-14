@@ -1,0 +1,67 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss" as *;
+
+.card {
+  width: 100%;
+  min-height: 200px;
+  height: min-content;
+  border-radius: 12px;
+
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.cardSmall {
+  width: 220px;
+  min-height: 120px;
+}
+
+.cardImageWrapper {
+  width: 100%;
+  flex: 1;
+  position: relative;
+  min-height: 140px;
+  aspect-ratio: 4/3;
+  background: #e8e8e8;
+  margin-bottom: 10px;
+  border-radius: $border-radius-small;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+
+  & > img,
+  & > span {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    object-position: top;
+  }
+}
+
+.cardLabel {
+  background: #e8e8e8;
+  padding: 10px;
+  border-radius: $border-radius-small;
+}
+
+.cardLabelText {
+  @include text-3;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}

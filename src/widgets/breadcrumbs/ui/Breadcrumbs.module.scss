@@ -1,0 +1,134 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss" as *;
+
+.container {
+  max-width: 100%;
+  flex-direction: row;
+  vertical-align: center;
+  justify-content: space-between;
+  align-items: center;
+
+  @include container;
+  padding-left: 0px !important;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 0px !important;
+}
+
+.nav {
+  font-family: Arial, "sans-serif";
+
+  font-size: 12px;
+  color: $color-black;
+
+  /* Добавляем overflow-x: auto для навигации */
+  overflow-x: auto;
+}
+
+.breadcrumbs {
+  display: flex;
+  justify-content: flex-start;
+  list-style: none;
+  flex-wrap: nowrap;
+  padding: 0;
+  margin: 0;
+
+  width: max-content;
+  min-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -ms-overflow-style: none;
+
+  /* Скрываем скроллбар для webkit браузеров */
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  /* Плавная прокрутка */
+  scroll-behavior: smooth;
+
+  /* Убираем перенос строк */
+  white-space: nowrap;
+
+  /* Улучшаем поддержку touch-событий */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+
+  /* Скрываем скроллбар на мобильных устройствах */
+  @media (max-width: 768px) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Добавляем отступ справа для удобства прокрутки */
+  // padding-right: 20px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  color: $color-black;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  hyphens: none;
+  text-overflow: ellipsis;
+  max-width: none;
+  width: max-content;
+  flex-shrink: 0;
+  opacity: 0.7;
+  /* Добавляем минимальную ширину для элементов */
+  min-width: fit-content;
+  /* Принудительно устанавливаем ширину для тестирования */
+  // min-width: 120px;
+
+  &:hover {
+    opacity: 1;
+    color: var(--AccentColorBlueHover);
+  }
+
+  & a {
+    color: $color-black;
+  }
+}
+
+.separator {
+  color: #8e8e8e;
+  margin: 0 8px;
+  cursor: default;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Принудительно устанавливаем ширину для разделителей */
+  min-width: 4px;
+}
+
+.active {
+  color: var(--AccentColorBlueHover);
+  cursor: default;
+  flex-shrink: 0;
+}

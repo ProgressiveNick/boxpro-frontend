@@ -1,0 +1,39 @@
+.favoritesBtn {
+    position: absolute;
+    right: 15px;
+    top: 20px;
+    background-color: var(--DarkColorFont);
+    opacity: 0.6;
+
+    width: 24px;
+    height: 24px;
+    padding: 20px;
+    border-radius: 8px;
+    margin-right: 5px;
+    z-index: 1;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &.active {
+        background-color: var(--AccentColorBlue);
+        opacity: 1;
+    }
+
+    &::before {
+        background-color: white;
+        content: "";
+        height: 24px;
+        width: 24px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border-radius: 4px;
+        position: absolute;
+        left: calc(50% - 12px);
+        top: calc(50% - 12px);
+        -webkit-mask: url("../../../../public/icons/favorites.svg") no-repeat
+            50% 50%;
+        mask: url("../../../../public/icons/favorites.svg") no-repeat 50% 50%;
+    }
+}

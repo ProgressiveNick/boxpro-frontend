@@ -1,0 +1,93 @@
+.container {
+  max-width: 100%;
+  vertical-align: center;
+  align-items: center;
+
+  position: relative;
+
+  overflow-x: hidden;
+
+  // Скрываем scrollbar
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+.navigationButtons {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.swiper {
+  height: auto;
+  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  // Скрываем scrollbar
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+.swiperWrapper {
+  align-items: stretch;
+}
+
+.customSwiperButtonNext,
+.customSwiperButtonPrev {
+  background-color: var(--AccentColorBlue);
+  width: 42px;
+  height: 42px;
+  border-radius: 3px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(.disabled) {
+    opacity: 1;
+    background-color: var(--AccentColorBlueHover);
+    transform: scale(1.1);
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    background-color: var(--AccentColorBlue);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // На мобильных скрываем кнопки, так как используется свайп
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+/* Стили для слайдов чтобы они занимали полную высоту */
+.swiperSlide {
+  height: auto;
+  display: flex;
+  align-items: stretch;
+  overflow: visible;
+}
+
+.swiperSlide > div {
+  height: auto;
+  width: 100%;
+  display: flex;
+  overflow: visible;
+}

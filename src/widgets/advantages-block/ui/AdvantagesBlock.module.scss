@@ -1,0 +1,194 @@
+@use "@styles/_mixins.scss" as *;
+@use "@styles/_variables.scss" as *;
+
+.wrapper {
+  padding: 15px;
+  margin-top: 30px;
+  margin-bottom: 0px;
+  @include container;
+}
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.headContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.title {
+  @include headline-2;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+
+  & span {
+    color: $color-accent;
+  }
+}
+
+.description {
+  @include text-2;
+
+  padding-left: 15px;
+  border-left: 3px solid $color-accent;
+  max-width: 600px;
+  opacity: 0.8;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.contentContainer {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  position: relative;
+
+  @media (max-width: 980px) {
+    flex-direction: column;
+  }
+}
+
+.advantages {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30%;
+  padding: 15px 0px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  gap: 30px;
+
+  @media (max-width: 980px) {
+    gap: 15px;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    display: flex;
+
+    gap: 30px;
+    width: 100%;
+  }
+}
+
+.itemTitle {
+  @include headline-2;
+}
+
+.itemDescription {
+  max-width: 300px;
+  @include text-3;
+  font-weight: 400 !important;
+  opacity: 0.8;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}
+
+.advantage {
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  background-color: $color-background-white;
+  border-radius: $border-radius-small;
+}
+
+.ctaWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background-color: $color-accent;
+  border-radius: 12px;
+  padding: $padding-medium $padding-small;
+  color: $color-white;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+  }
+}
+
+.textWrapper {
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  max-width: 500px;
+}
+
+.ctaTitle {
+  @include headline-3;
+  color: $color-white !important;
+  @media screen and (max-width: 1200px) {
+    @include headline-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-3-mobile;
+  }
+}
+
+.ctaDescription {
+  @include text-2;
+  color: $color-white !important;
+  max-width: 450px;
+
+  opacity: 0.8;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+
+  @media (max-width: 640px) {
+    margin-bottom: 30px;
+  }
+}
+
+.itemTitleSpan {
+  @include text-3;
+
+  @media screen and (max-width: 1200px) {
+    @include text-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}

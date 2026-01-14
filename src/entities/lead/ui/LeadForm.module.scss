@@ -1,0 +1,149 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss";
+
+.block {
+  background-color: #4d01c7;
+  padding: 60px 60px;
+  border-radius: 32px;
+  width: 100%;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  position: relative;
+  &.success {
+    background-color: #28a745;
+  }
+
+  & h2 {
+    font-size: 48px;
+    color: var(--WhiteColorFont);
+    margin-bottom: 15px;
+  }
+}
+
+.successMessage {
+  text-align: center;
+  color: var(--WhiteColorFont);
+
+  h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 20px;
+    opacity: 0.9;
+  }
+}
+
+.text {
+  color: var(--WhiteColorFont);
+  font-size: 20px;
+  font-family: "Roboto", Arial, sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+  max-width: 680px;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 60px;
+  gap: 15px;
+  height: auto;
+
+  @media (max-width: 640px) {
+    & {
+      flex-direction: column;
+    }
+  }
+}
+
+.input {
+  height: 50px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  padding: 15px 15px;
+  font-size: 16px;
+  width: 100%;
+  background-color: white;
+  color: #333;
+
+  &:focus {
+    outline: none;
+    border-color: #4a93ff;
+  }
+
+  &.error {
+    border-color: #ff4d4f;
+  }
+}
+
+.textarea {
+  min-height: 100px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  padding: 15px 15px;
+  font-size: 16px;
+  width: 100%;
+  background-color: white;
+  color: #333;
+  resize: vertical;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: #4a93ff;
+  }
+
+  &.error {
+    border-color: #ff4d4f;
+  }
+}
+
+.button {
+  height: 50px;
+  min-width: 200px;
+  background-color: $color-blue;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 15px;
+  align-self: flex-start;
+
+  &:hover {
+    background-color: $color-blue-secondr;
+  }
+
+  &:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .block {
+    padding: 40px 20px;
+
+    & h2 {
+      font-size: 32px;
+    }
+  }
+
+  .text {
+    font-size: 18px;
+  }
+
+  .form {
+    margin-top: 40px;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,101 @@
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: auto;
+
+  @media (max-width: 1080px) {
+    display: none;
+  }
+}
+
+.rates {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 3px;
+  background-color: rgb(226, 226, 226);
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.rateItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2d2d2d;
+}
+
+.symbol {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1c2234;
+}
+
+.value {
+  font-size: 14px;
+  color: #6f768b;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: transparent;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #eceef5;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 120px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.currencyOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+
+  &:hover {
+    background-color: #f9fafc;
+  }
+
+  &.selected {
+    background-color: #f0f3ff;
+    font-weight: 600;
+  }
+}
+
+.optionSymbol {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1c2234;
+}
+
+.optionCode {
+  font-size: 13px;
+  color: #6f768b;
+}

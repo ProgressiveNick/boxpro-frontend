@@ -1,0 +1,246 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss" as *;
+
+.wrapper {
+  width: 100%;
+  background: $color-background-white;
+  border-bottom: $border-line-white;
+  position: fixed;
+  z-index: 1001;
+}
+
+.logo {
+  @media (max-width: 815px) {
+    margin-right: auto;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  vertical-align: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-top: 7.5px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 5px;
+  background: $color-background-white;
+  @include container;
+
+  @media (max-width: 920px) {
+    max-width: 920px;
+  }
+
+  @media (max-width: 640px) {
+    max-width: 600px;
+  }
+
+  @media (max-width: 520px) {
+    max-width: 520px;
+    & .searchWrapper {
+      width: min-content;
+    }
+  }
+
+  @media (max-width: 920px) {
+    & :global(.currencyRates) {
+      display: none;
+    }
+  }
+}
+
+.locationAndCurrency {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: 0px;
+  margin-right: 0px;
+
+  @media (max-width: 815px) {
+    display: none;
+  }
+}
+
+.searchWrapper {
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+  align-items: center;
+  width: 60%;
+
+  @media (max-width: 640px) {
+    order: 2;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 520px) {
+    width: min-content;
+  }
+  @media (max-width: 815px) {
+    display: none;
+  }
+}
+
+.catalogButton {
+  @media (max-width: 815px) {
+    order: 1;
+  }
+}
+
+.rightPanel {
+  display: flex;
+  gap: 25px;
+  justify-content: flex-end;
+  text-align: center;
+  align-items: top;
+
+  @media (max-width: 815px) {
+    display: none;
+  }
+}
+
+.jobTime {
+  @include text-3-mobile;
+  font-weight: 400 !important;
+  @media screen and (max-width: 1200px) {
+    @include text-3-mobile;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-3-mobile;
+  }
+}
+
+.contactWrapper {
+  text-align: right;
+  margin-left: 30px;
+
+  @media screen and (max-width: 1020px) {
+    margin-left: 10px;
+  }
+
+  @media screen and (max-width: 400px) {
+    display: none;
+  }
+}
+
+.contactRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-end;
+  opacity: 0.9;
+  text-wrap: nowrap;
+
+  @media (max-width: 540px) {
+    display: none;
+  }
+}
+
+.number {
+  color: $color-black;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  width: max-content;
+
+  &:hover {
+    color: $color-blue;
+  }
+
+  @media screen and (max-width: 1020px) {
+    font-size: 16px;
+  }
+}
+
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  background: #38435d;
+  border-radius: 8px;
+
+  @media (max-width: 885px) {
+    padding: 0px;
+  }
+}
+
+.returnCallButton {
+  background: #fff;
+  color: #2e3535;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: #e0e0e0;
+    color: #2e3535;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 885px) {
+    background: #38435d;
+    color: #fff;
+  }
+}
+
+.socialIcons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+
+  @media (max-width: 885px) {
+    display: none;
+  }
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  color: #2e3535;
+  border: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  svg,
+  img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: #e0e0e0;
+    color: #2e3535;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

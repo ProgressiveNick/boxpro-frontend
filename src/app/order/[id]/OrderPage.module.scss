@@ -1,0 +1,184 @@
+@use "@/shared/styles/variables" as *;
+@use "@/shared/styles/mixins" as *;
+
+.container {
+  @include container;
+  padding-top: $padding-big;
+  padding-bottom: $padding-big;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-big;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.breadcrumbsWrapper {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.title {
+  @include headline-2;
+  color: $color-black;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.orderInfo {
+  padding: $padding-medium;
+  background-color: $color-background-white;
+  border-radius: $border-radius-small;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-medium;
+}
+
+.orderNumber {
+  @include text-2;
+  color: $color-black;
+  font-weight: 600;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-small;
+  margin-top: $padding-small;
+}
+
+.itemsListUl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-tiny;
+}
+
+.orderItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $padding-small;
+  padding-bottom: $padding-tiny;
+  border-bottom: 1px solid $color-border-white;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.itemName {
+  @include text-2;
+  color: $color-black;
+  flex: 1;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.itemPrice {
+  @include text-2;
+  color: $color-black;
+  font-weight: 600;
+  white-space: nowrap;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.totalPrice {
+  @include text-2;
+  color: $color-black;
+  padding-top: $padding-small;
+  border-top: 1px solid $color-border-white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+
+  b {
+    font-weight: 600;
+  }
+}
+
+.formWrapper {
+  background-color: $color-background-white;
+  padding: $padding-big;
+  border-radius: $border-radius-small;
+}
+
+.loading {
+  @include text-2;
+  color: $color-black;
+  text-align: center;
+  padding: $padding-big;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+.errorState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.errorText {
+  @include text-2;
+  color: #ff4d4f;
+
+  @media screen and (max-width: 1200px) {
+    @include text-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include text-2-mobile;
+  }
+}
+
+
+
+

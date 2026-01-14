@@ -1,0 +1,73 @@
+.ctaWrapper {
+  padding-top: 15px;
+
+  margin-top: auto;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; // Позволяет кнопке переноситься под цену при нехватке места
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  a {
+    color: var(--WhiteColorFont);
+  }
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  @media (max-width: 479px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.priceWrapper {
+  display: flex;
+  gap: 15px;
+  width: auto;
+  flex-shrink: 0; // Не сжимается
+  min-width: 0; // Позволяет flex работать корректно
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  margin-left: 5px;
+  color: var(--AccentColorBlue);
+  font-size: 18px;
+  white-space: nowrap; // Цена не переносится
+  overflow: visible; // Не обрезаем цену
+}
+
+.cta {
+  width: auto;
+  min-width: 120px; // Минимальная ширина кнопки
+  background-color: var(--AccentColorBlue);
+  padding: 3px 12px;
+  border-radius: 8px;
+  text-align: center;
+  color: var(--WhiteColorFont);
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: var(--AccentColorBlueHover);
+  }
+
+  :global(.button) {
+    width: auto;
+    white-space: nowrap; // Текст кнопки не переносится
+  }
+
+  // На маленьких экранах кнопка на всю ширину
+  @media (max-width: 479px) {
+    width: 100%;
+    min-width: 100%;
+
+    :global(.button) {
+      width: 100%;
+    }
+  }
+}

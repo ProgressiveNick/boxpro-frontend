@@ -1,0 +1,87 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.phoneInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.countryCode {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+}
+
+.phoneInput {
+  font-family: monospace;
+  letter-spacing: 1px;
+
+  // padding: 12px 16px;
+  padding-left: 35px !important; // Отступ для +7
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  transition: all 0.2s ease;
+  font-family: inherit;
+
+  grid-column-start: 1;
+  grid-column-end: 3;
+  width: 100%;
+
+  // & input {
+  //   padding-left: 35px;
+  // }
+
+  &::placeholder {
+    color: #999;
+    font-weight: 500;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+
+  &.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+  }
+}
+
+.flagIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.error {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+}
+
+.errorText {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}

@@ -1,0 +1,184 @@
+.container {
+  max-width: 100%;
+  flex-direction: row;
+  vertical-align: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 10px;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.cover {
+  width: 100%;
+  background-image: url("/img/delivery/photo.jpg");
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  padding: 60px 30px;
+
+  display: flex;
+  justify-content: space-between;
+
+  @media screen and (max-width: 760px) {
+    height: auto;
+    gap: 15px;
+    flex-direction: column;
+  }
+}
+
+.title {
+  color: var(--WhiteColorFont);
+  max-width: 70%;
+  @media screen and (max-width: 760px) {
+    max-width: 100%;
+  }
+}
+
+.desk {
+  font-size: 18px;
+  line-height: 155%;
+  opacity: 0.8;
+  color: var(--WhiteColorFont);
+  max-width: 450px;
+}
+
+.text {
+  color: var(--DarkColorFont);
+  font-size: 20px;
+  font-family: "Roboto", Arial, sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+  max-width: 680px;
+}
+
+.block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-top: 60px;
+
+  border-bottom: 1px var(--DarkBackgroundLight) solid;
+  padding-bottom: 60px;
+
+  @media screen and (max-width: 760px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  & .title {
+    color: var(--DarkColorFont);
+    margin-bottom: 30px;
+  }
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-top: 60px;
+
+  @media screen and (max-width: 960px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 760px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  & .text {
+    max-width: 450px;
+  }
+
+  & .image {
+    margin-bottom: 15px;
+  }
+}
+
+.factTitle {
+  color: var(--AccentColorBlue);
+  font-size: 32px;
+  font-family: "Bebas Neue", sans-serif;
+
+  line-height: 120%;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  margin-bottom: 15px;
+}
+
+.priceCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  padding-right: 15px;
+  padding-left: 15px;
+
+  @media screen and (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.priceCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 250px;
+  width: 100%;
+  border: 2px solid var(--CardBGGray);
+  padding: 30px;
+  border-radius: 12px;
+
+  & .text {
+    margin-bottom: 0px;
+  }
+}
+
+.price {
+  font-size: 64px;
+  font-weight: 600;
+  color: var(--AccentColorBlue);
+}
+
+.companyLogo {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 250px;
+  background-color: var(--CardBGGray);
+  border-radius: 22px;
+  text-align: center;
+  vertical-align: middle;
+  align-items: center;
+
+  &:hover .cImage {
+    filter: grayscale(0%);
+  }
+}
+
+.cImage {
+  width: auto;
+  height: auto;
+  max-width: 80%;
+  max-height: 80%;
+  border-radius: 12px;
+  filter: grayscale(100%);
+}

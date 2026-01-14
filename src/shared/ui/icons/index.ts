@@ -1,0 +1,1 @@
+export { CatalogIcon } from "./CatalogIcon";
