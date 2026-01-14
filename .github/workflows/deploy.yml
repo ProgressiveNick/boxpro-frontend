@@ -85,10 +85,8 @@ jobs:
             cd /var/www
             # Загружаем переменные из .env.frontend для build args
             if [ -f "boxpro/.env.frontend" ]; then
-              # Загружаем переменные из файла (без экспорта в окружение, чтобы не конфликтовать)
-              set -a
-              source boxpro/.env.frontend
-              set +a
+              # Загружаем переменные из файла
+              export $(grep -v '^#' boxpro/.env.frontend | grep -v '^$' | xargs)
               # Проверяем, что переменные загружены
               if [ -z "$STRAPI_API_TOKEN" ]; then
                 echo "❌ ОШИБКА: STRAPI_API_TOKEN не найден в .env.frontend"
