@@ -85,7 +85,16 @@ jobs:
             cd /var/www
             # Загружаем переменные из .env.frontend для build args
             if [ -f "boxpro/.env.frontend" ]; then
-              export $(grep -v '^#' boxpro/.env.frontend | xargs)
+              # Загружаем переменные из файла (без экспорта в окружение, чтобы не конфликтовать)
+              set -a
+              source boxpro/.env.frontend
+              set +a
+              # Проверяем, что переменные загружены
+              if [ -z "$STRAPI_API_TOKEN" ]; then
+                echo "❌ ОШИБКА: STRAPI_API_TOKEN не найден в .env.frontend"
+                exit 1
+              fi
+              echo "✅ Переменные окружения загружены из .env.frontend"
               docker-compose -f docker-compose.boxpro.yml build --no-cache \
                 --build-arg STRAPI_API_BASE_URL="$STRAPI_API_BASE_URL" \
                 --build-arg STRAPI_API_TOKEN="$STRAPI_API_TOKEN" \
