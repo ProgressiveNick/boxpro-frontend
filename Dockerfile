@@ -29,9 +29,10 @@ ENV TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
 ENV NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_STRAPI_API_URL
 ENV NEXT_PUBLIC_STRAPI_URL=$NEXT_PUBLIC_STRAPI_URL
 
-# Отладочный вывод (удалить после проверки)
+# Отладочный вывод для проверки передачи переменных
 RUN echo "DEBUG: STRAPI_API_BASE_URL=$STRAPI_API_BASE_URL" && \
-    echo "DEBUG: STRAPI_API_TOKEN length: ${#STRAPI_API_TOKEN}" && \
+    echo "DEBUG: STRAPI_API_TOKEN length: $(echo -n "$STRAPI_API_TOKEN" | wc -c)" && \
+    echo "DEBUG: STRAPI_API_TOKEN first 20 chars: $(echo -n "$STRAPI_API_TOKEN" | cut -c1-20)" && \
     echo "DEBUG: NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_STRAPI_API_URL"
 
 # Собираем приложение
