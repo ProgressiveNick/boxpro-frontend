@@ -34,46 +34,67 @@ export const getCatalogMenu = cache(async (): Promise<Category[]> => {
  * Запрос к API для получения структуры каталога
  */
 async function getCatalogMenuFromAPI(): Promise<Category[]> {
-  // Загружаем корневые категории (где parent is null) с полной структурой
-  // Включаем populate для childs (рекурсивно) и parent (для дочерних категорий)
-  // Это нужно для правильного построения путей вложенности
-  const data = await Promise.race([
-    categoriesService.find({
-      filters: {
-        parent: {
-          $null: true,
+  try {
+    // Загружаем корневые категории (где parent is null) с полной структурой
+    // Включаем populate для childs (рекурсивно) и parent (для дочерних категорий)
+    // Это нужно для правильного построения путей вложенности
+    const data = await Promise.race([
+      categoriesService.find({
+        filters: {
+          parent: {
+            $null: true,
+          },
         },
-      },
-      populate: {
-        childs: {
-          populate: {
-            parent: {
-              populate: {
-                parent: {
-                  populate: {
-                    parent: {
-                      populate: "*",
+        populate: {
+          childs: {
+            populate: {
+              parent: {
+                populate: {
+                  parent: {
+                    populate: {
+                      parent: {
+                        populate: "*",
+                      },
                     },
                   },
                 },
               },
-            },
-            childs: {
-              populate: "*",
+              childs: {
+                populate: "*",
+              },
             },
           },
+          img_menu: {
+            populate: "*",
+          },
         },
-        img_menu: {
-          populate: "*",
-        },
-      },
-    }),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Request timeout")), 10000)
-    ),
-  ]);
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Request timeout")), 10000)
+      ),
+    ]);
 
-  return data.data as unknown as Category[];
+    return data.data as unknown as Category[];
+  } catch (error) {
+    // Обрабатываем ошибки авторизации и другие ошибки API
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorName = error instanceof Error ? error.name : "";
+    
+    // Если ошибка авторизации (401), логируем и возвращаем пустой массив
+    if (
+      errorMessage.includes("401") ||
+      errorMessage.includes("Unauthorized") ||
+      errorName.includes("HTTPAuthorizationError")
+    ) {
+      console.error("[getCatalogMenuFromAPI] Strapi API authorization error:", errorMessage);
+      console.error("This may happen during Docker build if Strapi API is not accessible");
+      return [];
+    }
+    
+    // Для других ошибок также возвращаем пустой массив
+    console.error("[getCatalogMenuFromAPI] Error fetching catalog menu:", error);
+    return [];
+  }
 }
 
 /**
