@@ -81,7 +81,15 @@ jobs:
             docker system prune -f --volumes || true
             docker image prune -af || true
             
-            # Пересобираем Docker контейнер
+            # Пересобираем Docker контейнер с переменными окружения из .env.frontend
             cd /var/www
-            docker-compose -f docker-compose.boxpro.yml build --no-cache
+            # Загружаем переменные из .env.frontend для build args
+            export $(grep -v '^#' boxpro/.env.frontend | xargs)
+            docker-compose -f docker-compose.boxpro.yml build --no-cache \
+              --build-arg STRAPI_API_BASE_URL="$STRAPI_API_BASE_URL" \
+              --build-arg STRAPI_API_TOKEN="$STRAPI_API_TOKEN" \
+              --build-arg TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN" \
+              --build-arg TELEGRAM_CHAT_ID="$TELEGRAM_CHAT_ID" \
+              --build-arg NEXT_PUBLIC_STRAPI_API_URL="$NEXT_PUBLIC_STRAPI_API_URL" \
+              --build-arg NEXT_PUBLIC_STRAPI_URL="$NEXT_PUBLIC_STRAPI_URL"
             docker-compose -f docker-compose.boxpro.yml up -d --force-recreate
