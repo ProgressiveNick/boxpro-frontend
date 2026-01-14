@@ -24,6 +24,34 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
+      - name: Load environment variables
+        run: |
+          # Создаем .env.local из .env.frontend для Next.js
+          # Переменные можно взять из GitHub Secrets или из файла .env.frontend
+          # Если .env.frontend есть в репозитории, используем его
+          if [ -f ".env.frontend" ]; then
+            cp .env.frontend .env.local
+          elif [ -f "../.env.frontend" ]; then
+            cp ../.env.frontend .env.local
+          else
+            # Создаем .env.local из GitHub Secrets
+            cat > .env.local << EOF
+          STRAPI_API_BASE_URL=\${{ secrets.STRAPI_API_BASE_URL }}
+          STRAPI_API_TOKEN=\${{ secrets.STRAPI_API_TOKEN }}
+          TELEGRAM_BOT_TOKEN=\${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID=\${{ secrets.TELEGRAM_CHAT_ID }}
+          NEXT_PUBLIC_STRAPI_API_URL=\${{ secrets.NEXT_PUBLIC_STRAPI_API_URL }}
+          NEXT_PUBLIC_STRAPI_URL=\${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
+          EOF
+          fi
+        env:
+          STRAPI_API_BASE_URL: ${{ secrets.STRAPI_API_BASE_URL }}
+          STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NEXT_PUBLIC_STRAPI_API_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_API_URL }}
+          NEXT_PUBLIC_STRAPI_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
+        
       - name: Run linter
         run: |
           if [ -f "eslint.config.mjs" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.js" ]; then
@@ -37,6 +65,13 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
+          # Переменные окружения из GitHub Secrets для сборки
+          STRAPI_API_BASE_URL: ${{ secrets.STRAPI_API_BASE_URL }}
+          STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NEXT_PUBLIC_STRAPI_API_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_API_URL }}
+          NEXT_PUBLIC_STRAPI_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
           
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
@@ -58,6 +93,13 @@ jobs:
             git fetch origin
             git checkout main
             git pull origin main
+            # Копируем .env.frontend в .env.local для Next.js
+            if [ -f "../.env.frontend" ]; then
+              cp ../.env.frontend .env.local
+              echo "✅ .env.frontend скопирован в .env.local"
+            else
+              echo "⚠️  .env.frontend не найден, используем переменные из docker-compose"
+            fi
             # Восстанавливаем storage если он был удален
             LATEST_BACKUP=$(ls -td /tmp/storage-backup-* 2>/dev/null | head -1)
             if [ ! -d "public/storage" ] && [ -n "$LATEST_BACKUP" ] && [ -d "$LATEST_BACKUP" ]; then
