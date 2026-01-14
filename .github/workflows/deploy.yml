@@ -91,6 +91,10 @@ jobs:
               echo "DEBUG: STRAPI_API_BASE_URL=$STRAPI_API_BASE_URL"
               echo "DEBUG: STRAPI_API_TOKEN length: ${#STRAPI_API_TOKEN}"
               echo "DEBUG: NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_STRAPI_API_URL"
+              # Удаляем старый контейнер если есть проблемы
+              docker-compose -f docker-compose.boxpro.yml rm -f boxpro 2>/dev/null || true
+              docker rm -f boxpro_app 2>/dev/null || true
+              # Собираем с build args
               docker-compose -f docker-compose.boxpro.yml build --no-cache \
                 --build-arg STRAPI_API_BASE_URL="$STRAPI_API_BASE_URL" \
                 --build-arg STRAPI_API_TOKEN="$STRAPI_API_TOKEN" \
@@ -100,6 +104,9 @@ jobs:
                 --build-arg NEXT_PUBLIC_STRAPI_URL="$NEXT_PUBLIC_STRAPI_URL"
             else
               echo "⚠️  .env.frontend не найден, сборка без build args"
+              docker-compose -f docker-compose.boxpro.yml rm -f boxpro 2>/dev/null || true
+              docker rm -f boxpro_app 2>/dev/null || true
               docker-compose -f docker-compose.boxpro.yml build --no-cache
             fi
-            docker-compose -f docker-compose.boxpro.yml up -d --force-recreate
+            # Создаем и запускаем контейнер
+            docker-compose -f docker-compose.boxpro.yml up -d --force-recreate boxpro
