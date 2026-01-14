@@ -77,6 +77,10 @@ jobs:
             if [ ! -d "public/storage" ] && [ -n "$LATEST_BACKUP" ] && [ -d "$LATEST_BACKUP" ]; then
               cp -r "$LATEST_BACKUP" public/storage
             fi
+            # Очищаем старые Docker образы для освобождения места
+            docker system prune -f --volumes || true
+            docker image prune -af || true
+            
             # Пересобираем Docker контейнер
             cd /var/www
             docker-compose -f docker-compose.boxpro.yml build --no-cache

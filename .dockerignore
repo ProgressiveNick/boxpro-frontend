@@ -1,0 +1,45 @@
+# Storage files (монтируются как volume)
+public/storage
+public/storage.zip
+public/storage 2
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Environment files
+.env*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.tsbuildinfo
+.eslintcache
