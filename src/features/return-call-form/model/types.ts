@@ -10,15 +10,3 @@ export interface ReturnCallFormSubmitResult {
   success: boolean;
   message: string;
 }
-
-
-
-
-
-
-
-
-
-
-
-

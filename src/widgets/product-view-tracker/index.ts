@@ -1,13 +1,1 @@
-export { ProductViewTracker } from './ui/ProductViewTracker';
-
-
-
-
-
-
-
-
-
-
-
-
+export { ProductViewTracker } from "./ui/ProductViewTracker";

@@ -2,132 +2,132 @@
 @use "@styles/_mixins.scss";
 
 .productInfo {
-    width: 100%;
-    background-color: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(15, 26, 58, 0.08);
-    margin-bottom: 30px;
+  width: 100%;
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(15, 26, 58, 0.08);
+  margin-bottom: 30px;
 }
 
 .productInfoHead {
-    display: flex;
-    gap: 24px;
-    border-bottom: 1px solid #ececec;
-    padding-bottom: 12px;
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid #ececec;
+  padding-bottom: 12px;
 }
 
 .productInfoTitle {
-    font-size: 20px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #9aa0b5;
-    position: relative;
-    padding-bottom: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #9aa0b5;
+  position: relative;
+  padding-bottom: 12px;
 
-    &::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -1px;
-        width: 100%;
-        height: 3px;
-        border-radius: 999px;
-        background: transparent;
-        transition: background-color 0.2s ease;
-    }
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 3px;
+    border-radius: 999px;
+    background: transparent;
+    transition: background-color 0.2s ease;
+  }
 }
 
 .activeTab {
-    color: #1c2234;
+  color: #1c2234;
 
-    &::after {
-        background: #fc7b08;
-    }
+  &::after {
+    background: #fc7b08;
+  }
 }
 
 .productTitle {
-    text-align: left !important;
+  text-align: left !important;
 }
 
 .productInfoSubWrapper {
-    margin-top: 30px;
-    padding: 0px 15px;
-    background-color: #fff;
-    position: relative;
-    height: auto;
-    border-radius: 12px;
+  margin-top: 30px;
+  padding: 0px 15px;
+  background-color: #fff;
+  position: relative;
+  height: auto;
+  border-radius: 12px;
 }
 
 .productInfoDescription {
-    margin-top: 24px;
-    gap: 15px;
+  margin-top: 24px;
+  gap: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+
+  & ul {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  & li {
+    list-style: disc;
+
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+  }
+
+  & p {
+    margin-top: 10px;
+    line-height: 125%;
+  }
+
+  & h4 {
+    margin-top: 20px;
+  }
+
+  #text {
     font-weight: 500;
-    line-height: 1.5;
-
-    & ul {
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    & li {
-        list-style: disc;
-
-        margin-top: 15px;
-        margin-bottom: 10px;
-        margin-left: 15px;
-    }
-
-    & p {
-        margin-top: 10px;
-        line-height: 125%;
-    }
-
-    & h4 {
-        margin-top: 20px;
-    }
-
-    #text {
-        font-weight: 500;
-    }
+  }
 }
 
 .infoTextBlock {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    font-size: 15px;
-    line-height: 1.5;
-    color: #1c2234;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #1c2234;
 
-    p {
-        margin: 0;
-    }
+  p {
+    margin: 0;
+  }
 }
 
 .charsWrapper {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border: 1px solid #eceef5;
-    border-radius: 12px;
-    overflow: hidden;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid #eceef5;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .charItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid #eceef5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eceef5;
 
-    &:nth-child(even) {
-        background-color: #f9fafc;
-    }
+  &:nth-child(even) {
+    background-color: #f9fafc;
+  }
 
-    &:last-child {
-        border-bottom: none;
-    }
+  &:last-child {
+    border-bottom: none;
+  }
 }

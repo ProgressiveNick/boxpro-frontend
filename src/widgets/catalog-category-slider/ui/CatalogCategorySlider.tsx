@@ -138,7 +138,7 @@ export function CatalogCategorySlider({
             <CategoryCard
               card={card}
               size="small"
-              hideImage={true}
+              hideImage={false}
               index={index}
             />
           </div>

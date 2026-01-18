@@ -5,6 +5,7 @@
   width: 100%;
   overflow: visible;
   position: relative;
+ padding-left: 15px; padding-right: 15px;
 }
 
 .mobileFilterButton {
@@ -103,7 +104,7 @@
 
 .contentColumn {
   min-width: 0; // Предотвращает переполнение
-
+ max-width: 100%;
   @media (max-width: 767px) {
     order: 2; // Карточки под фильтрами на мобильной версии
   }

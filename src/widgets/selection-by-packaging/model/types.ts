@@ -17,9 +17,3 @@ export type PackagingTab = {
   label: string;
   groupId: number;
 };
-
-
-
-
-
-

@@ -14,19 +14,3 @@ export function scrollToProductReviews(tab: ProductReviewsTab) {
   const target = document.getElementById("product-reviews-block");
   target?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

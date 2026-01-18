@@ -35,4 +35,3 @@ export const TABS_MAP: Record<TabKey, TabData> = {
     isClickable: false,
   },
 };
-

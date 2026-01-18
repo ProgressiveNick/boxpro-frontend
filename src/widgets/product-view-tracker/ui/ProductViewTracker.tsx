@@ -11,4 +11,3 @@ export function ProductViewTracker({ product }: ProductViewTrackerProps) {
   useTrackProductView(product);
   return null;
 }
-

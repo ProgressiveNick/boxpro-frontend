@@ -13,8 +13,5 @@ export function AvailabilityStatusTab({
     return null;
   }
 
-  return (
-    <span className={styles.tab}>В наличии</span>
-  );
+  return <span className={styles.tab}>В наличии</span>;
 }
-

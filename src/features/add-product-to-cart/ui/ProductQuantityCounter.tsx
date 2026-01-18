@@ -54,10 +54,7 @@ export function ProductQuantityCounter({
 
   return (
     <div className={styles.counter}>
-      <button
-        className={styles.counterBtn}
-        onClick={handleDecrement}
-      >
+      <button className={styles.counterBtn} onClick={handleDecrement}>
         -
       </button>
       <span className={styles.counterDisplay}>
