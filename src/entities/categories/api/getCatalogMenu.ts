@@ -5,7 +5,7 @@ import { categoriesService } from "@/shared/api/server";
 import { CategoryTree } from "../lib/CategoryTree";
 
 const CACHE_KEY = "catalog_menu";
-const CACHE_VERSION = "1.0"; // Версия кэша, можно увеличивать при изменении структуры
+const CACHE_VERSION = "1.1"; // Версия кэша, можно увеличивать при изменении структуры (обновлено для загрузки img_menu у вложенных категорий)
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 дней в миллисекундах
 
 /**
@@ -59,8 +59,29 @@ async function getCatalogMenuFromAPI(): Promise<Category[]> {
                   },
                 },
               },
-              childs: {
+              img_menu: {
                 populate: "*",
+              },
+              childs: {
+                populate: {
+                  img_menu: {
+                    populate: "*",
+                  },
+                  childs: {
+                    populate: {
+                      img_menu: {
+                        populate: "*",
+                      },
+                      childs: {
+                        populate: {
+                          img_menu: {
+                            populate: "*",
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
