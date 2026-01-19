@@ -13,3 +13,19 @@
   white-space: nowrap;
   vertical-align: top;
 }
+
+.tabOutOfStock {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 8px 8px;
+  background-color: #fff3cd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #856404;
+  margin-right: 8px;
+  margin-top: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+}

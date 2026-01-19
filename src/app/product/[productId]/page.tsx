@@ -235,11 +235,9 @@ export default async function ProductPage({
                   {data.name}
                   <span className={styles.productTitleTabs}>
                     {/* <PromoTab /> */}
-                    {warehousesCount > 0 && (
-                      <AvailabilityStatusTab
-                        warehousesCount={warehousesCount}
-                      />
-                    )}
+                    <AvailabilityStatusTab
+                      warehousesCount={warehousesCount}
+                    />
                   </span>
                 </h1>
               </div>

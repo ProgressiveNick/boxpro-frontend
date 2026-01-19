@@ -9,9 +9,11 @@ type AvailabilityStatusTabProps = {
 export function AvailabilityStatusTab({
   warehousesCount,
 }: AvailabilityStatusTabProps) {
-  if (warehousesCount <= 0) {
-    return null;
-  }
+  const isInStock = warehousesCount > 0;
 
-  return <span className={styles.tab}>В наличии</span>;
+  return (
+    <span className={isInStock ? styles.tab : styles.tabOutOfStock}>
+      {isInStock ? "В наличии" : "Под заказ"}
+    </span>
+  );
 }
