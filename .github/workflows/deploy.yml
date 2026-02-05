@@ -53,7 +53,6 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
-            set -e
             cd /var/www/boxpro
             # Обновляем submodule в основном репозитории
             git submodule update --remote frontend
@@ -62,9 +61,10 @@ jobs:
             if [ -d "public/storage" ]; then
               cp -r public/storage /tmp/storage-backup-$(date +%s)
             fi
-            # Получаем последние изменения (сбрасываем локальные изменения на сервере)
+            # Получаем последние изменения
             git fetch origin
-            git reset --hard origin/main
+            git checkout main
+            git pull origin main
             # .env.frontend уже используется в docker-compose через env_file
             echo "✅ .env.frontend используется через env_file в docker-compose"
             # Восстанавливаем storage если он был удален
