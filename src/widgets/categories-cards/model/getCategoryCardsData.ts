@@ -7,7 +7,7 @@ import { Category } from "@/entities/categories";
  */
 function findCategoryByName(
   categories: Category[],
-  name: string
+  name: string,
 ): Category | null {
   for (const category of categories) {
     if (category.name === name) {
@@ -26,7 +26,7 @@ function findCategoryByName(
  */
 function getChildCategories(
   parentCategory: Category,
-  maxCount?: number
+  maxCount?: number,
 ): Category[] {
   if (!parentCategory.childs || parentCategory.childs.length === 0) {
     return [];
@@ -55,7 +55,7 @@ export async function getCategoryCardsData() {
   // Пищевое оборудование
   const pishchevoeCategory = findCategoryByName(
     allCategories,
-    parentCategoryMap["Пищевое оборудование"]
+    parentCategoryMap["Пищевое оборудование"],
   );
   if (pishchevoeCategory) {
     const allChildren = getChildCategories(pishchevoeCategory);
@@ -76,7 +76,7 @@ export async function getCategoryCardsData() {
   // Фасовочное оборудование
   const fasovochnoeCategory = findCategoryByName(
     allCategories,
-    parentCategoryMap["Фасовочное оборудование"]
+    parentCategoryMap["Фасовочное оборудование"],
   );
   if (fasovochnoeCategory) {
     const allChildren = getChildCategories(fasovochnoeCategory);
@@ -96,7 +96,7 @@ export async function getCategoryCardsData() {
   // Упаковочное оборудование
   const upakovochnoeCategory = findCategoryByName(
     allCategories,
-    parentCategoryMap["Упаковочное оборудование"]
+    parentCategoryMap["Упаковочное оборудование"],
   );
   if (upakovochnoeCategory) {
     const allChildren = getChildCategories(upakovochnoeCategory);
@@ -117,7 +117,7 @@ export async function getCategoryCardsData() {
   // Оборудование для HORECA
   const horecaCategory = findCategoryByName(
     allCategories,
-    parentCategoryMap["Оборудование для HORECA"]
+    parentCategoryMap["Оборудование для HORECA"],
   );
   if (horecaCategory) {
     const allChildren = getChildCategories(horecaCategory);
@@ -138,27 +138,27 @@ export async function getCategoryCardsData() {
   // Оборудование для маркетплейсов (специальная категория)
   const vakuumnyeCategory = findCategoryByName(
     allCategories,
-    "Вакуумные упаковщики"
+    "Вакуумные упаковщики",
   );
   const gorizontalnyeCategory = findCategoryByName(
     allCategories,
-    "Горизонтальные упаковочные машины"
+    "Горизонтальные упаковочные машины",
   );
   const vertikalnyeCategory = findCategoryByName(
     allCategories,
-    "Вертикальные фасовочно упаковочные машины (со встроенным дозатором)"
+    "Вертикальные фасовочно упаковочные машины (со встроенным дозатором)",
   );
   const etiketirovshchikiCategory = findCategoryByName(
     allCategories,
-    "Этикетировщики"
+    "Этикетировщики",
   );
   const dateryCategory = findCategoryByName(
     allCategories,
-    "Датеры стационарные"
+    "Датеры стационарные",
   );
   const termousadochnyeCategory = findCategoryByName(
     allCategories,
-    "Термоусадочные аппараты"
+    "Термоусадочные аппараты",
   );
 
   const marketplaceLinks = [];
@@ -222,7 +222,7 @@ export async function getCategoryCardsData() {
   // Расходные материалы и запчасти
   const zapasnyeCategory = findCategoryByName(
     allCategories,
-    parentCategoryMap["Расходные материалы и запчасти"]
+    parentCategoryMap["Расходные материалы и запчасти"],
   );
   if (zapasnyeCategory) {
     const allChildren = getChildCategories(zapasnyeCategory);

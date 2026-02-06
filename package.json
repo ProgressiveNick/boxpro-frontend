@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "fetch-cities": "node scripts/fetch-cities.js",
+    "prebuild": "node scripts/fetch-cities.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

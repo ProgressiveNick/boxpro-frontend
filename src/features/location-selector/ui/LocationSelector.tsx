@@ -1,41 +1,25 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { MapPin, X } from "lucide-react";
 import styles from "./LocationSelector.module.scss";
 
-const POPULAR_CITIES = [
-  "Москва",
-  "Санкт-Петербург",
-  "Новосибирск",
-  "Екатеринбург",
-  "Казань",
-  "Нижний Новгород",
-  "Челябинск",
-  "Самара",
-  "Омск",
-  "Ростов-на-Дону",
-  "Уфа",
-  "Красноярск",
-  "Воронеж",
-  "Пермь",
-  "Волгоград",
-  "Краснодар",
-  "Саратов",
-  "Тюмень",
-  "Тольятти",
-  "Ижевск",
-];
+const PAGE_SIZE = 25;
 
 export function LocationSelector() {
   const [currentCity, setCurrentCity] = useState<string>("Москва");
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [cities, setCities] = useState<{ id: number; title: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
   const [isDetecting, setIsDetecting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Загружаем сохраненный город из localStorage
     const savedCity = localStorage.getItem("selectedCity");
     if (savedCity) {
       setCurrentCity(savedCity);
@@ -48,9 +32,81 @@ export function LocationSelector() {
     }
   }, [isOpen]);
 
-  const filteredCities = POPULAR_CITIES.filter((city) =>
-    city.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchCities = useCallback(
+    async (q: string, offsetValue: number, append: boolean) => {
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams({
+          offset: String(offsetValue),
+          count: String(PAGE_SIZE),
+        });
+        if (q) params.set("q", q);
+
+        const response = await fetch(`/api/cities?${params}`);
+        const result = await response.json();
+
+        if (!response.ok) throw new Error(result.error || "Ошибка загрузки");
+
+        if (append) {
+          setCities((prev) => [...prev, ...result.data]);
+        } else {
+          setCities(result.data);
+        }
+        setHasMore(result.meta.hasMore);
+        setOffset(offsetValue + result.data.length);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+        setCities([]);
+        setHasMore(false);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
   );
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setSearchQuery("");
+    setOffset(0);
+    setHasMore(true);
+    fetchCities("", 0, false);
+  }, [isOpen, fetchCities]);
+
+  const handleScroll = useCallback(() => {
+    const list = listRef.current;
+    if (!list || isLoading || !hasMore) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = list;
+    if (scrollTop + clientHeight >= scrollHeight - 50) {
+      fetchCities(searchQuery, offset, true);
+    }
+  }, [isLoading, hasMore, searchQuery, offset, fetchCities]);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    list.addEventListener("scroll", handleScroll);
+    return () => list.removeEventListener("scroll", handleScroll);
+  }, [handleScroll, isOpen]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setOffset(0);
+      setHasMore(true);
+      fetchCities(value, 0, false);
+      searchTimeoutRef.current = null;
+    }, 300);
+  };
 
   const handleCitySelect = (city: string) => {
     setCurrentCity(city);
@@ -72,7 +128,7 @@ export function LocationSelector() {
         try {
           const { latitude, longitude } = position.coords;
           const response = await fetch(
-            `/api/geolocation?lat=${latitude}&lon=${longitude}`
+            `/api/geolocation?lat=${latitude}&lon=${longitude}`,
           );
           const data = await response.json();
 
@@ -92,7 +148,7 @@ export function LocationSelector() {
         console.error("Geolocation error:", error);
         alert("Не удалось получить ваше местоположение");
         setIsDetecting(false);
-      }
+      },
     );
   };
 
@@ -126,7 +182,7 @@ export function LocationSelector() {
                   className={styles.searchInput}
                   placeholder="Введите название города"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                 />
               </div>
 
@@ -138,19 +194,30 @@ export function LocationSelector() {
                 {isDetecting ? "Определение..." : "Определить по геопозиции"}
               </button>
 
-              <div className={styles.citiesList}>
-                {filteredCities.length > 0 ? (
-                  filteredCities.map((city) => (
-                    <button
-                      key={city}
-                      className={`${styles.cityOption} ${
-                        currentCity === city ? styles.selected : ""
-                      }`}
-                      onClick={() => handleCitySelect(city)}
-                    >
-                      {city}
-                    </button>
-                  ))
+              <div
+                ref={listRef}
+                className={styles.citiesList}
+                onScroll={handleScroll}
+              >
+                {isLoading && cities.length === 0 ? (
+                  <div className={styles.noResults}>Загрузка...</div>
+                ) : cities.length > 0 ? (
+                  <>
+                    {cities.map((city, index) => (
+                      <button
+                        key={`${city.id}-${city.title}-${index}`}
+                        className={`${styles.cityOption} ${
+                          currentCity === city.title ? styles.selected : ""
+                        }`}
+                        onClick={() => handleCitySelect(city.title)}
+                      >
+                        {city.title}
+                      </button>
+                    ))}
+                    {isLoading && hasMore && (
+                      <div className={styles.noResults}>Загрузка...</div>
+                    )}
+                  </>
                 ) : (
                   <div className={styles.noResults}>Город не найден</div>
                 )}

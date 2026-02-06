@@ -18,7 +18,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
   const { openForm } = useConsultationFormStore();
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
   const [hoveredSubCategory, setHoveredSubCategory] = useState<Category | null>(
-    null
+    null,
   );
   const isMobile = useMediaQuery(640);
 
@@ -96,13 +96,15 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
 
                   {/* Блок помощи */}
                   <div className={styles.helpBlock}>
-                    <h4 className={styles.helpTitle}>
-                      Не знаете какое оборудование выбрать?
-                    </h4>
-                    <p className={styles.helpText}>
-                      Оставьте заявку и наши специалисты помогут подобрать
-                      оборудование под ваше производство
-                    </p>
+                    <div className={styles.helpContent}>
+                      <h4 className={styles.helpTitle}>
+                        Не знаете какое оборудование выбрать?
+                      </h4>
+                      <p className={styles.helpText}>
+                        Оставьте заявку и наши специалисты помогут подобрать
+                        оборудование под ваше производство
+                      </p>
+                    </div>
                     <button
                       className={styles.helpButton}
                       onClick={() => {

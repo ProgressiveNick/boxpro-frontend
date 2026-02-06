@@ -9,7 +9,7 @@ export async function CategoriesCards() {
   return (
     <section className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Каталог оборудования</h2>
+        <h2 className={styles.title}>Разделы каталога</h2>
         <Link href="/catalog" className={styles.viewAllLink}>
           Смотреть всё
           <svg
