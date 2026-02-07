@@ -17,6 +17,7 @@ import { Category } from "@/entities/categories";
 export function ProductsCatalog({
   products,
   categories,
+  childCategories,
   total,
   currentPage,
   pageSize,
@@ -26,12 +27,13 @@ export function ProductsCatalog({
   attributes,
   hideFilters,
   categoryPath,
+  hideMobileFilterButton,
 }: ProductsCatalogProps) {
   const { isLoading, startLoading } = useLoadingState();
   const router = useRouter();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [mobileFilters, setMobileFilters] = useState<FilterState>(() =>
-    initializeFilters(initialFilters)
+    initializeFilters(initialFilters),
   );
 
   const handleMobileFilterChange = (newFilters: FilterState) => {
@@ -59,51 +61,36 @@ export function ProductsCatalog({
     }
   }, [initialFilters]);
 
-  // Функция для получения всех категорий (включая вложенные)
-  const getAllCategories = (cats: Category[]): Category[] => {
-    const result: Category[] = [];
-    const addedIds = new Set<number>();
-
-    const traverse = (cats: Category[]) => {
-      cats.forEach((cat) => {
-        if (!addedIds.has(cat.id)) {
-          result.push(cat);
-          addedIds.add(cat.id);
-        }
-        if (cat.childs && cat.childs.length > 0) {
-          traverse(cat.childs);
-        }
-      });
-    };
-
-    traverse(categories);
-    return result;
-  };
+  // Для мобильного фильтра категорий: только дочерние категории текущего раздела
+  const filterCategories =
+    childCategories && childCategories.length > 0 ? childCategories : [];
 
   return (
     <div className={styles.container}>
-      {/* Мобильная кнопка фильтров */}
-      <button
-        className={styles.mobileFilterButton}
-        onClick={() => setIsMobileFilterOpen(true)}
-        type="button"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      {/* Мобильная кнопка фильтров (скрыта для каталога запчастей) */}
+      {!hideMobileFilterButton && (
+        <button
+          className={styles.mobileFilterButton}
+          onClick={() => setIsMobileFilterOpen(true)}
+          type="button"
         >
-          <path
-            d="M4 6h16M4 12h16M4 18h16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
-        Фильтры
-      </button>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 6h16M4 12h16M4 18h16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+          Фильтры
+        </button>
+      )}
 
       <div
         className={`${styles.wrapper} ${
@@ -134,17 +121,18 @@ export function ProductsCatalog({
         </main>
       </div>
 
-      {/* Мобильный FilterDrawer */}
-      <FilterDrawer
-        isOpen={isMobileFilterOpen}
-        onClose={() => setIsMobileFilterOpen(false)}
-        onChange={handleMobileFilterChange}
-        categories={getAllCategories(categories)}
-        data={products}
-        filters={mobileFilters}
-        reset={handleMobileFilterReset}
-        attributes={attributes}
-      />
+      {/* Мобильный FilterDrawer (скрыт для каталога запчастей) */}
+      {!hideMobileFilterButton && (
+        <FilterDrawer
+          isOpen={isMobileFilterOpen}
+          onClose={() => setIsMobileFilterOpen(false)}
+          onChange={handleMobileFilterChange}
+          categories={filterCategories}
+          filters={mobileFilters}
+          reset={handleMobileFilterReset}
+          attributes={attributes}
+        />
+      )}
     </div>
   );
 }

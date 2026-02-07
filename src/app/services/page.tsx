@@ -40,45 +40,45 @@ export default async function ServicesPage() {
             <div className={styles.fact}>
               <Image
                 src={"/img/delivery/one.png"}
-                alt={""}
+                alt="Выезд по всей России"
                 width={96}
                 height={96}
                 className={styles.image}
               />
-              <h3 className={styles.factTitle}>Доставка по всей РФ</h3>
+              <h3 className={styles.factTitle}>Выезд по всей России</h3>
               <p className={styles.text}>
-                Отправляем оборудование со складов: Москва, Екатеринбург,
-                Казань, Новосибирск, Ростов-на-Дону и под заказ в любую точку РФ
+                Наши специалисты выезжают для диагностики, ремонта и
+                обслуживания упаковочного оборудования в любой регион России
               </p>
             </div>
 
             <div className={styles.fact}>
               <Image
                 src={"/img/delivery/two.png"}
-                alt={""}
+                alt="Оригинальные запчасти"
                 width={96}
                 height={96}
                 className={styles.image}
               />
-              <h3 className={styles.factTitle}>Доставка по всей РФ</h3>
+              <h3 className={styles.factTitle}>Оригинальные запчасти</h3>
               <p className={styles.text}>
-                Отправляем оборудование со складов: Москва, Екатеринбург,
-                Казань, Новосибирск, Ростов-на-Дону и под заказ в любую точку РФ
+                Используем только оригинальные комплектующие и расходные
+                материалы для гарантии долговечности и надёжности оборудования
               </p>
             </div>
 
             <div className={styles.fact}>
               <Image
                 src={"/img/delivery/three.webp"}
-                alt={""}
+                alt="Гарантия на работы"
                 width={96}
                 height={96}
                 className={styles.image}
               />
-              <h3 className={styles.factTitle}>Доставка по всей РФ</h3>
+              <h3 className={styles.factTitle}>Гарантия на работы</h3>
               <p className={styles.text}>
-                Отправляем оборудование со складов: Москва, Екатеринбург,
-                Казань, Новосибирск, Ростов-на-Дону и под заказ в любую точку РФ
+                Предоставляем гарантию на все виды выполненных работ — вы можете
+                быть уверены в качестве наших услуг
               </p>
             </div>
           </div>

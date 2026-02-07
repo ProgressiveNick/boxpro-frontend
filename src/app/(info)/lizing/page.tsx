@@ -62,7 +62,7 @@ export default async function LeasingPage() {
           </div>
 
           <div className={styles.block}>
-            <h2 className={styles.title}>Элемент Лизинг</h2>
+            <h2 className={styles.title}>ARENZA</h2>
             <div className={styles.content}>
               <Image
                 src="/img/lizing/arenza.jpg"

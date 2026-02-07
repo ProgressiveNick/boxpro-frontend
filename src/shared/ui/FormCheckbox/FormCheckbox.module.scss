@@ -1,3 +1,10 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
 .checkboxLabel {
   display: flex;
   align-items: center;
@@ -13,9 +20,18 @@
   height: 20px;
   accent-color: #007bff;
   cursor: pointer;
+
+  &.error {
+    accent-color: #dc3545;
+  }
 }
 
 .checkboxText {
   font-weight: 500;
   width: max-content;
+}
+
+.errorText {
+  color: #dc3545;
+  font-size: 12px;
 }

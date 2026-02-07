@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PhoneInput, FormInput, FormTextarea } from "@/shared/ui";
+import { PersonalDataConsent } from "@/features/personal-data-consent";
 import { leadFormSchema, type LeadFormData, submitLeadForm } from "../model";
 import styles from "./LeadForm.module.scss";
 
@@ -34,6 +35,7 @@ export function LeadForm({
       name: "",
       phone: "",
       message: "",
+      personalDataConsent: false,
     },
   });
 
@@ -74,50 +76,71 @@ export function LeadForm({
       <p className={styles.text}>{deskText}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => (
-            <FormInput
-              {...field}
-              placeholder="Ваше имя"
-              error={errors.name?.message}
-              className={styles.input}
-            />
-          )}
-        />
-
-        <Controller
-          name="phone"
-          control={control}
-          render={({ field }) => (
-            <PhoneInput
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.phone?.message}
-              className={styles.input}
-            />
-          )}
-        />
-
-        {showMessage && (
+        <div className={styles.formRow}>
           <Controller
-            name="message"
+            name="name"
             control={control}
             render={({ field }) => (
-              <FormTextarea
+              <FormInput
                 {...field}
-                placeholder="Ваше сообщение (необязательно)"
-                error={errors.message?.message}
-                className={styles.textarea}
+                placeholder="Ваше имя"
+                error={errors.name?.message}
+                className={styles.input}
               />
             )}
           />
-        )}
 
-        <button type="submit" disabled={isSubmitting} className={styles.button}>
-          {isSubmitting ? "Отправка..." : "Оставить заявку"}
-        </button>
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.phone?.message}
+                className={styles.input}
+              />
+            )}
+          />
+
+          {showMessage && (
+            <Controller
+              name="message"
+              control={control}
+              render={({ field }) => (
+                <FormTextarea
+                  {...field}
+                  placeholder="Ваше сообщение (необязательно)"
+                  error={errors.message?.message}
+                  className={styles.textarea}
+                />
+              )}
+            />
+          )}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={styles.button}
+          >
+            {isSubmitting ? "Отправка..." : "Оставить заявку"}
+          </button>
+        </div>
+
+        <div className={styles.consentWrapper}>
+          <Controller
+            name="personalDataConsent"
+            control={control}
+            render={({ field }) => (
+              <PersonalDataConsent
+                checked={field.value}
+                onChange={field.onChange}
+                error={errors.personalDataConsent?.message}
+                className={styles.consent}
+              />
+            )}
+          />
+        </div>
       </form>
     </div>
   );

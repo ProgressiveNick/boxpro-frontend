@@ -26,8 +26,9 @@ export type FilterProps = {
   onClose: () => void;
   onChange: (filters: FilterState) => void;
   categories: Category[];
-  data: unknown[];
+  /** @deprecated Не используется — мобильные фильтры берут атрибуты из attributes (getCategoryAttributes) */
+  data?: unknown[];
   filters: FilterState;
   reset: () => void;
-  attributes?: AttributeFilter[]; // Список характеристик для поиска attrId по названию
+  attributes?: AttributeFilter[]; // Список характеристик для фильтрации (исключает Артикул, Вес и т.д.)
 };

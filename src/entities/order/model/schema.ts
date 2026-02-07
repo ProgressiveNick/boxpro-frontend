@@ -20,9 +20,12 @@ export const orderFormSchema = z.object({
         documentId: z.string(),
         count: z.number().positive("Количество должно быть больше 0"),
         sum: z.number().positive("Сумма должна быть больше 0"),
-      })
+      }),
     )
     .optional(),
+  personalDataConsent: z
+    .boolean()
+    .refine((val) => val === true, "Необходимо ваше согласие"),
 });
 
 export type OrderFormSchema = z.infer<typeof orderFormSchema>;

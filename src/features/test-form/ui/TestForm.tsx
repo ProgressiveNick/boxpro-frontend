@@ -7,6 +7,7 @@ import { useTestFormStore } from "@/widgets/test-form/model/store";
 import { PhoneInput, getFullPhoneNumber } from "@/shared/ui/PhoneInput";
 import { FileUpload } from "@/shared/ui/FileUpload";
 import { FormInput } from "@/shared/ui/FormInput/index";
+import { PersonalDataConsent } from "@/features/personal-data-consent";
 import {
   testFormSchema,
   type TestFormData,
@@ -42,6 +43,7 @@ export function TestForm({
       name: "",
       phone: "",
       files: [],
+      personalDataConsent: false,
     },
   });
 
@@ -229,6 +231,20 @@ export function TestForm({
             </button>
           )}
 
+          <div className={styles.inputGroup}>
+            <Controller
+              name="personalDataConsent"
+              control={control}
+              render={({ field }) => (
+                <PersonalDataConsent
+                  checked={field.value}
+                  onChange={field.onChange}
+                  error={errors.personalDataConsent?.message}
+                />
+              )}
+            />
+          </div>
+
           <button
             type="submit"
             disabled={isSubmitting}
@@ -239,12 +255,6 @@ export function TestForm({
             {isSubmitting ? "Отправка..." : buttonText}
           </button>
         </form>
-        <p className={styles.privacy}>
-          Нажимая на кнопку &quot;{buttonText}&quot;, я соглашаюсь с{" "}
-          <a href="https://docs.google.com/document/d/1OoHa-_O0RZ3eyH379jL3sYSTGRwd1LWE2F2IKxgJ-bw/edit?usp=sharing">
-            <span>Политикой конфиденциальности</span>
-          </a>
-        </p>
       </div>
     </div>
   );

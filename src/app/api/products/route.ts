@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStrapiRecords } from "@/shared/lib/api/strapi";
+import { SPARE_PARTS_CATEGORY_SLUG } from "@/shared/lib/catalog-constants";
 
 // GET /api/products - Получить список товаров
 export async function GET(request: NextRequest) {
@@ -16,22 +17,30 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const search = searchParams.get("search");
+    const includePartsParam = searchParams.get("includeParts");
 
     // Параметры сортировки
     const sort = searchParams.get("sort") || "name:asc";
 
+    // В разделе запасных частей показываем part=true; иначе — только оборудование
+    const includeParts =
+      includePartsParam === "true" ||
+      categorySlug === SPARE_PARTS_CATEGORY_SLUG;
+
     // Строим параметры для Strapi
     const params: Record<string, string> = {
-      "publicationState": "live",
-      "populate": "*",
+      publicationState: "live",
+      populate: "*",
       "pagination[page]": page,
       "pagination[pageSize]": pageSize,
-      "sort": sort,
+      sort: sort,
     };
 
-    // Исключаем детали (part === true) из результатов
-    // Показываем только товары, где part !== true (т.е. false или null)
-    params["filters[part][$ne]"] = "true";
+    if (includeParts) {
+      params["filters[part][$eq]"] = "true";
+    } else {
+      params["filters[part][$ne]"] = "true";
+    }
 
     // Фильтры
     if (categorySlug) {
@@ -65,8 +74,7 @@ export async function GET(request: NextRequest) {
     console.error("Ошибка получения товаров:", error);
     return NextResponse.json(
       { error: "Внутренняя ошибка сервера" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

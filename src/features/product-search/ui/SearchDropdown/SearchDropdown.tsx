@@ -3,10 +3,10 @@
 import styles from "./SearchDropdown.module.scss";
 import Image from "next/image";
 import Link from "next/link";
-import { getSku } from "@/entities/product/lib/getSku";
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import { ProductType } from "@/entities/product";
 import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
+import { stripHtml } from "@/shared/lib/helpers/stripHtml";
 
 interface SearchDropdownProps {
   products: ProductType[];
@@ -54,7 +54,7 @@ export function SearchDropdown({
         onLoadMore();
       }
     },
-    [hasMore, isLoading, onLoadMore, uniqueProducts.length]
+    [hasMore, isLoading, onLoadMore, uniqueProducts.length],
   );
 
   // Создаем и настраиваем observer
@@ -118,7 +118,6 @@ export function SearchDropdown({
   return (
     <div className={styles.dropdown}>
       {uniqueProducts.map((product, index) => {
-        const sku = getSku(product.harakteristici);
         const imageSrc = getImageSrc(product);
         const isLastElement = index === uniqueProducts.length - 1;
 
@@ -146,14 +145,11 @@ export function SearchDropdown({
               <div className={styles.content}>
                 <h3 className={styles.title}>{product.name}</h3>
                 <p className={styles.description}>
-                  {product.description || "Описание отсутствует"}
+                  {stripHtml(product.description) || "Описание отсутствует"}
                 </p>
                 <div className={styles.meta}>
                   <span className={styles.price}>
                     {product.price.toLocaleString()} ₽
-                  </span>
-                  <span className={styles.sku}>
-                    Артикул: {sku || "Не указан"}
                   </span>
                 </div>
               </div>

@@ -5,6 +5,7 @@
   padding: 12px;
   font-family: "Arial", sans-serif;
   width: 100%;
+  min-width: 0;
 }
 
 .header {
@@ -43,10 +44,12 @@
   display: flex;
   gap: 16px;
   margin-top: 8px;
+  min-width: 0;
 }
 
 .inputItem {
   flex: 1;
+  min-width: 0;
 }
 
 .label {

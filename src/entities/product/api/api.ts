@@ -9,6 +9,8 @@ type ProductsQueryParams = {
   maxPrice?: number;
   search?: string;
   sort?: string;
+  /** true = запасные части (part=true), для раздела catalog/zapasnye-chasti-i-rashodnye-materialy */
+  includeParts?: boolean;
 };
 
 type ProductsResponse = {
@@ -33,24 +35,23 @@ type ProductResponse = {
  * @returns Promise с данными товаров
  */
 export async function fetchProducts(
-  params: ProductsQueryParams = {}
+  params: ProductsQueryParams = {},
 ): Promise<ProductsResponse> {
   const searchParams = new URLSearchParams();
 
   if (params.page) searchParams.append("page", String(params.page));
-  if (params.pageSize)
-    searchParams.append("pageSize", String(params.pageSize));
+  if (params.pageSize) searchParams.append("pageSize", String(params.pageSize));
   if (params.categorySlug)
     searchParams.append("categorySlug", params.categorySlug);
   if (params.categories) {
     params.categories.forEach((cat) => searchParams.append("categories", cat));
   }
-  if (params.minPrice)
-    searchParams.append("minPrice", String(params.minPrice));
-  if (params.maxPrice)
-    searchParams.append("maxPrice", String(params.maxPrice));
+  if (params.minPrice) searchParams.append("minPrice", String(params.minPrice));
+  if (params.maxPrice) searchParams.append("maxPrice", String(params.maxPrice));
   if (params.search) searchParams.append("search", params.search);
   if (params.sort) searchParams.append("sort", params.sort);
+  if (params.includeParts)
+    searchParams.append("includeParts", String(params.includeParts));
 
   const response = await fetch(`/api/products?${searchParams.toString()}`);
 
@@ -67,7 +68,7 @@ export async function fetchProducts(
  * @returns Promise с данными товара
  */
 export async function fetchProductBySlug(
-  slug: string
+  slug: string,
 ): Promise<ProductResponse> {
   const response = await fetch(`/api/products/${slug}`);
 
@@ -99,15 +100,14 @@ type SearchResponse = {
 };
 
 export async function searchProducts(
-  params: SearchParams
+  params: SearchParams,
 ): Promise<SearchResponse> {
   const searchParams = new URLSearchParams();
 
   searchParams.append("q", params.q);
   if (params.type) searchParams.append("type", params.type);
   if (params.page) searchParams.append("page", String(params.page));
-  if (params.pageSize)
-    searchParams.append("pageSize", String(params.pageSize));
+  if (params.pageSize) searchParams.append("pageSize", String(params.pageSize));
 
   const response = await fetch(`/api/search?${searchParams.toString()}`);
 
@@ -117,4 +117,3 @@ export async function searchProducts(
 
   return response.json();
 }
-

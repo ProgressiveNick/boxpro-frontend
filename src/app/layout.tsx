@@ -7,6 +7,7 @@ import "@/shared/lib/env-validation/init";
 import "@/shared/styles/globals.css";
 import "@/shared/styles/header.css";
 import "@/shared/styles/footer.css";
+import { ScrollToTop } from "@/shared/components/ScrollToTop/ScrollToTop";
 import { TestFormModal } from "@/widgets/test-form";
 import { ConsultationFormModal } from "@/widgets/consultation-form";
 import {
@@ -90,6 +91,7 @@ export default function RootLayout({
         <WebsiteJsonLd />
       </head>
       <body>
+        <ScrollToTop />
         <LayoutProvider>{children}</LayoutProvider>
         <TestFormModal />
         <ConsultationFormModal />

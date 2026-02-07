@@ -50,14 +50,46 @@
 .form {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   width: 100%;
   margin-top: 60px;
   gap: 15px;
-  height: auto;
 
   @media (max-width: 640px) {
-    & {
-      flex-direction: column;
+    flex-direction: column;
+  }
+}
+
+.formRow {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.consentWrapper {
+  flex-basis: 100%;
+}
+
+.consent {
+  color: var(--WhiteColorFont) !important;
+
+  * {
+    color: inherit;
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--WhiteColorFont) !important;
     }
   }
 }

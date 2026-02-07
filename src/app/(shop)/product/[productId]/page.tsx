@@ -2,6 +2,7 @@ import styles from "./ProductPage.module.scss";
 import React from "react";
 import Link from "next/link";
 import breadcrumbStyles from "@/widgets/breadcrumbs/ui/Breadcrumbs.module.scss";
+import { ProductPageScroll } from "./ProductPageScroll";
 
 import {
   Breadcrumbs,
@@ -19,7 +20,10 @@ import { ProductsSlider } from "@/features/product-slider";
 import { getSku } from "@/entities/product/lib/getSku";
 import type { Metadata } from "next";
 import { generateSEO, generateProductSEO } from "@/shared/lib/seo-utils";
-import { ProductJsonLd, BreadcrumbJsonLd } from "@/shared/components/JsonLd/JsonLd";
+import {
+  ProductJsonLd,
+  BreadcrumbJsonLd,
+} from "@/shared/components/JsonLd/JsonLd";
 import { AvailabilityStatusTab } from "@/widgets/product-card-buy/ui/AvailabilityStatusTab";
 import Image from "next/image";
 import { ProductViewTracker } from "@/widgets/product-view-tracker";
@@ -42,16 +46,19 @@ export async function generateStaticParams() {
   try {
     // Получаем все slugs товаров
     const slugs = await getAllProductSlugs();
-    
+
     // Ограничиваем количество для build time (можно увеличить при необходимости)
     // Для популярных товаров генерируем первые 500
     const popularSlugs = slugs.slice(0, 500);
-    
+
     return popularSlugs.map((slug) => ({
       productId: slug,
     }));
   } catch (error) {
-    console.error("[generateStaticParams] Error fetching product slugs:", error);
+    console.error(
+      "[generateStaticParams] Error fetching product slugs:",
+      error,
+    );
     return [];
   }
 }
@@ -72,7 +79,7 @@ export async function generateMetadata({
         product.name,
         product.description || undefined,
         sku,
-        product.price
+        product.price,
       ),
       canonical: `/product/${productId}`, // Основной canonical URL для продукта
     });
@@ -85,21 +92,22 @@ export async function generateMetadata({
   }
 }
 
-export default async function ProductPage({ 
+export default async function ProductPage({
   params,
   searchParams,
-}: { 
+}: {
   params: Params;
   searchParams: SearchParams;
 }) {
   const { productId } = await params;
   const search = await searchParams;
-  
+
   // Получаем categoryPath из query параметров
   const categoryPathParam = search.categoryPath;
-  const categoryPath = typeof categoryPathParam === "string" 
-    ? categoryPathParam.split("/").filter(Boolean)
-    : [];
+  const categoryPath =
+    typeof categoryPathParam === "string"
+      ? categoryPathParam.split("/").filter(Boolean)
+      : [];
 
   const data = await getProductsBySlug(productId);
   const seeMoreProducts = await getProducts({
@@ -113,13 +121,14 @@ export default async function ProductPage({
 
   // Если передан categoryPath, формируем breadcrumbs с учетом категорий
   let breadcrumbOverrides: Record<string, string> = {};
-  let breadcrumbItems: Array<{ position: number; name: string; item: string }> = [];
-  
+  let breadcrumbItems: Array<{ position: number; name: string; item: string }> =
+    [];
+
   if (categoryPath.length > 0) {
     const menuData = await getCatalogMenu();
     const tree = new CategoryTree(menuData);
     breadcrumbOverrides = tree.getBreadcrumbOverrides(categoryPath);
-    
+
     // Формируем breadcrumbs для JSON-LD
     const baseUrl = "https://boxpro.moscow";
     breadcrumbItems = [
@@ -156,6 +165,7 @@ export default async function ProductPage({
 
   return (
     <>
+      <ProductPageScroll />
       <ProductJsonLd
         product={{
           name: data.name,
@@ -199,12 +209,15 @@ export default async function ProductPage({
                     </Link>
                   </li>
                   {categoryPath.map((slug, index) => {
-                    const categoryName = breadcrumbOverrides[slug] || slug.replace(/-/g, " ");
-                    const categoryPathStr = categoryPath.slice(0, index + 1).join("/");
+                    const categoryName =
+                      breadcrumbOverrides[slug] || slug.replace(/-/g, " ");
+                    const categoryPathStr = categoryPath
+                      .slice(0, index + 1)
+                      .join("/");
                     return (
                       <li key={slug} className={breadcrumbStyles.item}>
                         <span className={breadcrumbStyles.separator}> / </span>
-                        <Link 
+                        <Link
                           href={`/catalog/${categoryPathStr}`}
                           className={breadcrumbStyles.link}
                         >
@@ -215,9 +228,7 @@ export default async function ProductPage({
                   })}
                   <li className={breadcrumbStyles.item}>
                     <span className={breadcrumbStyles.separator}> / </span>
-                    <span className={breadcrumbStyles.active}>
-                      {data.name}
-                    </span>
+                    <span className={breadcrumbStyles.active}>{data.name}</span>
                   </li>
                 </ol>
               </nav>
@@ -235,9 +246,7 @@ export default async function ProductPage({
                   {data.name}
                   <span className={styles.productTitleTabs}>
                     {/* <PromoTab /> */}
-                    <AvailabilityStatusTab
-                      warehousesCount={warehousesCount}
-                    />
+                    <AvailabilityStatusTab warehousesCount={warehousesCount} />
                   </span>
                 </h1>
               </div>

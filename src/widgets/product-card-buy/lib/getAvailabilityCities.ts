@@ -1,13 +1,15 @@
 import { AttributeValue } from "@/entities/product-attributes";
 
 export function getAvailabilityCities(
-  characteristics: AttributeValue[]
+  characteristics: AttributeValue[],
 ): string[] {
   return characteristics
     .filter((char) => {
       const name = char.harakteristica?.name?.toLowerCase() || "";
       const type = char.harakteristica?.type;
       if (type !== "boolean") return false;
+      // Исключаем общую характеристику "Наличие" — считаем только по городам
+      if (name.trim() === "наличие") return false;
       return name.includes("наличие") || name.includes("склад");
     })
     .filter((char) => {
@@ -24,9 +26,11 @@ export function getAvailabilityCities(
       }
       return cityName;
     })
-    .filter((city) => city.length > 0);
+    .filter((city) => {
+      if (city.length === 0) return false;
+      const lower = city.toLowerCase().trim();
+      // Исключаем общие значения без города
+      if (lower === "наличие" || lower === "склад") return false;
+      return true;
+    });
 }
-
-
-
-

@@ -9,14 +9,16 @@ export function Footer() {
     {
       title: "Обработка и производство",
       items: [
-        { label: "Мясопереработка", link: "/catalog/myasopererabotka" },
         {
-          label: "Обработка сельхозпродукции",
-          link: "/catalog/obrabotka-selhozprodukczii",
+          label: "Пищевое оборудование",
+          link: "/catalog/pischevoe-oborudovanie",
         },
-        { label: "Изделия из теста", link: "/catalog/izdeliya-iz-testa" },
-        { label: "Термообработка", link: "/catalog/termoobrabotka" },
+
         { label: "Оборудование HORECA", link: "/catalog/oborudovanie-horeca" },
+        {
+          label: "Мясопереработка",
+          link: "/catalog/myasopererabatyvayuschee-oborudovanie",
+        },
       ],
     },
     {
@@ -24,11 +26,11 @@ export function Footer() {
       items: [
         {
           label: "Для гранулированной и сыпучей продукции",
-          link: "/catalog/dlya-sypuchej-produkczii",
+          link: "catalog/fasovochno-upakovochnoe-oborudovanie/dozatory-sypuchih-trudnosypuchih-produktov",
         },
         {
           label: "Для жидкой продукции",
-          link: "/catalog/dlya-zhidkoj-produkczii",
+          link: "/catalog/fasovochno-upakovochnoe-oborudovanie/dozatory-dlya-zhidkosti-porshnevye",
         },
       ],
     },
@@ -37,7 +39,7 @@ export function Footer() {
       items: [
         {
           label: "Горизонтальные машины",
-          link: "/catalog/gorizontalnye-upakovochnye-mashiny-1",
+          link: "/catalog/upakovochnoe-oborudovanie/gorizontal-nye-upakovochnye-mashiny",
         },
         {
           label: "Термоусадочное оборудование",
@@ -45,11 +47,19 @@ export function Footer() {
         },
         {
           label: "Вакуумное оборудование",
-          link: "/catalog/vakuumnye-upakovshiki",
+          link: "/catalog/vakuumnye-upakovschiki",
         },
         {
           label: "Паллетоупаковщики",
-          link: "/catalog/palletoupakovshiki-palletoobmotchiki",
+          link: "/catalog/palletoupakovschiki-palletoobmotchiki",
+        },
+        {
+          label: "Запайщики лотков",
+          link: "/catalog/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie/zapayschiki-lotkov",
+        },
+        {
+          label: "Термоформеры",
+          link: "/catalog/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie/termoformery",
         },
       ],
     },

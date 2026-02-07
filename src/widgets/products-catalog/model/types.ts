@@ -7,6 +7,8 @@ import { AttributeFilter } from "@/entities/product-attributes/api/getCategoryAt
 export type ProductsCatalogProps = {
   products: ProductType[];
   categories: Category[];
+  /** Дочерние категории текущего раздела — для фильтра в мобильном Drawer (только они отображаются) */
+  childCategories?: Category[];
   total: number;
   currentPage: number;
   pageSize?: number;
@@ -16,6 +18,8 @@ export type ProductsCatalogProps = {
   attributes?: AttributeFilter[];
   hideFilters?: boolean; // скрыть колонку фильтров и растянуть контент на всю ширину
   categoryPath?: string[]; // Путь категории для сохранения вложенности в URL продукта
+  /** Скрыть мобильную кнопку фильтров и FilterDrawer (для каталога запчастей) */
+  hideMobileFilterButton?: boolean;
 };
 
 export type ProductsCatalogFiltersProps = {

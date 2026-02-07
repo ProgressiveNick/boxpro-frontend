@@ -60,19 +60,19 @@ export default function AboutPage() {
 
           <div className={styles.priceCards}>
             <div className={styles.priceCard}>
-              <p className={styles.price}>{">"}1000</p>
-              <p className={styles.text}>Городов обслуживания</p>
+              <p className={styles.price}>1122</p>
+              <p className={styles.text}>Городов доставки</p>
             </div>
             <div className={styles.priceCard}>
               <p className={styles.price}>{">"}100</p>
               <p className={styles.text}>Типов оборудования </p>
             </div>
             <div className={styles.priceCard}>
-              <p className={styles.price}>{">"}19</p>
+              <p className={styles.price}>{">"}15</p>
               <p className={styles.text}>Лет опыта</p>
             </div>
             <div className={styles.priceCard}>
-              <p className={styles.price}>4216</p>
+              <p className={styles.price}>3750+</p>
               <p className={styles.text}>Довольных клиентов</p>
             </div>
           </div>

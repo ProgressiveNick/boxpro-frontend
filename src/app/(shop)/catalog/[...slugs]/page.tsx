@@ -16,6 +16,7 @@ import {
   createApiFilters,
   createPropsFilters,
 } from "@/shared/lib/parseCatalogParams";
+import { isSparePartsSection } from "@/shared/lib/catalog-constants";
 import { generateSEO, generateCategorySEO } from "@/shared/lib/seo-utils";
 import { FilterState } from "@/widgets/filters";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
@@ -36,16 +37,19 @@ export async function generateStaticParams() {
   try {
     // Получаем все пути категорий
     const paths = await getAllCategoryPaths();
-    
+
     // Ограничиваем количество для build time (можно увеличить при необходимости)
     // Для популярных категорий генерируем первые 200
     const popularPaths = paths.slice(0, 200);
-    
+
     return popularPaths.map((path) => ({
       slugs: path,
     }));
   } catch (error) {
-    console.error("[generateStaticParams] Error fetching category paths:", error);
+    console.error(
+      "[generateStaticParams] Error fetching category paths:",
+      error,
+    );
     return [];
   }
 }
@@ -119,11 +123,11 @@ export default async function CatalogSectionPage(props: {
   if (menuResult.status === "rejected") {
     console.warn(
       "[CatalogSectionPage] Error fetching menu:",
-      menuResult.reason
+      menuResult.reason,
     );
   } else {
     console.log(
-      `[CatalogSectionPage] Menu loaded: ${menuData.length} root categories`
+      `[CatalogSectionPage] Menu loaded: ${menuData.length} root categories`,
     );
   }
 
@@ -135,6 +139,9 @@ export default async function CatalogSectionPage(props: {
   // Это важно для вложенных категорий, где slug может отличаться
   const categorySlug = currentCategory.slug || currentSlug;
 
+  // В разделе запасных частей показываем товары с part=true
+  const includeParts = isSparePartsSection(slugs);
+
   // Выполняем критичные запросы параллельно (товары и дочерние категории)
   // Атрибуты загружаем отдельно, чтобы не блокировать основную загрузку
   const [productsResult, childsResult] = await Promise.allSettled([
@@ -145,24 +152,26 @@ export default async function CatalogSectionPage(props: {
       kategoria: categorySlug,
       filters: createApiFilters(parsedParams),
       allCategories: menuData, // Передаем уже загруженные категории для оптимизации
+      includeParts,
     }),
     getChildsCategory(categorySlug, menuData), // Передаем уже загруженные категории для оптимизации
   ]);
 
   // Загружаем атрибуты отдельно (неблокирующе) - они нужны только для фильтров
-  const attributesPromise = getCategoryAttributes(categorySlug, menuData).catch(
-    (error) => {
-      // Игнорируем ошибки загрузки атрибутов - фильтры могут работать и без них
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      if (
-        !errorMessage.toLowerCase().includes("aborted") &&
-        !errorMessage.toLowerCase().includes("timeout")
-      ) {
-        console.warn("[CatalogSectionPage] Error loading attributes:", error);
-      }
-      return [];
+  const attributesPromise = getCategoryAttributes(categorySlug, {
+    allCategories: menuData,
+    includeParts,
+  }).catch((error) => {
+    // Игнорируем ошибки загрузки атрибутов - фильтры могут работать и без них
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (
+      !errorMessage.toLowerCase().includes("aborted") &&
+      !errorMessage.toLowerCase().includes("timeout")
+    ) {
+      console.warn("[CatalogSectionPage] Error loading attributes:", error);
     }
-  );
+    return [];
+  });
 
   // Обрабатываем результат получения товаров
   const res =
@@ -184,13 +193,13 @@ export default async function CatalogSectionPage(props: {
   if (productsResult.status === "rejected") {
     console.error(
       "[CatalogSectionPage] Error fetching products:",
-      productsResult.reason
+      productsResult.reason,
     );
   } else {
     console.log(
       `[CatalogSectionPage] Products loaded: ${
         res.data?.length || 0
-      } for category ${currentSlug}`
+      } for category ${currentSlug}`,
     );
   }
 
@@ -240,6 +249,7 @@ export default async function CatalogSectionPage(props: {
         />
         <ProductsCatalog
           categories={menuData}
+          childCategories={childCategories}
           products={products}
           total={total}
           currentPage={parsedParams.currentPage}
@@ -248,7 +258,8 @@ export default async function CatalogSectionPage(props: {
           initialFilters={initialFilters}
           hasActiveFilters={parsedParams.hasActiveFilters}
           attributes={attributes}
-          categoryPath={slugs} // Передаем путь категории для сохранения вложенности
+          categoryPath={slugs}
+          hideMobileFilterButton={includeParts}
         />
       </div>
     </div>

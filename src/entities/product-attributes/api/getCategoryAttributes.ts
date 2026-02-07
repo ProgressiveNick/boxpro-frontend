@@ -28,36 +28,53 @@ export type AttributeFilterValueItem = {
   max?: number; // для range
 };
 
+export type GetCategoryAttributesOptions = {
+  allCategories?: Category[];
+  /** true = запасные части (part=true), false/undefined = только оборудование */
+  includeParts?: boolean;
+};
+
 /**
  * Получить фильтры по характеристикам для категории
  * Возвращает только те характеристики, которые встречаются более 2 раз с разными значениями
  * @param categorySlug - slug категории
- * @param allCategories - опционально: уже загруженные категории для оптимизации
+ * @param allCategoriesOrOptions - опционально: уже загруженные категории или объект с опциями
  */
 export const getCategoryAttributes = cache(
   async (
     categorySlug: string,
-    allCategories?: Category[]
+    allCategoriesOrOptions?: Category[] | GetCategoryAttributesOptions,
   ): Promise<AttributeFilter[]> => {
+    const allCategories = Array.isArray(allCategoriesOrOptions)
+      ? allCategoriesOrOptions
+      : allCategoriesOrOptions?.allCategories;
+    const includeParts = !Array.isArray(allCategoriesOrOptions)
+      ? allCategoriesOrOptions?.includeParts
+      : false;
     if (!categorySlug) {
       return [];
     }
 
-    const cacheKey = `${CACHE_KEY_PREFIX}_${categorySlug}`;
+    // Для запасных частей характеристики не загружаем (избегаем 414 Request-URI Too Large)
+    if (includeParts) {
+      return [];
+    }
+
+    const cacheKey = `${CACHE_KEY_PREFIX}_${categorySlug}_${includeParts}`;
 
     // Проверяем кэш
     const cached = await getServerCache<AttributeFilter[]>(
       cacheKey,
-      CACHE_VERSION
+      CACHE_VERSION,
     );
     if (cached && Array.isArray(cached) && cached.length > 0) {
       console.log(
-        `[getCategoryAttributes] Cache hit for ${categorySlug}: ${cached.length} attributes`
+        `[getCategoryAttributes] Cache hit for ${categorySlug}: ${cached.length} attributes`,
       );
       return cached;
     }
     console.log(
-      `[getCategoryAttributes] Cache miss for ${categorySlug}, fetching from API...`
+      `[getCategoryAttributes] Cache miss for ${categorySlug}, fetching from API...`,
     );
 
     try {
@@ -69,7 +86,7 @@ export const getCategoryAttributes = cache(
           },
         }),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Request timeout")), 5000)
+          setTimeout(() => reject(new Error("Request timeout")), 5000),
         ),
       ]);
 
@@ -81,11 +98,11 @@ export const getCategoryAttributes = cache(
       // Используем уже загруженные категории для оптимизации (быстро, без API запросов)
       const targetCategoryIds = await getAllCategoryIds(
         parentCategory.data[0].documentId,
-        allCategories
+        allCategories,
       );
 
       console.log(
-        `[getCategoryAttributes] Category ${categorySlug} (${parentCategory.data[0].documentId}) has ${targetCategoryIds.length} total categories (including children)`
+        `[getCategoryAttributes] Category ${categorySlug} (${parentCategory.data[0].documentId}) has ${targetCategoryIds.length} total categories (including children)`,
       );
 
       if (targetCategoryIds.length === 0) {
@@ -108,9 +125,9 @@ export const getCategoryAttributes = cache(
                   $in: targetCategoryIds,
                 },
               },
-              part: {
-                $ne: true,
-              },
+              ...(includeParts
+                ? { part: { $eq: true } }
+                : { part: { $ne: true } }),
             },
             fields: ["documentId"], // Загружаем только ID
             pagination: {
@@ -119,7 +136,7 @@ export const getCategoryAttributes = cache(
             },
           }),
           new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Request timeout")), 5000)
+            setTimeout(() => reject(new Error("Request timeout")), 5000),
           ),
         ]);
 
@@ -136,13 +153,13 @@ export const getCategoryAttributes = cache(
 
         if (currentPage % 10 === 0) {
           console.log(
-            `[getCategoryAttributes] Fetched ${productIds.length} of ${total} products...`
+            `[getCategoryAttributes] Fetched ${productIds.length} of ${total} products...`,
           );
         }
       }
 
       console.log(
-        `[getCategoryAttributes] Found ${productIds.length} products for category ${categorySlug}`
+        `[getCategoryAttributes] Found ${productIds.length} products for category ${categorySlug}`,
       );
 
       if (productIds.length === 0) {
@@ -191,21 +208,30 @@ export const getCategoryAttributes = cache(
                 },
               },
               // Загружаем только нужные поля значения характеристики
-              fields: ["external_id", "string_value", "number_value", "boolean_value", "range_min", "range_max"],
+              fields: [
+                "external_id",
+                "string_value",
+                "number_value",
+                "boolean_value",
+                "range_min",
+                "range_max",
+              ],
               pagination: {
                 page: 1,
                 pageSize: 2000, // Увеличено с 1000 до 2000 для уменьшения количества запросов
               },
             }),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Request timeout")), 10000) // Увеличено с 5 до 10 секунд для больших батчей
-          ),
+            new Promise<never>(
+              (_, reject) =>
+                setTimeout(() => reject(new Error("Request timeout")), 10000), // Увеличено с 5 до 10 секунд для больших батчей
+            ),
           ]);
 
           allAttributeValues.push(...(valuesResponse.data || []));
         } catch (error) {
           // Обрабатываем разные типы ошибок
-          const errorMessage = error instanceof Error ? error.message : String(error);
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
           const errorName = error instanceof Error ? error.name : "";
 
           // Игнорируем ошибки "aborted" - они возникают при отмене запросов Next.js
@@ -216,7 +242,7 @@ export const getCategoryAttributes = cache(
             (error instanceof DOMException && error.name === "AbortError")
           ) {
             console.warn(
-              `[getCategoryAttributes] Request was aborted for batch ${i}-${i + BATCH_SIZE}, skipping`
+              `[getCategoryAttributes] Request was aborted for batch ${i}-${i + BATCH_SIZE}, skipping`,
             );
             continue; // Пропускаем этот батч и продолжаем
           }
@@ -224,7 +250,7 @@ export const getCategoryAttributes = cache(
           // Для таймаутов логируем и продолжаем
           if (errorMessage.toLowerCase().includes("timeout")) {
             console.warn(
-              `[getCategoryAttributes] Request timeout for batch ${i}-${i + BATCH_SIZE}, skipping`
+              `[getCategoryAttributes] Request timeout for batch ${i}-${i + BATCH_SIZE}, skipping`,
             );
             continue; // Пропускаем этот батч и продолжаем
           }
@@ -232,14 +258,14 @@ export const getCategoryAttributes = cache(
           // Для других ошибок логируем и продолжаем
           console.warn(
             `[getCategoryAttributes] Error fetching attribute values for batch ${i}-${i + BATCH_SIZE}:`,
-            error
+            error,
           );
           // Продолжаем работу даже если один батч не загрузился
         }
       }
 
       console.log(
-        `[getCategoryAttributes] Fetched ${allAttributeValues.length} attribute values`
+        `[getCategoryAttributes] Fetched ${allAttributeValues.length} attribute values`,
       );
 
       // Обрабатываем характеристики
@@ -357,7 +383,7 @@ export const getCategoryAttributes = cache(
         // Логирование для отладки габаритов
         if (isDimensionsAttribute && (hasWidth || hasHeight || hasLength)) {
           console.log(
-            `[getCategoryAttributes] Processing dimension attribute: "${originalAttrName}" -> "${attrName}", type: ${attrType}, number_value: ${attrValue.number_value}, string_value: "${attrValue.string_value}"`
+            `[getCategoryAttributes] Processing dimension attribute: "${originalAttrName}" -> "${attrName}", type: ${attrType}, number_value: ${attrValue.number_value}, string_value: "${attrValue.string_value}"`,
           );
         }
 
@@ -393,7 +419,7 @@ export const getCategoryAttributes = cache(
 
               if (originalValue !== stringValue) {
                 console.log(
-                  `[getCategoryAttributes] Cleaned number value: "${originalValue}" -> "${stringValue}"`
+                  `[getCategoryAttributes] Cleaned number value: "${originalValue}" -> "${stringValue}"`,
                 );
               }
             }
@@ -406,7 +432,7 @@ export const getCategoryAttributes = cache(
             } else {
               // Если не удалось извлечь число, пропускаем это значение
               console.warn(
-                `[getCategoryAttributes] Could not extract number from: "${stringValue}"`
+                `[getCategoryAttributes] Could not extract number from: "${stringValue}"`,
               );
               continue;
             }
@@ -430,7 +456,7 @@ export const getCategoryAttributes = cache(
                   // Логирование для отладки накопления
                   if (existingIds.length > 5 && existingIds.length % 10 === 0) {
                     console.log(
-                      `[getCategoryAttributes] Accumulated ${existingIds.length} external_ids for "${attrName}" value "${valueKey}"`
+                      `[getCategoryAttributes] Accumulated ${existingIds.length} external_ids for "${attrName}" value "${valueKey}"`,
                     );
                   }
                 }
@@ -485,7 +511,7 @@ export const getCategoryAttributes = cache(
             // Логирование для отладки
             if (originalValue !== stringValue) {
               console.log(
-                `[getCategoryAttributes] Cleaned value: "${originalValue}" -> "${stringValue}"`
+                `[getCategoryAttributes] Cleaned value: "${originalValue}" -> "${stringValue}"`,
               );
             }
           }
@@ -539,7 +565,7 @@ export const getCategoryAttributes = cache(
         } else if (attr.type === "string" || attr.type === "boolean") {
           // Для string и boolean сортируем по label
           attr.values.sort((a, b) =>
-            (a.label || "").localeCompare(b.label || "")
+            (a.label || "").localeCompare(b.label || ""),
           );
         }
       }
@@ -548,18 +574,18 @@ export const getCategoryAttributes = cache(
       setServerCache(cacheKey, result, CACHE_TTL, CACHE_VERSION).catch(
         (error) => {
           console.warn("Failed to cache category attributes:", error);
-        }
+        },
       );
 
       // Логирование для отладки
       if (result.length === 0) {
         console.log(
-          `[getCategoryAttributes] No attributes found for category ${categorySlug}. Products: ${productIds.length}, Attributes in map: ${attributesMap.size}`
+          `[getCategoryAttributes] No attributes found for category ${categorySlug}. Products: ${productIds.length}, Attributes in map: ${attributesMap.size}`,
         );
       } else {
         console.log(
           `[getCategoryAttributes] Found ${result.length} attributes for category ${categorySlug}:`,
-          result.map((a) => `${a.name} (${a.type}, ${a.values.length} values)`)
+          result.map((a) => `${a.name} (${a.type}, ${a.values.length} values)`),
         );
         // Логирование для отладки number фильтров
         result
@@ -568,17 +594,17 @@ export const getCategoryAttributes = cache(
             attr.values.forEach((val) => {
               const idCount = val.id.split(",").filter(Boolean).length;
               console.log(
-                `[getCategoryAttributes] Attribute "${attr.name}" value "${val.value}" has ${idCount} external_ids`
+                `[getCategoryAttributes] Attribute "${attr.name}" value "${val.value}" has ${idCount} external_ids`,
               );
               if (idCount > 1) {
                 const ids = val.id.split(",").filter(Boolean);
                 console.log(
                   `[getCategoryAttributes] First 5 external_ids:`,
-                  ids.slice(0, 5)
+                  ids.slice(0, 5),
                 );
                 if (ids.length > 5) {
                   console.log(
-                    `[getCategoryAttributes] ... and ${ids.length - 5} more`
+                    `[getCategoryAttributes] ... and ${ids.length - 5} more`,
                   );
                 }
               }
@@ -589,7 +615,8 @@ export const getCategoryAttributes = cache(
       return result;
     } catch (error) {
       // Обрабатываем разные типы ошибок
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorName = error instanceof Error ? error.name : "";
 
       // Игнорируем ошибки "aborted" и "timeout" - они возникают при отмене запросов Next.js
@@ -608,5 +635,5 @@ export const getCategoryAttributes = cache(
       console.warn("Error fetching category attributes:", error);
       return [];
     }
-  }
+  },
 );

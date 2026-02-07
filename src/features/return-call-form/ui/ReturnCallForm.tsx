@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useReturnCallFormStore } from "@/widgets/return-call-form/model/store";
 import { PhoneInput, getFullPhoneNumber } from "@/shared/ui/PhoneInput";
+import { PersonalDataConsent } from "@/features/personal-data-consent";
 import {
   returnCallFormSchema,
   type ReturnCallFormData,
@@ -26,6 +27,7 @@ export function ReturnCallForm() {
     resolver: zodResolver(returnCallFormSchema),
     defaultValues: {
       phone: "",
+      personalDataConsent: false,
     },
   });
 
@@ -147,6 +149,20 @@ export function ReturnCallForm() {
             />
           </div>
 
+          <div className={styles.inputGroup}>
+            <Controller
+              name="personalDataConsent"
+              control={control}
+              render={({ field }) => (
+                <PersonalDataConsent
+                  checked={field.value}
+                  onChange={field.onChange}
+                  error={errors.personalDataConsent?.message}
+                />
+              )}
+            />
+          </div>
+
           <button
             type="submit"
             disabled={isSubmitting}
@@ -157,12 +173,6 @@ export function ReturnCallForm() {
             {isSubmitting ? "Отправка..." : "Заказать звонок"}
           </button>
         </form>
-        <p className={styles.privacy}>
-          Нажимая на кнопку &quot;Заказать звонок&quot;, я соглашаюсь с{" "}
-          <a href="https://docs.google.com/document/d/1OoHa-_O0RZ3eyH379jL3sYSTGRwd1LWE2F2IKxgJ-bw/edit?usp=sharing">
-            <span>Политикой конфиденциальности</span>
-          </a>
-        </p>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
 import { getSku } from "@/entities/product/lib/getSku";
 
 import { AvailabilityCard } from "./AvailabilityCard";
+import { getAvailabilityCities } from "../lib/getAvailabilityCities";
 import { DeliveryCard } from "./DeliveryCard";
 import { ProductInfoCards } from "./ProductInfoCards";
 import { ProductMainCharacteristics } from "./ProductMainCharacteristics";
@@ -26,6 +27,9 @@ type ProductCardBuyProps = {
 
 export function ProductCardBuy(props: ProductCardBuyProps) {
   const { product } = props;
+
+  const availableCities = getAvailabilityCities(product.harakteristici);
+  const isInStock = availableCities.length > 0;
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showCopyPopover, setShowCopyPopover] = useState(false);
@@ -47,14 +51,14 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
   };
 
   const handleViewAllCharacteristics = (
-    e: React.MouseEvent<HTMLAnchorElement>
+    e: React.MouseEvent<HTMLAnchorElement>,
   ) => {
     e.preventDefault();
     // Отправляем событие для переключения вкладки
     window.dispatchEvent(
       new CustomEvent("product-info:switch-tab", {
         detail: { tab: "characteristics" },
-      })
+      }),
     );
     // Небольшая задержка для переключения вкладки, затем скролл
     setTimeout(() => {
@@ -101,7 +105,9 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
                     alt={`Миниатюра товара ${index + 1}`}
                     width={80}
                     height={80}
-                    unoptimized={getProductImageUrl(image.path).startsWith("/storage/")}
+                    unoptimized={getProductImageUrl(image.path).startsWith(
+                      "/storage/",
+                    )}
                   />
                 </div>
               );
@@ -125,7 +131,9 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
           }}
           unoptimized={
             product?.pathsImgs?.[selectedImageIndex]?.path
-              ? getProductImageUrl(product.pathsImgs[selectedImageIndex].path).startsWith("/storage/")
+              ? getProductImageUrl(
+                  product.pathsImgs[selectedImageIndex].path,
+                ).startsWith("/storage/")
               : false
           }
         />
@@ -184,10 +192,12 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
                 isProductPage={true}
               />
               <div className={styles.actionsRowMobile}>
-                <OrderOneClickButton
-                  product={product}
-                  className={styles.customOneClick}
-                />
+                {isInStock && (
+                  <OrderOneClickButton
+                    product={product}
+                    className={styles.customOneClick}
+                  />
+                )}
                 <div className={styles.actionButtons}>
                   <AddProductToFavoriteButton
                     product={product}

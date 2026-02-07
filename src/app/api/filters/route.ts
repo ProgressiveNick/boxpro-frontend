@@ -4,12 +4,17 @@ import {
   categoriesService,
   attributesValuesServerService,
 } from "@/shared/api/server";
+import { SPARE_PARTS_CATEGORY_SLUG } from "@/shared/lib/catalog-constants";
 
 // GET /api/filters - Получить все уникальные фильтры для категории (характеристики и их значения)
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const categorySlug = searchParams.get("categorySlug");
+    const includePartsParam = searchParams.get("includeParts");
+    const includeParts =
+      includePartsParam === "true" ||
+      categorySlug === SPARE_PARTS_CATEGORY_SLUG;
 
     // Если указана категория, получаем все дочерние категории
     let targetCategoryIds: string[] = [];
@@ -23,7 +28,7 @@ export async function GET(request: NextRequest) {
 
       if (parentCategory.data.length > 0) {
         targetCategoryIds = await getAllCategoryIds(
-          parentCategory.data[0].documentId
+          parentCategory.data[0].documentId,
         );
       }
     }
@@ -60,17 +65,11 @@ export async function GET(request: NextRequest) {
               $in: targetCategoryIds,
             },
           },
-          // Исключаем детали (part === true) из результатов
-          part: {
-            $ne: true,
-          },
+          ...(includeParts ? { part: { $eq: true } } : { part: { $ne: true } }),
         };
       } else {
         filters.tovary = {
-          // Исключаем детали (part === true) из результатов
-          part: {
-            $ne: true,
-          },
+          ...(includeParts ? { part: { $eq: true } } : { part: { $ne: true } }),
         };
       }
 
@@ -158,7 +157,7 @@ export async function GET(request: NextRequest) {
         (v) =>
           v.stringValue === attr.string_value &&
           v.numberValue === attr.number_value &&
-          v.booleanValue === attr.boolean_value
+          v.booleanValue === attr.boolean_value,
       );
 
       if (!existingValue && value !== undefined) {
@@ -183,7 +182,7 @@ export async function GET(request: NextRequest) {
     console.error("Ошибка получения фильтров:", error);
     return NextResponse.json(
       { error: "Внутренняя ошибка сервера" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

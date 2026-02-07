@@ -3,9 +3,11 @@
 
 .container {
   width: 100%;
-  overflow: visible;
+  max-width: 100vw;
+  overflow-x: hidden; // Предотвращаем горизонтальный скролл при активации фильтров
   position: relative;
- padding-left: 15px; padding-right: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .mobileFilterButton {
@@ -53,12 +55,14 @@
 
 .wrapper {
   max-width: 1920px;
+  width: 100%;
+  min-width: 0; // Позволяет grid/flex сжиматься, предотвращает overflow
   margin: 0 auto;
+  padding-bottom: 30px;
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 2rem;
   align-items: start;
-  // Убеждаемся что нет overflow который ломает sticky
   overflow: visible;
 
   @media (max-width: 992px) {
@@ -85,6 +89,7 @@
   // Отступ ниже шапки (header ~80px + TabMenu ~40px + отступ 20px = 140px)
   top: 100px;
   z-index: 10; // Убеждаемся что фильтры поверх контента
+  min-width: 0; // Позволяет колонке сжиматься, предотвращает горизонтальный скролл
 
   @media (max-width: 992px) {
     order: 2;
@@ -104,7 +109,7 @@
 
 .contentColumn {
   min-width: 0; // Предотвращает переполнение
- max-width: 100%;
+  max-width: 100%;
   @media (max-width: 767px) {
     order: 2; // Карточки под фильтрами на мобильной версии
   }

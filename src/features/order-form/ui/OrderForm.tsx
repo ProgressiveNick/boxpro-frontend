@@ -12,6 +12,7 @@ import { useCartStore } from "@/entities/cart/model/store";
 import { cookieStorage } from "@/shared/lib/cookieStorage";
 import { FormInput, PhoneInput, getFullPhoneNumber } from "@/shared/ui";
 import { FileUpload } from "@/shared/ui/FileUpload";
+import { PersonalDataConsent } from "@/features/personal-data-consent";
 import Dropdown from "@/shared/ui/Dropdown/Dropdown";
 import styles from "./OrderForm.module.scss";
 import ym from "react-yandex-metrika";
@@ -50,6 +51,7 @@ export const OrderForm: FC<OrderFormProps> = ({
       phone: "",
       paymentMethod: undefined,
       files: [],
+      personalDataConsent: false,
       order: orderId
         ? [] // Если orderId передан, товары уже в заказе
         : items.map((item) => ({
@@ -318,6 +320,20 @@ export const OrderForm: FC<OrderFormProps> = ({
           </button>
         )}
 
+        <div className={styles.inputGroup}>
+          <Controller
+            name="personalDataConsent"
+            control={control}
+            render={({ field }) => (
+              <PersonalDataConsent
+                checked={field.value}
+                onChange={field.onChange}
+                error={errors.personalDataConsent?.message}
+              />
+            )}
+          />
+        </div>
+
         <div className={styles.buttonGroup}>
           <button
             type="button"
@@ -335,12 +351,6 @@ export const OrderForm: FC<OrderFormProps> = ({
             {isSubmitting ? "Отправка..." : "Оформить заказ"}
           </button>
         </div>
-        <p className={styles.privacy}>
-          Нажимая на кнопку &quot;Оформить заказ&quot;, я соглашаюсь с{" "}
-          <a href="https://docs.google.com/document/d/1OoHa-_O0RZ3eyH379jL3sYSTGRwd1LWE2F2IKxgJ-bw/edit?usp=sharing">
-            <span>Политикой конфиденциальности</span>
-          </a>
-        </p>
       </form>
     </>
   );
