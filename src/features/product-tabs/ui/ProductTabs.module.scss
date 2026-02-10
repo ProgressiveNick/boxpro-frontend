@@ -22,3 +22,9 @@
     flex: 1 1 calc(50% - 3px);
   }
 }
+
+.tabInline {
+  @media (max-width: 640px) {
+    flex: 0 0 auto;
+  }
+}

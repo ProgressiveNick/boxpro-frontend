@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { SearchDropdown } from "@/features/product-search/ui/SearchDropdown/SearchDropdown";
 import { searchProducts } from "@/features/product-search/model/api";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
@@ -18,60 +18,93 @@ export function MobileSearchInput({ onClose }: MobileSearchInputProps) {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [currentSearchQuery, setCurrentSearchQuery] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const loadProducts = async (searchQuery: string, page: number) => {
-    if (searchQuery.length < 3) {
-      setProducts([]);
-      setIsDropdownVisible(false);
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await searchProducts({
-        searchQuery,
-        page,
-        pageSize: 10, // Увеличиваем количество для мобильного
-      });
-
-      if (page === 1) {
-        setProducts(response.data);
-      } else {
-        setProducts((prev) => [...prev, ...response.data]);
-      }
-
-      setHasMore(page < response.meta.pagination.pageCount);
-      setIsDropdownVisible(true);
-    } catch (error) {
-      console.error("Error searching products:", error);
-      if (page === 1) {
+  const loadProducts = useCallback(
+    async (searchQuery: string, page: number, isNewSearch: boolean = false) => {
+      if (searchQuery.length < 3) {
         setProducts([]);
+        setIsDropdownVisible(false);
+        return;
       }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
+      setIsLoading(true);
+      try {
+        const response = await searchProducts({
+          searchQuery,
+          page,
+          pageSize: 10,
+        });
+
+        if (isNewSearch || page === 1) {
+          setProducts(response.data);
+          setCurrentPage(1);
+          setCurrentSearchQuery(searchQuery);
+        } else {
+          setProducts((prev) => {
+            const existingIds = new Set(prev.map((p) => p.documentId));
+            const newProducts = response.data.filter(
+              (p) => !existingIds.has(p.documentId),
+            );
+            return [...prev, ...newProducts];
+          });
+        }
+
+        setHasMore(page < response.meta.pagination.pageCount);
+        setIsDropdownVisible(true);
+      } catch (error) {
+        console.error("Error searching products:", error);
+        if (page === 1) {
+          setProducts([]);
+          setHasMore(false);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   const debouncedSearch = useDebounce((searchQuery: unknown) => {
     if (typeof searchQuery === "string") {
-      setCurrentPage(1);
-      loadProducts(searchQuery, 1);
+      if (searchQuery.length >= 3) {
+        // Только если запрос изменился — делаем новый поиск (не перезаписываем при load more)
+        if (searchQuery !== currentSearchQuery) {
+          loadProducts(searchQuery, 1, true);
+        } else {
+          setIsLoading(false);
+        }
+      } else {
+        setIsDropdownVisible(false);
+        setIsLoading(false);
+        setProducts([]);
+        setCurrentPage(1);
+        setHasMore(true);
+        setCurrentSearchQuery("");
+      }
     }
   }, 300);
 
-  const handleLoadMore = () => {
-    if (!isLoading && hasMore) {
+  const handleLoadMore = useCallback(() => {
+    if (!isLoading && hasMore && currentSearchQuery.length >= 3) {
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
-      loadProducts(query, nextPage);
+      loadProducts(currentSearchQuery, nextPage, false);
     }
-  };
+  }, [isLoading, hasMore, currentPage, currentSearchQuery, loadProducts]);
 
   useEffect(() => {
+    if (query.length >= 3) {
+      setIsDropdownVisible(true);
+      // loading только при ожидании нового поиска (не перезаписываем после получения результатов)
+      if (query !== currentSearchQuery) {
+        setIsLoading(true);
+      }
+    }
     debouncedSearch(query);
-  }, [query, debouncedSearch]);
+  }, [query, debouncedSearch, currentSearchQuery]);
 
   // Фокус на поле ввода при открытии и обработка Escape
   useEffect(() => {
@@ -108,6 +141,9 @@ export function MobileSearchInput({ onClose }: MobileSearchInputProps) {
     setQuery("");
     setProducts([]);
     setIsDropdownVisible(false);
+    setCurrentPage(1);
+    setHasMore(true);
+    setCurrentSearchQuery("");
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -167,15 +203,13 @@ export function MobileSearchInput({ onClose }: MobileSearchInputProps) {
       </div>
 
       {isDropdownVisible && (
-        <div className={styles.mobileSearchDropdown}>
-          <SearchDropdown
-            products={products}
-            onClose={handleClose}
-            onLoadMore={handleLoadMore}
-            isLoading={isLoading}
-            hasMore={hasMore}
-          />
-        </div>
+        <SearchDropdown
+          products={products}
+          onClose={handleClose}
+          onLoadMore={handleLoadMore}
+          isLoading={isLoading}
+          hasMore={hasMore}
+        />
       )}
     </div>
   );

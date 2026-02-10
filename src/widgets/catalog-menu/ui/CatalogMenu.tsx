@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import styles from "./CatalogMenu.module.scss";
 import { Category, CategoryMenuItem } from "@/entities/categories";
@@ -21,6 +21,15 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
     null,
   );
   const isMobile = useMediaQuery(640);
+
+  useEffect(() => {
+    if (isOpen && isMobile) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, isMobile]);
 
   const handleMouseLeave = () => {
     setHoveredCategory(null);

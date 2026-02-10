@@ -22,23 +22,28 @@
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  padding-top: 7.5px;
-  padding-right: 15px;
-  padding-left: 15px;
-  padding-bottom: 5px;
   background: $color-background-white;
   @include container;
+  padding-top: 4px;
+  padding-left: $padding-small;
+  padding-right: $padding-small;
 
   @media (max-width: 920px) {
     max-width: 920px;
+    padding-left: $padding-small;
+    padding-right: $padding-small;
   }
 
   @media (max-width: 640px) {
     max-width: 600px;
+    padding-left: $padding-small;
+    padding-right: $padding-small;
   }
 
   @media (max-width: 520px) {
     max-width: 520px;
+    padding-left: $padding-small;
+    padding-right: $padding-small;
     & .searchWrapper {
       width: min-content;
     }
@@ -89,6 +94,11 @@
   @media (max-width: 815px) {
     order: 1;
   }
+}
+
+.catalogButtonAboveSearch {
+  position: relative;
+  z-index: 1002;
 }
 
 .rightPanel {

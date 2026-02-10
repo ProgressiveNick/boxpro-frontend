@@ -287,7 +287,8 @@
   }
 }
 
-.orderWidget .orderButton {
+/* Скрываем только прямую кнопку виджета (десктоп), не кнопку внутри .mobileOrderWidget */
+.orderWidget > .orderButton {
   @media screen and (max-width: 768px) {
     display: none;
   }

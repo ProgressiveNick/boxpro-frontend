@@ -41,6 +41,18 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Скрытие скроллбара на всех страницах */
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 input,
 button,
 textarea {

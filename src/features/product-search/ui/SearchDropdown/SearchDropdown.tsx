@@ -42,19 +42,11 @@ export function SearchDropdown({
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
-      console.log("Observer triggered:", {
-        isIntersecting: target.isIntersecting,
-        hasMore,
-        isLoading,
-        productsCount: uniqueProducts.length,
-      });
-
       if (target.isIntersecting && hasMore && !isLoading) {
-        console.log("Loading more products...");
         onLoadMore();
       }
     },
-    [hasMore, isLoading, onLoadMore, uniqueProducts.length],
+    [hasMore, isLoading, onLoadMore],
   );
 
   // Создаем и настраиваем observer
@@ -111,9 +103,8 @@ export function SearchDropdown({
     return "/img/products/empty.jpg";
   };
 
-  if (uniqueProducts.length === 0) {
-    return null;
-  }
+  // Скрываем только когда нет ни загрузки, ни товаров, ни ожидания первого поиска
+  const showNoResults = uniqueProducts.length === 0 && !isLoading;
 
   return (
     <div className={styles.dropdown}>
@@ -168,6 +159,8 @@ export function SearchDropdown({
       {!hasMore && uniqueProducts.length > 0 && (
         <div className={styles.noMore}>Больше товаров не найдено</div>
       )}
+
+      {showNoResults && <div className={styles.noMore}>Ничего не найдено</div>}
     </div>
   );
 }

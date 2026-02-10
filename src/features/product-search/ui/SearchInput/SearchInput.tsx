@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./SearchInput.module.scss";
 import { SearchDropdown } from "../SearchDropdown/SearchDropdown";
 import { searchProducts } from "../../model/api";
+import { useCatalogMenuStore } from "@/widgets/catalog-menu/model";
 
 import Image from "next/image";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
@@ -41,7 +42,7 @@ export function SearchInput() {
           setProducts((prev) => {
             const existingIds = new Set(prev.map((p) => p.documentId));
             const newProducts = response.data.filter(
-              (p) => !existingIds.has(p.documentId)
+              (p) => !existingIds.has(p.documentId),
             );
             return [...prev, ...newProducts];
           });
@@ -49,6 +50,9 @@ export function SearchInput() {
 
         setHasMore(page < response.meta.pagination.pageCount);
         setIsDropdownVisible(true);
+        if (useCatalogMenuStore.getState().isOpen) {
+          useCatalogMenuStore.getState().setIsOpen(false);
+        }
       } catch (error) {
         console.error("Error searching products:", error);
         if (isNewSearch || page === 1) {
@@ -59,7 +63,7 @@ export function SearchInput() {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   const debouncedSearch = useDebounce((searchQuery: unknown) => {
@@ -68,10 +72,13 @@ export function SearchInput() {
         // Только если запрос изменился, делаем новый поиск
         if (searchQuery !== currentSearchQuery) {
           loadProducts(searchQuery, 1, true);
+        } else {
+          setIsLoading(false);
         }
       } else {
         // Если запрос слишком короткий, скрываем дропдаун
         setIsDropdownVisible(false);
+        setIsLoading(false);
         setProducts([]);
         setCurrentPage(1);
         setHasMore(true);
@@ -88,21 +95,39 @@ export function SearchInput() {
     }
   }, [isLoading, hasMore, currentPage, currentSearchQuery, loadProducts]);
 
-  // Добавляем отладочную информацию
   useEffect(() => {
-    console.log(
-      "Debug - hasMore:",
-      hasMore,
-      "currentPage:",
-      currentPage,
-      "products.length:",
-      products.length
-    );
-  }, [hasMore, currentPage, products.length]);
+    if (query.length >= 3) {
+      setIsDropdownVisible(true);
+      if (useCatalogMenuStore.getState().isOpen) {
+        useCatalogMenuStore.getState().setIsOpen(false);
+      }
+      // loading только при ожидании нового поиска (не перезаписываем после получения результатов)
+      if (query !== currentSearchQuery) {
+        setIsLoading(true);
+      }
+    }
+    debouncedSearch(query);
+  }, [query, debouncedSearch, currentSearchQuery]);
 
   useEffect(() => {
-    debouncedSearch(query);
-  }, [query, debouncedSearch]);
+    const unregister = useCatalogMenuStore
+      .getState()
+      .registerCloseSearch(() => setIsDropdownVisible(false));
+    return unregister;
+  }, []);
+
+  useEffect(() => {
+    useCatalogMenuStore.getState().setSearchOpen(isDropdownVisible);
+  }, [isDropdownVisible]);
+
+  const handleClear = useCallback(() => {
+    setQuery("");
+    setProducts([]);
+    setIsDropdownVisible(false);
+    setCurrentPage(1);
+    setHasMore(true);
+    setCurrentSearchQuery("");
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -114,9 +139,21 @@ export function SearchInput() {
       }
     }
 
+    function handleScroll() {
+      setIsDropdownVisible(false);
+      setQuery("");
+      setProducts([]);
+      setCurrentPage(1);
+      setHasMore(true);
+      setCurrentSearchQuery("");
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -129,7 +166,10 @@ export function SearchInput() {
   };
 
   return (
-    <div className={styles.wrapper} ref={wrapperRef}>
+    <div
+      className={`${styles.wrapper} ${query ? styles.hasQuery : ""}`}
+      ref={wrapperRef}
+    >
       <input
         type="text"
         className={styles.input}
@@ -137,6 +177,30 @@ export function SearchInput() {
         value={query}
         onChange={handleInputChange}
       />
+      {query && (
+        <button
+          type="button"
+          className={styles.clearButton}
+          onClick={handleClear}
+          aria-label="Очистить поиск"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
       <Image
         src="/icons/search.svg"
         width={20}

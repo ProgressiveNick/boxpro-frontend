@@ -59,7 +59,7 @@ export function ProductTabs({ tabs, className, product }: ProductTabsProps) {
               key={key}
               label={tabData.label}
               onClick={() => handleTabClick(key)}
-              className={styles.tab}
+              className={`${styles.tab} ${styles.tabInline}`}
             />
           );
         }

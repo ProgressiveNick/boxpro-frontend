@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { OpenFavoritesButton } from "@/widgets/favorites-button";
 import { OpenCartButton } from "@/widgets/cart-button";
 import { MobileSearchInput } from "./MobileSearchInput";
+import { useCatalogMenuStore } from "@/widgets/catalog-menu/model";
 import styles from "./MobileBottomMenu.module.scss";
 
 export function MobileBottomMenu() {
@@ -11,12 +12,23 @@ export function MobileBottomMenu() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSearchToggle = () => {
-    setIsSearchOpen(!isSearchOpen);
+    const nextOpen = !isSearchOpen;
+    if (nextOpen) {
+      useCatalogMenuStore.getState().setIsOpen(false);
+    }
+    setIsSearchOpen(nextOpen);
   };
 
   const handleCloseSearch = () => {
     setIsSearchOpen(false);
   };
+
+  useEffect(() => {
+    const unregister = useCatalogMenuStore
+      .getState()
+      .registerCloseSearch(() => setIsSearchOpen(false));
+    return unregister;
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -30,12 +42,27 @@ export function MobileBottomMenu() {
 
     if (isSearchOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      const scrollY = window.scrollY;
+      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.body.style.overflow = "unset";
+      const scrollY = document.body.style.top;
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      if (scrollY) {
+        window.scrollTo(0, Math.abs(parseInt(scrollY, 10)));
+      }
     };
   }, [isSearchOpen]);
 

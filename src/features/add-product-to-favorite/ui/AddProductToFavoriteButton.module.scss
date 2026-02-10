@@ -32,8 +32,7 @@
         position: absolute;
         left: calc(50% - 12px);
         top: calc(50% - 12px);
-        -webkit-mask: url("../../../../public/icons/favorites.svg") no-repeat
-            50% 50%;
-        mask: url("../../../../public/icons/favorites.svg") no-repeat 50% 50%;
+        -webkit-mask: url("/icons/favorites.svg") no-repeat 50% 50%;
+        mask: url("/icons/favorites.svg") no-repeat 50% 50%;
     }
 }

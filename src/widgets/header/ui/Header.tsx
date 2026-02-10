@@ -23,7 +23,7 @@ import {
 import styles from "./Header.module.scss";
 
 export function Header() {
-  const { isOpen, toggle } = useCatalogMenuStore();
+  const { isOpen, toggle, isSearchOpen } = useCatalogMenuStore();
   const { openForm } = useReturnCallFormStore();
 
   return (
@@ -39,7 +39,7 @@ export function Header() {
           <CatalogButton
             isOpen={isOpen}
             onClick={toggle}
-            className={styles.catalogButton}
+            className={`${styles.catalogButton} ${isSearchOpen ? styles.catalogButtonAboveSearch : ""}`}
           />
           <div className={styles.searchWrapper}>
             <SearchInput />

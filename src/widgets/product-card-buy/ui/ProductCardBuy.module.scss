@@ -169,9 +169,8 @@
     position: absolute;
     left: calc(50% - 12px);
     top: calc(50% - 12px);
-    -webkit-mask: url("../../../../public/icons/favorites.svg") no-repeat 50%
-      50%;
-    mask: url("../../../../public/icons/favorites.svg") no-repeat 50% 50%;
+    -webkit-mask: url("/icons/favorites.svg") no-repeat 50% 50%;
+    mask: url("/icons/favorites.svg") no-repeat 50% 50%;
   }
 }
 
@@ -408,31 +407,48 @@
   display: flex;
   gap: 15px;
   align-items: center;
-  text-align: center;
+  flex-wrap: wrap;
   margin-bottom: 15px;
   margin-top: 15px;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-}
-
-.actionsRow {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex: 1;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    flex: none;
-    flex-direction: column;
     align-items: stretch;
     gap: 12px;
   }
 }
+
+.priceAndCartRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  min-width: 0;
+  flex: 1;
+
+  > *:first-child {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex: none;
+  }
+}
+
+.oneClickAndActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex: none;
+  }
+}
+
 
 .askQuestionLink {
   border: 1px solid #eceef5;
@@ -455,13 +471,7 @@
   gap: 8px;
   align-items: center;
   position: relative;
-
-  @media (max-width: 768px) {
-    order: 3;
-    flex-shrink: 0;
-    justify-content: flex-start;
-    width: auto;
-  }
+  flex-shrink: 0;
 }
 
 .actionsRowMobile {
@@ -647,9 +657,8 @@
     position: relative;
     left: 13% !important;
     top: 24% !important;
-    -webkit-mask: url("../../../../public/icons/favorites.svg") no-repeat 50%
-      50%;
-    mask: url("../../../../public/icons/favorites.svg") no-repeat 50% 50%;
+    -webkit-mask: url("/icons/favorites.svg") no-repeat 50% 50%;
+    mask: url("/icons/favorites.svg") no-repeat 50% 50%;
   }
 }
 
@@ -663,11 +672,45 @@
 
   :global(.button) {
     border-radius: 12px !important;
+    white-space: nowrap;
   }
 
   @media (max-width: 768px) {
     max-width: 100%;
     order: 1;
+  }
+}
+
+/* Десктоп: кнопки «В корзину» и «Заказать в 1 клик» заполняют своё пространство поровну */
+.priceAndCartRow .customAddToCart {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 120px;
+  max-width: none !important;
+
+  :global(.button) {
+    width: 100%;
+  }
+}
+
+.oneClickAndActions .customOneClick {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 140px;
+  max-width: none !important;
+
+  :global(.button) {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .priceAndCartRow .customAddToCart {
+    min-width: 100px;
+  }
+
+  .oneClickAndActions .customOneClick {
+    min-width: 100px;
   }
 }
 

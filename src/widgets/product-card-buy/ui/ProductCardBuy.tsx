@@ -179,27 +179,27 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
             />
           </div>
           <div className={styles.productBuyWrapper}>
-            <Price
-              currentPrice={product.price || 125000}
-              priceHistory={product.price_history}
-              previousPrice={product.previousPrice}
-            />
-
-            <div className={styles.actionsRow}>
+            <div className={styles.priceAndCartRow}>
+              <Price
+                currentPrice={product.price || 125000}
+                priceHistory={product.price_history}
+                previousPrice={product.previousPrice}
+              />
               <AddProductToCartButton
                 product={product}
                 className={styles.customAddToCart}
                 isProductPage={true}
               />
-              <div className={styles.actionsRowMobile}>
-                {isInStock && (
-                  <OrderOneClickButton
-                    product={product}
-                    className={styles.customOneClick}
-                  />
-                )}
-                <div className={styles.actionButtons}>
-                  <AddProductToFavoriteButton
+            </div>
+            <div className={styles.oneClickAndActions}>
+              {isInStock && (
+                <OrderOneClickButton
+                  product={product}
+                  className={styles.customOneClick}
+                />
+              )}
+              <div className={styles.actionButtons}>
+                <AddProductToFavoriteButton
                     product={product}
                     className={styles.customFavorite}
                   />
@@ -212,7 +212,6 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
                   {showCopyPopover && (
                     <div className={styles.copyPopover}>Ссылка скопирована</div>
                   )}
-                </div>
               </div>
             </div>
           </div>

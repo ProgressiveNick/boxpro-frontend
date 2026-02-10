@@ -22,6 +22,32 @@
     outline: none;
     border-color: #000;
   }
+
+  .hasQuery & {
+    padding-right: 56px;
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #333;
+    background: #f0f0f0;
+  }
 }
 
 .searchIcon {
