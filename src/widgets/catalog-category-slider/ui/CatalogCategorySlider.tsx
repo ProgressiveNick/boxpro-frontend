@@ -152,7 +152,11 @@ export function CatalogCategorySlider({
           onSlideChange={updateNavState}
         >
           {cards.map((card, index) => (
-            <SwiperSlide key={card.url} className={styles.slide}>
+            <SwiperSlide
+              key={card.url}
+              className={styles.slide}
+              style={{ width: "220px" }}
+            >
               <CategoryCard
                 card={card}
                 size="small"
