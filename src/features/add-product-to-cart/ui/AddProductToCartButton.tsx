@@ -12,12 +12,14 @@ import ym from "react-yandex-metrika";
 type AddProductToCartButtonType = {
   product: ProductType;
   className?: string;
+  quantityBlockClassName?: string; // Класс для контейнера с кол-вом (прижать к правому краю)
   isProductPage?: boolean;
 };
 
 export function AddProductToCartButton({
   product,
   className,
+  quantityBlockClassName,
   isProductPage = false,
 }: AddProductToCartButtonType) {
   const id = product.documentId;
@@ -104,7 +106,7 @@ export function AddProductToCartButton({
   if (!showButton && quantity > 0) {
     return (
       <div
-        className={className}
+        className={[className, quantityBlockClassName].filter(Boolean).join(" ")}
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();

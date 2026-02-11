@@ -28,6 +28,7 @@ export function ProductsCatalog({
   hideFilters,
   categoryPath,
   hideMobileFilterButton,
+  containerPadding,
 }: ProductsCatalogProps) {
   const { isLoading, startLoading } = useLoadingState();
   const router = useRouter();
@@ -66,7 +67,11 @@ export function ProductsCatalog({
     childCategories && childCategories.length > 0 ? childCategories : [];
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${styles.container} ${
+        containerPadding ? styles.containerWithPadding : ""
+      }`}
+    >
       {/* Мобильная кнопка фильтров (скрыта для каталога запчастей) */}
       {!hideMobileFilterButton && (
         <button
@@ -97,6 +102,11 @@ export function ProductsCatalog({
           hideFilters ? styles.wrapperFullWidth : ""
         }`}
       >
+        {/* Контролы (сортировка, кол-во) на всю ширину контейнера, включая зону над фильтрами */}
+        <div className={styles.controlsRow}>
+          <ProductsListControls total={total} isLoading={isLoading} />
+        </div>
+
         {!hideFilters && (
           <aside className={styles.filtersColumn}>
             <ProductsCatalogFilters
@@ -108,7 +118,6 @@ export function ProductsCatalog({
         )}
 
         <main className={styles.contentColumn}>
-          <ProductsListControls total={total} isLoading={isLoading} />
           <ProductsList
             products={products}
             total={total}

@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 import {
   Category,
   CategoryCard,
@@ -10,9 +12,11 @@ import {
 import { getImageUrl } from "@/shared/lib/helpers/imageUrl";
 import styles from "./CatalogCategorySlider.module.scss";
 
+import "swiper/scss";
+
 type CatalogCategorySliderProps = {
   categories: Category[];
-  allCategories?: Category[]; // Все категории из меню для построения полного пути
+  allCategories?: Category[];
   excludeId?: string;
   variant?: "root" | "nested";
 };
@@ -23,16 +27,15 @@ export function CatalogCategorySlider({
   excludeId,
   variant = "root",
 }: CatalogCategorySliderProps) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(
+    null
+  );
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
 
-  // useEffect должен быть вызван до любых ранних return
-  useEffect(() => {
-    if (scrollerRef.current) {
-      scrollerRef.current.style.cursor = "grab";
-    }
+  const updateNavState = useCallback((swiper: SwiperType) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
   }, []);
 
   if (!categories || categories.length === 0) {
@@ -50,14 +53,11 @@ export function CatalogCategorySlider({
     return null;
   }
 
-  // Используем allCategories для построения полного пути, если они переданы
-  // Иначе используем только categories (для обратной совместимости)
   const categoriesForPath =
     allCategories && allCategories.length > 0 ? allCategories : categories;
 
   const cards: CategoryCards[] = filteredCategories.map((category) => {
     const url = getCategoryUrl(category, categoriesForPath);
-    // Логирование для отладки
     if (process.env.NODE_ENV === "development") {
       console.log(
         `[CatalogCategorySlider] Category: ${category.name} (${
@@ -80,69 +80,88 @@ export function CatalogCategorySlider({
     };
   });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!scrollerRef.current) return;
-    // Проверяем, что клик не на ссылке
-    const target = e.target as HTMLElement;
-    if (target.closest("a")) {
-      return;
-    }
-    setIsDragging(true);
-    setStartX(e.pageX - scrollerRef.current.offsetLeft);
-    setScrollLeft(scrollerRef.current.scrollLeft);
-    scrollerRef.current.style.cursor = "grabbing";
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-    if (scrollerRef.current) {
-      scrollerRef.current.style.cursor = "grab";
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    if (scrollerRef.current) {
-      scrollerRef.current.style.cursor = "grab";
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !scrollerRef.current) return;
-    const x = e.pageX - scrollerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Скорость прокрутки
-
-    // Если перемещение больше 5px, считаем это drag
-    if (Math.abs(walk) > 5) {
-      e.preventDefault();
-      scrollerRef.current.scrollLeft = scrollLeft - walk;
-    }
-  };
+  const hasOverflow = !isBeginning || !isEnd;
 
   return (
     <section
       className={`${styles.container} ${
         variant === "nested" ? styles.containerNested : styles.containerRoot
-      }`}
+      } ${hasOverflow ? styles.hasOverflow : ""}`}
     >
-      <div
-        ref={scrollerRef}
-        className={styles.scroller}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-      >
-        {cards.map((card, index) => (
-          <div key={card.url} className={styles.slide}>
-            <CategoryCard
-              card={card}
-              size="small"
-              hideImage={false}
-              index={index}
+      <div className={styles.wrapper}>
+        <button
+          type="button"
+          className={`${styles.navPrev} ${styles.navButton}`}
+          aria-label="Предыдущие категории"
+          disabled={isBeginning}
+          onClick={() => swiperInstance?.slidePrev()}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16 4l-8 8 8 8"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-          </div>
-        ))}
+          </svg>
+        </button>
+        <button
+          type="button"
+          className={`${styles.navNext} ${styles.navButton}`}
+          aria-label="Следующие категории"
+          disabled={isEnd}
+          onClick={() => swiperInstance?.slideNext()}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 4l8 8-8 8"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <Swiper
+          className={styles.swiper}
+          slidesPerView="auto"
+          spaceBetween={16}
+          allowTouchMove={true}
+          grabCursor={true}
+          onSwiper={(swiper) => {
+            setSwiperInstance(swiper);
+            updateNavState(swiper);
+            swiper.on("resize", () => updateNavState(swiper));
+            swiper.on("slideChange", () => updateNavState(swiper));
+          }}
+          onResize={updateNavState}
+          onSlideChange={updateNavState}
+        >
+          {cards.map((card, index) => (
+            <SwiperSlide key={card.url} className={styles.slide}>
+              <CategoryCard
+                card={card}
+                size="small"
+                hideImage={false}
+                index={index}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </section>
   );

@@ -20,6 +20,8 @@ export type ProductsCatalogProps = {
   categoryPath?: string[]; // Путь категории для сохранения вложенности в URL продукта
   /** Скрыть мобильную кнопку фильтров и FilterDrawer (для каталога запчастей) */
   hideMobileFilterButton?: boolean;
+  /** Добавить отступы слева/справа у контейнера (только для корневого /catalog, чтобы не прилипал к краям) */
+  containerPadding?: boolean;
 };
 
 export type ProductsCatalogFiltersProps = {

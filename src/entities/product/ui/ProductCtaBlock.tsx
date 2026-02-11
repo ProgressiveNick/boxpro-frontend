@@ -10,7 +10,11 @@ export function ProductCtaBlock({ product }: { product: ProductType }) {
         <h4 className={styles.price}>{formattedPrice(product.price)}</h4>
       </div>
 
-      <AddProductToCartButton product={product} className={styles.cta} />
+      <AddProductToCartButton
+        product={product}
+        className={styles.cta}
+        quantityBlockClassName={styles.ctaQuantity}
+      />
     </div>
   );
 }

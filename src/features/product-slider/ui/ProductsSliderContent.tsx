@@ -71,14 +71,16 @@ export const ProductsSliderContent = forwardRef<ProductsSliderRef, Props>(
               allowTouchMove: true,
             },
 
-            480: {
-              slidesPerView: 2,
-              spaceBetween: 10,
+            // Переход на 1.2 карточки раньше, чтобы карточка не сужалась меньше 280px
+            // 2 * 280 + 10 ≈ 570
+            570: {
+              slidesPerView: 1.6,
+              spaceBetween: 15,
               allowTouchMove: true,
             },
 
             320: {
-              slidesPerView: 1.4,
+              slidesPerView: 1.2,
               spaceBetween: 15,
               allowTouchMove: true,
             },
@@ -96,7 +98,7 @@ export const ProductsSliderContent = forwardRef<ProductsSliderRef, Props>(
         </Swiper>
       </div>
     );
-  }
+  },
 );
 
 ProductsSliderContent.displayName = "ProductsSliderContent";

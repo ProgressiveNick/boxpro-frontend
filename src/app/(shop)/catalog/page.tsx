@@ -42,13 +42,13 @@ export default async function CatalogPage(props: {
   const priceMinParam = Array.isArray(searchParams.priceMin)
     ? parseInt(searchParams.priceMin[0])
     : searchParams.priceMin
-    ? parseInt(searchParams.priceMin)
-    : undefined;
+      ? parseInt(searchParams.priceMin)
+      : undefined;
   const priceMaxParam = Array.isArray(searchParams.priceMax)
     ? parseInt(searchParams.priceMax[0])
     : searchParams.priceMax
-    ? parseInt(searchParams.priceMax)
-    : undefined;
+      ? parseInt(searchParams.priceMax)
+      : undefined;
 
   // Парсим параметры сортировки и размера страницы
   const sortParam = Array.isArray(searchParams.sort)
@@ -58,8 +58,8 @@ export default async function CatalogPage(props: {
   const pageSizeParam = Array.isArray(searchParams.pageSize)
     ? parseInt(searchParams.pageSize[0])
     : searchParams.pageSize
-    ? parseInt(searchParams.pageSize)
-    : undefined;
+      ? parseInt(searchParams.pageSize)
+      : undefined;
 
   const res = await getProducts({
     page: currentPage,
@@ -114,6 +114,7 @@ export default async function CatalogPage(props: {
         initialFilters={initialFilters}
         hasActiveFilters={hasActiveFilters}
         hideFilters
+        containerPadding
       />
     </>
   );

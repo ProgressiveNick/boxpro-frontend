@@ -1,14 +1,12 @@
 .ctaWrapper {
   padding-top: 15px;
-
   margin-top: auto;
-
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; // Позволяет кнопке переноситься под цену при нехватке места
+  flex-wrap: nowrap; // Цена и кнопка всегда в одну линию
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 16px; // Отступ между ценой и кнопкой
 
   a {
     color: var(--WhiteColorFont);
@@ -16,11 +14,6 @@
 
   &:last-child {
     margin-right: 0px;
-  }
-
-  @media (max-width: 479px) {
-    flex-direction: column;
-    align-items: stretch;
   }
 }
 
@@ -42,32 +35,26 @@
   overflow: visible; // Не обрезаем цену
 }
 
+// Фиксированная высота слота = высота кнопки, чтобы не было скачка при смене на счётчик
 .cta {
-  width: auto;
-  min-width: 120px; // Минимальная ширина кнопки
-  background-color: var(--AccentColorBlue);
-  padding: 3px 12px;
-  border-radius: 8px;
-  text-align: center;
-  color: var(--WhiteColorFont);
-  flex-shrink: 0;
-
-  &:hover {
-    background-color: var(--AccentColorBlueHover);
-  }
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  display: flex;
 
   :global(.button) {
-    width: auto;
-    white-space: nowrap; // Текст кнопки не переносится
+    flex: 1;
+    min-width: min-content;
+    white-space: nowrap;
   }
+}
 
-  // На маленьких экранах кнопка на всю ширину
-  @media (max-width: 479px) {
-    width: 100%;
-    min-width: 100%;
-
-    :global(.button) {
-      width: 100%;
-    }
-  }
+// Блок с кол-вом: та же высота слота, прижат к правому краю
+.ctaQuantity {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
