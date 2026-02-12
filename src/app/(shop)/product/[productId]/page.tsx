@@ -19,6 +19,7 @@ import {
 import { ProductsSlider } from "@/features/product-slider";
 import { getSku } from "@/entities/product/lib/getSku";
 import type { Metadata } from "next";
+import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
 import { generateSEO, generateProductSEO } from "@/shared/lib/seo-utils";
 import {
   ProductJsonLd,
@@ -75,6 +76,11 @@ export async function generateMetadata({
     const product = await getProductsBySlug(productId);
     const sku = getSku(product.harakteristici);
 
+    const rawImageUrl = getProductImageUrl(product.pathsImgs?.[0]?.path);
+    const imageUrl =
+      rawImageUrl.startsWith("http") ? rawImageUrl : `${SITE_URL}${rawImageUrl}`;
+    const image = imageUrl || `${SITE_URL}/logo.svg`;
+
     return generateSEO({
       ...generateProductSEO(
         product.name,
@@ -83,6 +89,8 @@ export async function generateMetadata({
         product.price,
       ),
       canonical: `/product/${productId}`, // Основной canonical URL для продукта
+      image,
+      openGraphUrl: `${SITE_URL}/product/${productId}`,
     });
   } catch {
     return generateSEO({

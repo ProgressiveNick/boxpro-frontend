@@ -8,6 +8,8 @@ export interface SEOConfig {
   type?: "website" | "article";
   noIndex?: boolean;
   canonical?: string; // Канонический URL (относительный путь)
+  /** Абсолютный URL страницы для Open Graph (превью ссылки) */
+  openGraphUrl?: string;
 }
 
 export function generateSEO(config: SEOConfig): Metadata {
@@ -26,6 +28,7 @@ export function generateSEO(config: SEOConfig): Metadata {
       description: config.description,
       type: config.type || "website",
       locale: "ru_RU",
+      ...(config.openGraphUrl && { url: config.openGraphUrl }),
       images: config.image
         ? [
             {
