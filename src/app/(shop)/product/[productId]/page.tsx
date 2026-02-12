@@ -20,6 +20,7 @@ import { ProductsSlider } from "@/features/product-slider";
 import { getSku } from "@/entities/product/lib/getSku";
 import type { Metadata } from "next";
 import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
+import { stripHtml } from "@/shared/lib/helpers/stripHtml";
 import { generateSEO, generateProductSEO } from "@/shared/lib/seo-utils";
 import {
   ProductJsonLd,
@@ -84,7 +85,7 @@ export async function generateMetadata({
     return generateSEO({
       ...generateProductSEO(
         product.name,
-        product.description || undefined,
+        stripHtml(product.description) || undefined,
         sku,
         product.price,
       ),
