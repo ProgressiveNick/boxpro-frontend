@@ -2,8 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["boxpro.moscow"],
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "boxpro.moscow",
+        port: "",
+        pathname: "**",
+      },
       {
         protocol: "http",
         hostname: "strapi", // Имя сервиса Strapi внутри Docker
