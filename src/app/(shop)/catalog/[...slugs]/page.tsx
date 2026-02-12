@@ -22,6 +22,7 @@ import { FilterState } from "@/widgets/filters";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import type { Category } from "@/entities/categories";
 import { CatalogCategorySlider } from "@/widgets/catalog-category-slider";
+import { OfferCatalogJsonLd } from "@/shared/components/JsonLd/JsonLd";
 
 // ISR: ревалидация каждые 90 минут (5400 секунд)
 export const revalidate = 5400;
@@ -231,7 +232,29 @@ export default async function CatalogSectionPage(props: {
     breadcrumbOverrides[currentCategory.slug] = currentCategory.name;
   }
 
+  const categoryCatalogDescription =
+    currentCategory.description?.replace(/<[^>]*>/g, "").trim() ||
+    `Каталог упаковочного и производственного оборудования BoxPro. Категория: ${currentCategory.name}.`;
+  const categoryCatalogImage =
+    currentCategory.img_menu?.url ??
+    products[0]?.pathsImgs?.[0]?.path ??
+    "/img/logo.svg";
+
   return (
+    <>
+      <OfferCatalogJsonLd
+        name={currentCategory.name}
+        description={categoryCatalogDescription}
+        image={categoryCatalogImage}
+        itemListElement={products.map((p) => ({
+          url: `/product/${p.slug}`,
+          name: p.name,
+          description: p.description?.replace(/<[^>]*>/g, "").trim() || p.name,
+          image: p.pathsImgs?.[0]?.path ?? undefined,
+          price: p.price,
+          priceCurrency: "RUB",
+        }))}
+      />
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.breadcrumbsWrapper}>
@@ -263,5 +286,6 @@ export default async function CatalogSectionPage(props: {
         />
       </div>
     </div>
+    </>
   );
 }

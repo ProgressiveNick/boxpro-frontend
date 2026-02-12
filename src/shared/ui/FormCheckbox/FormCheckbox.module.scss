@@ -28,7 +28,10 @@
 
 .checkboxText {
   font-weight: 500;
-  width: max-content;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .errorText {

@@ -19,4 +19,9 @@ export {
   getBlogBySlug,
 } from "./getBlogBySlug";
 
+export {
+  getAllBlogArticlePaths,
+} from "./getAllBlogArticlePaths";
+export type { BlogArticlePath } from "./getAllBlogArticlePaths";
+
 

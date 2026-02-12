@@ -1,4 +1,8 @@
 import Script from "next/script";
+import {
+  getAbsoluteUrl,
+  getAbsoluteImageUrl,
+} from "@/shared/lib/helpers/absoluteUrl";
 
 interface OrganizationSchema {
   "@context": string;
@@ -29,6 +33,10 @@ interface ProductSchema {
   sku?: string;
   price?: number;
   priceCurrency?: string;
+  brand: {
+    "@type": "Brand";
+    name: string;
+  };
   offers: {
     "@type": string;
     price?: number;
@@ -41,7 +49,7 @@ interface ProductSchema {
   };
   image?: string;
   category?: string;
-  url?: string; // URL продукта для SEO
+  url?: string;
 }
 
 interface BreadcrumbSchema {
@@ -67,6 +75,42 @@ interface WebsiteSchema {
     "query-input": string;
   };
 }
+
+/** Элемент каталога по схеме Offer (строгая микроразметка Яндекса). */
+export interface OfferCatalogItem {
+  url: string;
+  name: string;
+  description: string;
+  image?: string | null;
+  availability?: string;
+  price: number | string;
+  priceCurrency?: string;
+}
+
+interface OfferCatalogSchema {
+  "@context": string;
+  "@type": "OfferCatalog";
+  name: string;
+  description: string;
+  image: string;
+  itemListElement: Array<{
+    "@type": "Offer";
+    url: string;
+    name: string;
+    description: string;
+    image: string;
+    availability: string;
+    price: number | string;
+    priceCurrency: string;
+  }>;
+}
+
+export type OfferCatalogJsonLdProps = {
+  name: string;
+  description: string;
+  image: string;
+  itemListElement: OfferCatalogItem[];
+};
 
 export function OrganizationJsonLd() {
   const schema: OrganizationSchema = {
@@ -100,11 +144,28 @@ export function OrganizationJsonLd() {
   );
 }
 
-export function ProductJsonLd({
-  product,
-}: {
-  product: Omit<ProductSchema, "@context" | "@type" | "offers">;
-}) {
+export type ProductJsonLdProps = Omit<
+  ProductSchema,
+  "@context" | "@type" | "offers" | "brand"
+> & {
+  /** Бренд для строгой микроразметки (Яндекс). По умолчанию BoxPro. */
+  brand?: { "@type": "Brand"; name: string };
+  /** Относительный или абсолютный URL страницы товара (будет приведён к абсолютному). */
+  url?: string;
+  /** Относительный или абсолютный путь к изображению (будет приведён к абсолютному URL). */
+  image?: string;
+  /** URL доступности по schema.org (например https://schema.org/InStock). По умолчанию InStock. */
+  availability?: string;
+};
+
+export function ProductJsonLd({ product }: { product: ProductJsonLdProps }) {
+  const absoluteUrl = product.url ? getAbsoluteUrl(product.url) : undefined;
+  const absoluteImage = product.image
+    ? getAbsoluteImageUrl(product.image)
+    : undefined;
+  const availability =
+    product.availability || "https://schema.org/InStock";
+
   const schema: ProductSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -113,19 +174,20 @@ export function ProductJsonLd({
     sku: product.sku,
     price: product.price,
     priceCurrency: product.priceCurrency,
+    brand: product.brand ?? { "@type": "Brand", name: "BoxPro" },
     offers: {
       "@type": "Offer",
       price: product.price,
       priceCurrency: product.priceCurrency || "RUB",
-      availability: "https://schema.org/InStock",
+      availability,
       seller: {
         "@type": "Organization",
         name: "BoxPro",
       },
     },
-    image: product.image,
+    image: absoluteImage,
     category: product.category,
-    url: product.url, // URL продукта для SEO
+    url: absoluteUrl,
   };
 
   return (
@@ -151,6 +213,42 @@ export function BreadcrumbJsonLd({
   return (
     <Script
       id="breadcrumb-schema"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+export function OfferCatalogJsonLd({
+  name,
+  description,
+  image,
+  itemListElement,
+}: OfferCatalogJsonLdProps) {
+  const catalogImage = getAbsoluteImageUrl(image);
+  const offers = itemListElement.map((item) => ({
+    "@type": "Offer" as const,
+    url: getAbsoluteUrl(item.url),
+    name: item.name,
+    description: item.description,
+    image: getAbsoluteImageUrl(item.image ?? null),
+    availability: item.availability ?? "https://schema.org/InStock",
+    price: item.price,
+    priceCurrency: item.priceCurrency ?? "RUB",
+  }));
+
+  const schema: OfferCatalogSchema = {
+    "@context": "https://schema.org/",
+    "@type": "OfferCatalog",
+    name,
+    description,
+    image: catalogImage,
+    itemListElement: offers,
+  };
+
+  return (
+    <Script
+      id="offer-catalog-schema"
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />

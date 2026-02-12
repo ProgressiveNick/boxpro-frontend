@@ -119,9 +119,7 @@
 .facts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 60px;
-  padding-right: 15px;
-  padding-left: 15px;
+  gap: 30px;
   margin-top: 60px;
 
   @media screen and (max-width: 960px) {

@@ -10,6 +10,8 @@
  * Переменные окружения валидируются в начале приложения через @/shared/lib/env-validation/init
  */
 
+export { SITE_URL } from "./site";
+
 export {
   STRAPI_API_CONFIG,
   STRAPI_CLIENT_CONFIG,

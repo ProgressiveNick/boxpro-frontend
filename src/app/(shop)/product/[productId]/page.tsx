@@ -24,6 +24,7 @@ import {
   ProductJsonLd,
   BreadcrumbJsonLd,
 } from "@/shared/components/JsonLd/JsonLd";
+import { SITE_URL } from "@/shared/config/site";
 import { AvailabilityStatusTab } from "@/widgets/product-card-buy/ui/AvailabilityStatusTab";
 import Image from "next/image";
 import { ProductViewTracker } from "@/widgets/product-view-tracker";
@@ -130,36 +131,25 @@ export default async function ProductPage({
     breadcrumbOverrides = tree.getBreadcrumbOverrides(categoryPath);
 
     // Формируем breadcrumbs для JSON-LD
-    const baseUrl = "https://boxpro.moscow";
     breadcrumbItems = [
-      {
-        position: 1,
-        name: "Главная",
-        item: baseUrl,
-      },
-      {
-        position: 2,
-        name: "Каталог",
-        item: `${baseUrl}/catalog`,
-      },
+      { position: 1, name: "Главная", item: SITE_URL },
+      { position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
     ];
 
-    // Добавляем категории из пути
     categoryPath.forEach((slug, index) => {
       const categoryName = breadcrumbOverrides[slug] || slug;
       const categoryPathStr = categoryPath.slice(0, index + 1).join("/");
       breadcrumbItems.push({
         position: index + 3,
         name: categoryName,
-        item: `${baseUrl}/catalog/${categoryPathStr}`,
+        item: `${SITE_URL}/catalog/${categoryPathStr}`,
       });
     });
 
-    // Добавляем продукт
     breadcrumbItems.push({
       position: breadcrumbItems.length + 1,
       name: data.name,
-      item: `${baseUrl}/product/${productId}`,
+      item: `${SITE_URL}/product/${productId}`,
     });
   }
 
@@ -174,7 +164,11 @@ export default async function ProductPage({
           price: data.price,
           category: data.kategoria?.name,
           image: data.pathsImgs?.[0]?.path,
-          url: `https://boxpro.moscow/product/${productId}`, // Основной URL продукта
+          url: `/product/${productId}`,
+          availability:
+            warehousesCount > 0
+              ? "https://schema.org/InStock"
+              : "https://schema.org/PreOrder",
         }}
       />
       {breadcrumbItems.length > 0 && (

@@ -43,18 +43,28 @@
   column-gap: 0;
 }
 
-/* Сегмент пути не разбивается (не по словам): перенос только между сегментами */
+/* Сегмент и слеш "/" не разбиваются: перенос только между сегментами, слеш остаётся справа от предыдущего */
 .item {
   display: inline-flex;
   align-items: center;
   color: $color-black;
   white-space: nowrap;
-  flex-shrink: 0;
+  max-width: 100%;
+  min-width: 0;
   opacity: 0.7;
 
   &:hover {
     opacity: 1;
     color: var(--AccentColorBlueHover);
+  }
+
+  & a,
+  & .active {
+    color: inherit;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   & a {
@@ -70,12 +80,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Принудительно устанавливаем ширину для разделителей */
+  /* Слеш остаётся на прошлой строке справа от сегмента */
   min-width: 4px;
 }
 
 .active {
   color: var(--AccentColorBlueHover);
   cursor: default;
-  flex-shrink: 0;
 }

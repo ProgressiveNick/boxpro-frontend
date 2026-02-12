@@ -75,9 +75,11 @@
   font-weight: 500;
 }
 
-.tablineTab:hover {
-  background-color: var(--DarkBackgroundDark);
-  color: var(--WhiteColorFont);
+@media (min-width: 769px) {
+  .tablineTab:hover {
+    background-color: var(--DarkBackgroundDark);
+    color: var(--WhiteColorFont);
+  }
 }
 
 .promoTab {
@@ -87,11 +89,13 @@
   border: 0px black solid;
 }
 
-.promoTab:hover {
-  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-  background-color: var(--Yellow);
-  color: var(--DarkBackgroundDark);
-  border: 0px black solid;
+@media (min-width: 769px) {
+  .promoTab:hover {
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    background-color: var(--Yellow);
+    color: var(--DarkBackgroundDark);
+    border: 0px black solid;
+  }
 }
 
 /* Кнопки навигации показываются только при переполнении табов (не влезают в ширину) */

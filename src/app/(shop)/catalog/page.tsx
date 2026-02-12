@@ -6,6 +6,7 @@ import { FilterState } from "@/widgets/filters";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { ProductsCatalog } from "@/widgets/products-catalog";
 import { CatalogCategorySlider } from "@/widgets/catalog-category-slider";
+import { OfferCatalogJsonLd } from "@/shared/components/JsonLd/JsonLd";
 import styles from "./[...slugs]/Catalog.module.scss";
 
 // ISR: ревалидация каждые 90 минут (5400 секунд)
@@ -91,8 +92,26 @@ export default async function CatalogPage(props: {
     (priceMinParam !== undefined && priceMinParam > 0) ||
     (priceMaxParam !== undefined && priceMaxParam < 1000000);
 
+  const catalogDescription =
+    "Каталог упаковочного и производственного оборудования BoxPro. Большой выбор товаров с фильтрацией по категориям и цене. Доставка по всей России.";
+  const catalogImage =
+    products[0]?.pathsImgs?.[0]?.path ?? "/img/logo.svg";
+
   return (
     <>
+      <OfferCatalogJsonLd
+        name="Каталог оборудования"
+        description={catalogDescription}
+        image={catalogImage}
+        itemListElement={products.map((p) => ({
+          url: `/product/${p.slug}`,
+          name: p.name,
+          description: p.description?.replace(/<[^>]*>/g, "").trim() || p.name,
+          image: p.pathsImgs?.[0]?.path ?? undefined,
+          price: p.price,
+          priceCurrency: "RUB",
+        }))}
+      />
       {/* Ограничиваем только хлебные крошки таким же контейнером, как на страницах категорий */}
       <div className={styles.container}>
         <div className={styles.wrapper}>

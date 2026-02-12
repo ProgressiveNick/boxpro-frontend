@@ -4,6 +4,8 @@ export {
   getBlogSectionBySlug,
   getBlogs,
   getBlogBySlug,
+  getAllBlogArticlePaths,
 } from "./api/server";
+export type { BlogArticlePath } from "./api/server";
 
 

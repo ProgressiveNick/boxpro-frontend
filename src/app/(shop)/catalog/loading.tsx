@@ -5,8 +5,36 @@ export default function Loading() {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        {/* Скелетон ProductsCatalog */}
+        {/* Скелетон хлебных крошек */}
+        <div className={styles.breadcrumbsWrapper}>
+          <div className={styles.skeletonBreadcrumbs}>
+            <div className={styles.skeletonBreadcrumb} />
+            <div className={styles.skeletonBreadcrumb} />
+            <div className={styles.skeletonBreadcrumb} />
+          </div>
+        </div>
+
+        {/* Скелетон обложки/заголовка категории (или h1 на главной каталога) */}
+        <div className={styles.skeletonCover} aria-hidden />
+
+        {/* Скелетон слайдера категорий */}
+        <div className={styles.skeletonSliderRow}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className={styles.skeletonSliderCard} aria-hidden />
+          ))}
+        </div>
+
+        {/* Скелетон ProductsCatalog: контролы, фильтры, сетка */}
         <div className={styles.catalogSkeleton}>
+          {/* Строка контролов (сортировка, кол-во) */}
+          <div className={styles.skeletonControlsRow}>
+            <div className={styles.skeletonControlsCount} />
+            <div className={styles.skeletonControlsActions}>
+              <div className={styles.skeletonControlsDropdown} />
+              <div className={styles.skeletonControlsDropdown} />
+            </div>
+          </div>
+
           {/* Скелетон фильтров */}
           <aside className={styles.filtersSkeleton}>
             <div className={styles.skeletonFilterHeader}>
