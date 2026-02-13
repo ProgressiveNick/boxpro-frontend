@@ -152,7 +152,7 @@ export type ProductJsonLdProps = Omit<
   ProductSchema,
   "@context" | "@type" | "offers" | "brand"
 > & {
-  /** Бренд для строгой микроразметки (Яндекс). По умолчанию BoxPro. */
+  /** Бренд для строгой микроразметки (Яндекс). По умолчанию Hualian Machinery. */
   brand?: { "@type": "Brand"; name: string };
   /** Относительный или абсолютный URL страницы товара (будет приведён к абсолютному). */
   url?: string;
@@ -178,7 +178,7 @@ export function ProductJsonLd({ product }: { product: ProductJsonLdProps }) {
     sku: product.sku,
     price: product.price,
     priceCurrency: product.priceCurrency,
-    brand: product.brand ?? { "@type": "Brand", name: "BoxPro" },
+    brand: product.brand ?? { "@type": "Brand", name: "Hualian Machinery" },
     offers: {
       "@type": "Offer",
       price: product.price,
