@@ -38,7 +38,7 @@ async function ensureCacheDir(): Promise<void> {
  */
 export async function getServerCache<T>(
   cacheKey: string,
-  version?: string
+  version?: string,
 ): Promise<T | null> {
   // Проверяем in-memory кэш сначала
   const memoryKey = `${cacheKey}_${version || ""}`;
@@ -96,7 +96,7 @@ export async function setServerCache<T>(
   cacheKey: string,
   data: T,
   ttl: number = DEFAULT_TTL,
-  version?: string
+  version?: string,
 ): Promise<void> {
   const timestamp = Date.now();
   const memoryKey = `${cacheKey}_${version || ""}`;
@@ -148,7 +148,7 @@ export async function clearServerCache(): Promise<void> {
     await Promise.all(
       files
         .filter((file) => file.endsWith(".json"))
-        .map((file) => fs.unlink(path.join(CACHE_DIR, file)).catch(() => {}))
+        .map((file) => fs.unlink(path.join(CACHE_DIR, file)).catch(() => {})),
     );
   } catch {
     // Игнорируем ошибки очистки

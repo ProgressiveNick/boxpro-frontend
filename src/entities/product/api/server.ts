@@ -677,3 +677,57 @@ export async function getPopularProducts(): Promise<ProductType[]> {
     return [];
   }
 }
+
+const FEED_PAGE_SIZE = 200;
+
+/**
+ * Получить все товары для генерации YML-фида (без запчастей).
+ * Используется в API маршруте /api/feed/yml.
+ */
+export async function getProductsForFeed(): Promise<ProductType[]> {
+  const all: ProductType[] = [];
+  let page = 1;
+  let pageCount = 1;
+
+  try {
+    do {
+      const res = await productsServerService.find({
+        filters: {
+          part: { $ne: true },
+        },
+        pagination: { page, pageSize: FEED_PAGE_SIZE },
+        populate: {
+          kategoria: {
+            fields: ["id", "name", "slug", "documentId"],
+          },
+          pathsImgs: { fields: ["path"] },
+          harakteristici: {
+            populate: {
+              harakteristica: { fields: ["name", "type"] },
+            },
+            fields: ["string_value", "number_value"],
+          },
+        },
+        fields: [
+          "documentId",
+          "name",
+          "slug",
+          "price",
+          "previousPrice",
+          "description",
+        ],
+      });
+
+      const data = res.data as unknown as ProductType[];
+      const meta = res.meta as { pagination?: { pageCount?: number } };
+      pageCount = meta?.pagination?.pageCount ?? 1;
+      all.push(...data);
+      page += 1;
+    } while (page <= pageCount);
+
+    return all;
+  } catch (error) {
+    console.error("[getProductsForFeed] Error:", error);
+    return [];
+  }
+}
