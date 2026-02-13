@@ -1,8 +1,12 @@
-import Script from "next/script";
 import {
   getAbsoluteUrl,
   getAbsoluteImageUrl,
 } from "@/shared/lib/helpers/absoluteUrl";
+
+/** Санитизация JSON-LD для защиты от XSS (рекомендация Next.js). */
+function safeJsonLd(obj: object): string {
+  return JSON.stringify(obj).replace(/</g, "\\u003c");
+}
 
 interface OrganizationSchema {
   "@context": string;
@@ -136,10 +140,10 @@ export function OrganizationJsonLd() {
   };
 
   return (
-    <Script
+    <script
       id="organization-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
     />
   );
 }
@@ -191,10 +195,10 @@ export function ProductJsonLd({ product }: { product: ProductJsonLdProps }) {
   };
 
   return (
-    <Script
+    <script
       id="product-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
     />
   );
 }
@@ -211,10 +215,10 @@ export function BreadcrumbJsonLd({
   };
 
   return (
-    <Script
+    <script
       id="breadcrumb-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
     />
   );
 }
@@ -247,10 +251,10 @@ export function OfferCatalogJsonLd({
   };
 
   return (
-    <Script
+    <script
       id="offer-catalog-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
     />
   );
 }
@@ -270,10 +274,10 @@ export function WebsiteJsonLd() {
   };
 
   return (
-    <Script
+    <script
       id="website-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
     />
   );
 }
