@@ -1,6 +1,31 @@
 import type { NextConfig } from "next";
 
+// CSP для Яндекс.Метрики: script-src/script-src-elem должны включать mc.yandex.ru, mc.yandex.com и yastatic.net
+// https://yandex.com/support/metrica/en/code/install-counter-csp.html
+const cspDirectives = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com https://yastatic.net",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com https://yastatic.net",
+  "connect-src 'self' https://mc.yandex.ru https://mc.yandex.com wss://mc.yandex.ru wss://mc.yandex.com https://yastatic.net",
+  "img-src 'self' data: blob: https: https://mc.yandex.ru https://mc.yandex.com https://yandex.ru",
+  "child-src 'self' blob: https://mc.yandex.ru https://mc.yandex.com",
+  "frame-src 'self' blob: https://mc.yandex.ru https://mc.yandex.com",
+].join("; ");
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: cspDirectives,
+          },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
