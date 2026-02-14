@@ -1,18 +1,18 @@
-import { ProductsSlider } from "@/features/product-slider";
-import styles from "./PopularProducts.module.scss";
-import type { ProductType } from "@/entities/product";
+import { unstable_cache } from "next/cache";
+import { getPopularProducts } from "@/entities/product/server";
+import { PopularProducts as PopularProductsSlider } from "./ui/PopularProducts";
 
-type PopularProductsProps = {
-  products: ProductType[];
-};
+const REVALIDATE_SECONDS = 86400; // 24 часа
 
-export function PopularProducts({ products }: PopularProductsProps) {
-  return (
-    <section className={styles.container}>
-      <div className={styles.blockWrapper}>
-        <h2>Популярное оборудование</h2>
-        <ProductsSlider data={products} />
-      </div>
-    </section>
-  );
+async function getCachedPopularProducts() {
+  return unstable_cache(
+    async () => getPopularProducts(),
+    ["popular-products"],
+    { revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function PopularProducts() {
+  const products = await getCachedPopularProducts();
+  return <PopularProductsSlider products={products} />;
 }
