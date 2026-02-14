@@ -1,6 +1,31 @@
 import type { NextConfig } from "next";
 
+// Директивы CSP для работы Яндекс.Метрики (script-src, connect-src, img-src, frame-src, child-src)
+// https://yandex.com/support/metrica/en/code/install-counter-csp.html
+const cspDirectives = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://yastatic.net",
+  "script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://yastatic.net",
+  "connect-src 'self' https://mc.yandex.ru wss://mc.yandex.ru https://yastatic.net",
+  "img-src 'self' data: blob: https: https://mc.yandex.ru https://yandex.ru",
+  "child-src 'self' blob: https://mc.yandex.ru",
+  "frame-src 'self' blob: https://mc.yandex.ru",
+].join("; ");
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: cspDirectives,
+          },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
