@@ -356,31 +356,25 @@ function QuestionsTabContent({ product }: QuestionsTabContentProps) {
         formData.append("email", email);
       }
 
-      const response = await fetch(`/api/product/${product.documentId}/ask`, {
-        method: "POST",
-        body: formData,
-      });
+      const { submitProductAsk } = await import("@/entities/product/api/actions");
+      const result = await submitProductAsk(product.documentId, formData);
 
-      if (response.ok) {
-        const result = await response.json();
+      if (result.success) {
         setTitle("");
         setQuestion("");
         setEmail("");
         setSubmitSuccess(true);
 
-        // Обновляем список вопросов, добавляя новый
         if (result.ask) {
-          setAsks([result.ask, ...asks]);
+          setAsks([result.ask as Ask, ...asks]);
         }
 
-        // Скрываем сообщение об успехе через 3 секунды
         setTimeout(() => {
           setSubmitSuccess(false);
         }, 3000);
       } else {
-        const error = await response.json();
-        console.error("Ошибка отправки вопроса:", error);
-        alert("Ошибка отправки вопроса. Попробуйте еще раз.");
+        console.error("Ошибка отправки вопроса:", result.error);
+        alert(result.error ?? "Ошибка отправки вопроса. Попробуйте еще раз.");
       }
     } catch (error) {
       console.error("Ошибка отправки вопроса:", error);

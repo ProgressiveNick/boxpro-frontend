@@ -34,12 +34,12 @@ export function OrderPageContent({ orderId }: OrderPageContentProps) {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`/api/order/${orderId}`);
-        if (!response.ok) {
-          throw new Error("Заказ не найден");
+        const { getOrder } = await import("@/entities/order");
+        const result = await getOrder(orderId);
+        if (result.error || !result.data) {
+          throw new Error(result.error ?? "Заказ не найден");
         }
-        const result = await response.json();
-        const orderData = result.data;
+        const orderData = result.data as OrderData;
         setOrder(orderData);
 
         // Если заказ уже обработан (статус не "Не оформлен"), перенаправляем на страницу успеха

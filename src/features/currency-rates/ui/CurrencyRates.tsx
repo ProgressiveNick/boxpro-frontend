@@ -32,10 +32,8 @@ export function CurrencyRates() {
     const fetchRates = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(
-          `/api/currency-rates?codes=${selectedCurrency}`
-        );
-        const data: CurrencyRatesResponse = await response.json();
+        const { getCurrencyRates } = await import("../actions");
+        const data = await getCurrencyRates([selectedCurrency]);
         if (data.rates && data.rates.length > 0) {
           setCurrentRate(data.rates[0]);
         }
@@ -47,7 +45,6 @@ export function CurrencyRates() {
     };
 
     fetchRates();
-    // Обновляем курсы каждый час
     const interval = setInterval(fetchRates, 3600000);
     return () => clearInterval(interval);
   }, [selectedCurrency]);

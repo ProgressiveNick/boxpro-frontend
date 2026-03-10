@@ -31,31 +31,19 @@ export function OrderOneClickButton({
         sum: product.price || 0,
       };
 
-      const response = await fetch("/api/order/draft", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          order: [orderItem],
-        }),
-      });
+      const { createOrderDraft } = await import("@/entities/order");
+      const result = await createOrderDraft([orderItem]);
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.error("Ошибка создания заказа:", error);
-        alert("Ошибка создания заказа. Попробуйте еще раз.");
+      if (!result.success) {
+        console.error("Ошибка создания заказа:", result.error);
+        alert(result.error ?? "Ошибка создания заказа. Попробуйте еще раз.");
         setIsCreating(false);
         return;
       }
 
-      const result = await response.json();
-
-      if (result.success && result.documentId) {
-        // Перенаправляем на страницу созданного заказа
+      if (result.documentId) {
         router.push(`/order/${result.documentId}`);
       } else {
-        console.error("Не получен documentId заказа:", result);
         alert("Ошибка создания заказа. Попробуйте еще раз.");
         setIsCreating(false);
       }

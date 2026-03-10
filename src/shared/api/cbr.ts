@@ -92,3 +92,64 @@ export async function getCNYRate(): Promise<CurrencyRate | null> {
   return getCurrencyRate("R01375");
 }
 
+export type CurrencyRateSimple = {
+  code: string;
+  name: string;
+  value: number;
+  nominal: number;
+};
+
+function parseXMLRates(xmlText: string): CurrencyRateSimple[] {
+  const rates: CurrencyRateSimple[] = [];
+  const valuteRegex = /<Valute[^>]*>([\s\S]*?)<\/Valute>/g;
+  let match;
+
+  while ((match = valuteRegex.exec(xmlText)) !== null) {
+    const valuteBlock = match[1];
+    const charCodeMatch = valuteBlock.match(/<CharCode>([^<]*)<\/CharCode>/);
+    const valueMatch = valuteBlock.match(/<Value>([^<]*)<\/Value>/);
+    const nominalMatch = valuteBlock.match(/<Nominal>([^<]*)<\/Nominal>/);
+    const nameMatch = valuteBlock.match(/<Name>([^<]*)<\/Name>/);
+
+    if (charCodeMatch && valueMatch && nominalMatch && nameMatch) {
+      rates.push({
+        code: charCodeMatch[1],
+        name: nameMatch[1],
+        value: parseFloat(valueMatch[1].replace(",", ".")),
+        nominal: parseInt(nominalMatch[1], 10),
+      });
+    }
+  }
+
+  return rates;
+}
+
+/**
+ * Получить курсы валют по кодам (USD, CNY и т.д.)
+ * Для использования из Server Actions (виджет курсов).
+ */
+export async function getCurrencyRatesByCodes(
+  codes: string[] = ["USD", "CNY"],
+  date?: string
+): Promise<{ date: string; rates: CurrencyRateSimple[] }> {
+  const today = new Date();
+  const dateStr =
+    date ||
+    `${today.getDate().toString().padStart(2, "0")}/${(today.getMonth() + 1).toString().padStart(2, "0")}/${today.getFullYear()}`;
+
+  const response = await fetch(
+    `${CBR_API_BASE}/XML_daily.asp?date_req=${dateStr}`,
+    { next: { revalidate: 3600 } }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch currency rates");
+  }
+
+  const xmlText = await response.text();
+  const rates = parseXMLRates(xmlText);
+  const filtered = rates.filter((rate) => codes.includes(rate.code));
+
+  return { date: dateStr, rates: filtered };
+}
+

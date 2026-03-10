@@ -72,11 +72,15 @@ export function CartPageContent() {
           cookieStorage.getItem("current-order-document-id");
 
         if (existingOrderId) {
-          // Получаем существующий заказ
-          const orderResponse = await fetch(`/api/order/${existingOrderId}`);
-          if (orderResponse.ok) {
-            const orderResult = await orderResponse.json();
-            const order = orderResult.data;
+          const { getOrder } = await import("@/entities/order");
+          const orderResult = await getOrder(existingOrderId);
+          if (orderResult.data) {
+            const order = orderResult.data as {
+              tovary?: Array<{
+                count: number;
+                tovar?: { documentId: string };
+              }>;
+            };
 
             // Проверяем, совпадают ли товары
             const orderItems = order.tovary || [];
@@ -98,7 +102,6 @@ export function CartPageContent() {
           }
         }
 
-        // Создаем новый черновик заказа
         const orderData = items.map((item) => ({
           name: item.title,
           documentId: item.id,
@@ -106,22 +109,14 @@ export function CartPageContent() {
           sum: item.price * item.quantity,
         }));
 
-        const response = await fetch("/api/order/draft", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ order: orderData }),
-        });
+        const { createOrderDraft } = await import("@/entities/order");
+        const result = await createOrderDraft(orderData);
 
-        if (!response.ok) {
-          throw new Error("Ошибка создания заказа");
+        if (!result.success) {
+          throw new Error(result.error ?? "Ошибка создания заказа");
         }
 
-        const result = await response.json();
-
-        if (result.success && result.documentId) {
-          // Сохраняем documentId заказа в store и куки
+        if (result.documentId) {
           setCurrentOrderDocumentId(result.documentId);
           cookieStorage.setItem("current-order-document-id", result.documentId);
 

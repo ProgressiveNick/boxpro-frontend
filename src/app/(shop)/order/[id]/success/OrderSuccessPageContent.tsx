@@ -35,14 +35,13 @@ export function OrderSuccessPageContent({
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`/api/order/${orderId}`);
-        if (!response.ok) {
-          // Если заказ не найден, показываем ошибку
+        const { getOrder } = await import("@/entities/order");
+        const result = await getOrder(orderId);
+        if (result.error || !result.data) {
           setLoading(false);
           return;
         }
-        const result = await response.json();
-        const orderData = result.data;
+        const orderData = result.data as OrderData;
         setOrder(orderData);
 
         // Если заказ в статусе "Завершен" или "Оставлен отзыв" - перенаправляем на страницу отзыва

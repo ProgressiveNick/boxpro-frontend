@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchProductBySlug } from "@/entities/product/api/api";
+import { getProductBySlug } from "@/entities/product/api/actions";
 import { ProductType } from "@/entities/product";
 import { useRecentlyViewedStore } from "@/entities/product/model/recently-viewed-store";
 
@@ -29,10 +29,10 @@ export function useRecentlyViewedProducts(currentProductSlug?: string) {
           return;
         }
 
-        // Получаем товары по слагам через API
+        // Получаем товары по слагам через Server Action
         const productsPromises = filteredItems.map((item) =>
-          fetchProductBySlug(item.slug)
-            .then((res) => res.data)
+          getProductBySlug(item.slug)
+            .then((res) => res.data ?? null)
             .catch(() => null)
         );
 

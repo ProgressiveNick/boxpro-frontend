@@ -1,40 +1,29 @@
+import { submitLeadForm as submitLeadFormAction } from "../api/actions";
 import { LeadFormData, LeadSubmitResult } from "./types";
 
 export async function submitLeadForm(
   data: LeadFormData
 ): Promise<LeadSubmitResult> {
-  try {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("phone", data.phone);
-    if (data.message) {
-      formData.append("message", data.message);
-    }
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("phone", data.phone);
+  if (data.message) {
+    formData.append("message", data.message);
+  }
+  if (typeof window !== "undefined") {
+    formData.append("urlPage", window.location.href);
+  }
 
-    // Добавляем URL страницы
-    if (typeof window !== "undefined") {
-      formData.append("urlPage", window.location.href);
-    }
+  const result = await submitLeadFormAction(formData);
 
-    const response = await fetch("/api/lead-form", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      return {
-        success: true,
-        message:
-          "Заявка успешно отправлена! Менеджер уже спешит связаться с вами!",
-      };
-    } else {
-      throw new Error("Ошибка при отправке заявки");
-    }
-  } catch (error) {
-    console.error("Ошибка отправки формы:", error);
+  if (result.success) {
     return {
-      success: false,
-      message: "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
+      success: true,
+      message: result.message ?? "Заявка успешно отправлена! Менеджер уже спешит связаться с вами!",
     };
   }
+  return {
+    success: false,
+    message: result.error ?? "Произошла ошибка при отправке заявки. Попробуйте еще раз.",
+  };
 }

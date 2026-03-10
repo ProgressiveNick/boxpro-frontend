@@ -97,17 +97,12 @@ export const OrderForm: FC<OrderFormProps> = ({
           });
         }
 
-        const response = await fetch(`/api/order/${orderId}`, {
-          method: "PUT",
-          body: formData,
-        });
+        const { updateOrder } = await import("@/entities/order");
+        const result = await updateOrder(orderId, formData);
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Ошибка оформления заказа");
+        if (!result.success) {
+          throw new Error(result.error ?? "Ошибка оформления заказа");
         }
-
-        const result = await response.json();
 
         if (result.success) {
           // Очищаем корзину

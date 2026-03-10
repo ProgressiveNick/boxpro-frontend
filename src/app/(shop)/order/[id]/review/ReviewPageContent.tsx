@@ -51,12 +51,12 @@ export function ReviewPageContent({ orderDocumentId }: ReviewPageContentProps) {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`/api/order/${orderDocumentId}`);
-        if (!response.ok) {
-          throw new Error("Заказ не найден");
+        const { getOrder } = await import("@/entities/order");
+        const result = await getOrder(orderDocumentId);
+        if (result.error || !result.data) {
+          throw new Error(result.error ?? "Заказ не найден");
         }
-        const result = await response.json();
-        const orderData = result.data;
+        const orderData = result.data as OrderData;
 
         // Проверяем статус заказа
         if (orderData.statuses === "Оставлен отзыв") {
@@ -149,17 +149,13 @@ export function ReviewPageContent({ orderDocumentId }: ReviewPageContentProps) {
         }
       });
 
-      const response = await fetch(`/api/order/${orderDocumentId}/review`, {
-        method: "POST",
-        body: formData,
-      });
+      const { submitOrderReview } = await import("@/entities/order");
+      const result = await submitOrderReview(orderDocumentId, formData);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Ошибка отправки отзывов");
+      if (!result.success) {
+        throw new Error(result.error ?? "Ошибка отправки отзывов");
       }
 
-      // Показываем сообщение об успехе
       setSuccess(true);
 
       // Через 3 секунды перенаправляем на страницу успеха

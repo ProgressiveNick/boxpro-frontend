@@ -36,16 +36,12 @@ export function LocationSelector() {
     async (q: string, offsetValue: number, append: boolean) => {
       setIsLoading(true);
       try {
-        const params = new URLSearchParams({
-          offset: String(offsetValue),
-          count: String(PAGE_SIZE),
+        const { getCities } = await import("../actions");
+        const result = await getCities({
+          q: q || undefined,
+          offset: offsetValue,
+          count: PAGE_SIZE,
         });
-        if (q) params.set("q", q);
-
-        const response = await fetch(`/api/cities?${params}`);
-        const result = await response.json();
-
-        if (!response.ok) throw new Error(result.error || "Ошибка загрузки");
 
         if (append) {
           setCities((prev) => [...prev, ...result.data]);
@@ -127,10 +123,8 @@ export function LocationSelector() {
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          const response = await fetch(
-            `/api/geolocation?lat=${latitude}&lon=${longitude}`,
-          );
-          const data = await response.json();
+          const { getGeolocation } = await import("../actions");
+          const data = await getGeolocation(latitude, longitude);
 
           if (data.city) {
             handleCitySelect(data.city);

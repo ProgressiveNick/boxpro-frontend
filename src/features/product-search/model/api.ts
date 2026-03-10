@@ -1,4 +1,4 @@
-import { searchProducts as searchProductsApi } from "@/entities/product/api/api";
+import { searchProducts as searchProductsAction } from "@/entities/product/api/actions";
 import type { ProductType } from "@/entities/product/model/types";
 
 type SearchProductsParams = {
@@ -20,8 +20,7 @@ export type SearchProductsResponse = {
 };
 
 /**
- * Поиск товаров (клиентская функция)
- * Обертка над searchProducts из entities для обратной совместимости
+ * Поиск товаров через Server Action
  */
 export async function searchProducts(
   params: SearchProductsParams
@@ -40,20 +39,21 @@ export async function searchProducts(
     };
   }
 
-  const result = await searchProductsApi({
+  const result = await searchProductsAction({
     q: params.searchQuery,
     type: "products",
-    page: params.page || 1,
-    pageSize: params.pageSize || 5,
+    page: params.page ?? 1,
+    pageSize: params.pageSize ?? 5,
   });
 
+  const products = result.data?.products;
   return {
-    data: (result.data.products?.data || []) as ProductType[],
-    meta: result.data.products?.meta || {
+    data: (products?.data ?? []) as ProductType[],
+    meta: products?.meta ?? {
       pagination: {
         total: 0,
         page: 1,
-        pageSize: params.pageSize || 5,
+        pageSize: params.pageSize ?? 5,
         pageCount: 0,
       },
     },
