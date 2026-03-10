@@ -26,7 +26,10 @@ const tabsData = [
     label: "Гарантия",
     url: "/garant-and-remont",
   },
-
+  {
+    label: "Шоу-румы",
+    url: "/showrooms",
+  },
   {
     label: "Контакты",
     url: "/contacts",

@@ -697,31 +697,16 @@ export async function getProductsForFeed(): Promise<ProductType[]> {
         },
         pagination: { page, pageSize: FEED_PAGE_SIZE },
         populate: {
-          kategoria: {
-            fields: ["id", "name", "slug", "documentId"],
-          },
-          pathsImgs: { fields: ["path"] },
-          harakteristici: {
-            populate: {
-              harakteristica: { fields: ["name", "type"] },
-            },
-            fields: ["string_value", "number_value"],
-          },
+          kategoria: true,
+          pathsImgs: true,
+          harakteristici: { populate: { harakteristica: true } },
         },
-        fields: [
-          "documentId",
-          "name",
-          "slug",
-          "price",
-          "previousPrice",
-          "description",
-        ],
       });
 
-      const data = res.data as unknown as ProductType[];
+      const data = res.data as unknown as ProductType[] | undefined;
       const meta = res.meta as { pagination?: { pageCount?: number } };
       pageCount = meta?.pagination?.pageCount ?? 1;
-      all.push(...data);
+      if (Array.isArray(data)) all.push(...data);
       page += 1;
     } while (page <= pageCount);
 

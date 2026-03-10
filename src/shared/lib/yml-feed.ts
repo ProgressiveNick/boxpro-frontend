@@ -25,18 +25,25 @@ function stripControlChars(text: string): string {
   return text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
 }
 
+/** Идентификатор категории для YML (Strapi 5 отдаёт documentId, v4 — id). */
+function getCategoryId(cat: Category | undefined | null): string | null {
+  if (!cat) return null;
+  if (cat.documentId) return cat.documentId;
+  if (cat.id != null) return String(cat.id);
+  return null;
+}
+
 function buildCategoriesXml(categories: Category[]): string {
   const tree = new CategoryTree(categories);
   const flat = tree.getAllCategoriesFlat();
   const lines: string[] = [];
   for (const cat of flat) {
-    if (cat.id == null || !cat.name) continue;
+    const catId = getCategoryId(cat);
+    if (!catId || !cat.name) continue;
     const name = escapeXml(stripControlChars(cat.name));
-    const parentId =
-      cat.parent && "id" in cat.parent && cat.parent.id != null
-        ? ` parentId="${cat.parent.id}"`
-        : "";
-    lines.push(`    <category id="${cat.id}"${parentId}>${name}</category>`);
+    const parentCatId = cat.parent ? getCategoryId(cat.parent) : null;
+    const parentId = parentCatId ? ` parentId="${escapeXml(parentCatId)}"` : "";
+    lines.push(`    <category id="${escapeXml(catId)}"${parentId}>${name}</category>`);
   }
   return lines.join("\n");
 }
@@ -51,7 +58,7 @@ function buildOffersXml(products: ProductType[]): string {
     const id = p.documentId || p.slug;
     if (!id || !p.name || p.price == null) continue;
 
-    const categoryId = p.kategoria?.id;
+    const categoryId = getCategoryId(p.kategoria);
     if (categoryId == null) continue;
 
     const name = escapeXml(stripControlChars(p.name));
