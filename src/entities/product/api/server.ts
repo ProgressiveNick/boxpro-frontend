@@ -537,36 +537,45 @@ export async function getProductsBySlugs(
   return res.data as unknown as ProductType[];
 }
 
+/** Размер страницы при постраничной выборке slug'ов для sitemap (не превышать maxLimit Strapi, по умолчанию 100) */
+const SITEMAP_PAGE_SIZE = 100;
+
 /**
- * Получить все slugs товаров для generateStaticParams
- * Используется для статической генерации страниц товаров
+ * Получить все slugs товаров для generateStaticParams и sitemap.
+ * Используется для статической генерации страниц товаров.
+ * Обходит все страницы (Strapi REST API по умолчанию ограничивает pageSize до 100).
  */
 export async function getAllProductSlugs(): Promise<string[]> {
+  const slugs: string[] = [];
+  let page = 1;
+  let pageCount = 1;
+
   try {
-    // Получаем все товары (только slug) с пагинацией
-    // Используем большой pageSize, чтобы получить все товары за один запрос
-    const res = await Promise.race([
-      productsServerService.find({
+    do {
+      const res = await productsServerService.find({
         filters: {
           part: {
             $ne: true,
           },
         },
-        fields: ["slug"], // Получаем только slug для оптимизации
+        fields: ["slug"],
         pagination: {
-          page: 1,
-          pageSize: 10000, // Большой размер для получения всех товаров
+          page,
+          pageSize: SITEMAP_PAGE_SIZE,
         },
-      }),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Request timeout")), 30000),
-      ),
-    ]);
+      });
 
-    const products = res.data as unknown as Array<{ slug: string }>;
-    return products
-      .map((product) => product.slug)
-      .filter((slug): slug is string => Boolean(slug));
+      const products = res.data as unknown as Array<{ slug: string }>;
+      const meta = res.meta as { pagination?: { pageCount?: number } };
+      pageCount = meta?.pagination?.pageCount ?? 1;
+
+      for (const product of products ?? []) {
+        if (product?.slug) slugs.push(product.slug);
+      }
+      page += 1;
+    } while (page <= pageCount);
+
+    return slugs;
   } catch (error) {
     console.error("[getAllProductSlugs] Error:", error);
     return [];
