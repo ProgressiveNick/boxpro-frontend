@@ -31,6 +31,10 @@
   max-height: 480px;
   position: relative;
   aspect-ratio: 16/9;
+
+  @media screen and (max-width: 768px) {
+    aspect-ratio: unset;
+  }
 }
 
 .slide {
