@@ -85,7 +85,7 @@
   @media (max-width: 520px) {
     width: min-content;
   }
-  @media (max-width: 815px) {
+  @media (max-width: 768px) {
     display: none;
   }
 }
@@ -108,20 +108,8 @@
   text-align: center;
   align-items: top;
 
-  @media (max-width: 815px) {
+  @media (max-width: 768px) {
     display: none;
-  }
-}
-
-.jobTime {
-  @include text-3-mobile;
-  font-weight: 400 !important;
-  @media screen and (max-width: 1200px) {
-    @include text-3-mobile;
-  }
-
-  @media screen and (max-width: 480px) {
-    @include text-3-mobile;
   }
 }
 
@@ -133,9 +121,9 @@
     margin-left: 10px;
   }
 
-  @media screen and (max-width: 400px) {
-    display: none;
-  }
+  // @media screen and (max-width: 400px) {
+  //   display: none;
+  // }
 }
 
 .contactRow {
@@ -152,17 +140,13 @@
   align-items: flex-end;
   opacity: 0.9;
   text-wrap: nowrap;
-
-  @media (max-width: 540px) {
-    display: none;
-  }
 }
 
 .number {
   color: $color-black;
-  font-size: 18px;
+  font-size: 16px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 140%;
   width: max-content;
 
@@ -179,21 +163,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 6px;
-  background: #38435d;
-  border-radius: 8px;
 
-  @media (max-width: 885px) {
-    padding: 0px;
+  @media screen and (max-width: 480px) {
+    display: none;
   }
 }
 
 .returnCallButton {
   background: #fff;
   color: #2e3535;
-  border: none;
-  padding: 6px 8px;
-  border-radius: 6px;
+  border: 1px solid #eae8e8;
+  padding: 8px 8px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -207,11 +188,6 @@
 
   &:active {
     transform: translateY(0);
-  }
-
-  @media (max-width: 885px) {
-    background: #38435d;
-    color: #fff;
   }
 }
 
