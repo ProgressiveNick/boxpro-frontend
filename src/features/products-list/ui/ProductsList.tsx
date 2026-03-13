@@ -9,6 +9,11 @@ import { useRouter } from "next/navigation";
 import { SkeletonCard } from "@/shared/ui/skeleton";
 import { ProductsListProps } from "../model/types";
 import { DEFAULT_PAGE_SIZE } from "../lib/constants";
+import {
+  pushEcommerceEvent,
+  ECOMMERCE_CURRENCY,
+  type EcommerceProduct,
+} from "@/shared/lib/analytics/yandexEcommerce";
 
 export function ProductsList({
   products,
@@ -18,6 +23,7 @@ export function ProductsList({
   hasActiveFilters,
   isLoading = false,
   categoryPath,
+  listName = "Category",
 }: ProductsListProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -44,10 +50,27 @@ export function ProductsList({
     if (products && products.length > 0) {
       setCachedProducts(products);
     } else if (products && products.length === 0) {
-      // Очищаем кэш при пустом результате (смена фильтров), чтобы не показывать старые данные
       setCachedProducts([]);
     }
   }, [products]);
+
+  // eCommerce: просмотр списка товаров (impressions)
+  useEffect(() => {
+    const list = (products ?? []).slice(0, currentPageSize);
+    if (list.length === 0) return;
+    const impressions: EcommerceProduct[] = list.map((p, index) => ({
+      id: p.documentId,
+      name: p.name,
+      price: p.price,
+      category: p.kategoria?.name,
+      list: listName,
+      position: index + 1,
+    }));
+    pushEcommerceEvent({
+      currencyCode: ECOMMERCE_CURRENCY,
+      impressions,
+    });
+  }, [products, currentPageSize, listName]);
 
   // Отслеживаем изменение сортировки для показа placeholder характеристик
   useEffect(() => {

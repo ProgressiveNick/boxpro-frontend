@@ -1,20 +1,119 @@
 import { useCartStore, type CartItem } from "@/entities/cart/model/store";
 import styles from "./CartItem.module.scss";
 import Image from "next/image";
+import { useEffect, useRef, useState, startTransition } from "react";
 import { formattedPrice } from "@/entities/product/lib/formattedPrice";
 import { useRouter } from "next/navigation";
 import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
+import {
+  pushEcommerceEvent,
+  ECOMMERCE_CURRENCY,
+  type EcommerceProduct,
+} from "@/shared/lib/analytics/yandexEcommerce";
+
+const REMOVE_DELAY_SEC = 2;
 
 export function CartItem({ id, item }: { id: string; item: CartItem }) {
   const router = useRouter();
   const changeQuantity = useCartStore((state) => state.updateItemQuantity);
   const deleteItemToShop = useCartStore((state) => state.removeItem);
+  const [pendingRemove, setPendingRemove] = useState(false);
+  const [countdown, setCountdown] = useState(REMOVE_DELAY_SEC);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const mountedRef = useRef(true);
+
+  const performRemove = () => {
+    const p: EcommerceProduct = {
+      id: item.id,
+      name: item.title,
+      price: item.price,
+      quantity: item.quantity,
+      list: "Корзина",
+    };
+    pushEcommerceEvent({
+      currencyCode: ECOMMERCE_CURRENCY,
+      remove: { products: [p] },
+    });
+    deleteItemToShop(id);
+  };
+
+  const handleRemoveClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPendingRemove(true);
+    setCountdown(REMOVE_DELAY_SEC);
+  };
+
+  const handleCancelRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPendingRemove(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!pendingRemove) return;
+    timerRef.current = setInterval(() => {
+      if (!mountedRef.current) return;
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
+          if (mountedRef.current) {
+            setTimeout(() => performRemove(), 0);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [pendingRemove]);
 
   const handleCardClick = () => {
     if (item.slug) {
-      router.push(`/product/${item.slug}`);
+      startTransition(() => {
+        router.push(`/product/${item.slug}`);
+      });
     }
   };
+
+  if (pendingRemove) {
+    return (
+      <div
+        className={`${styles.container} ${styles.containerPendingRemove}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={styles.pendingRemoveBlock}>
+          <span className={styles.countdown}>
+            Товар будет удален через {countdown} с
+          </span>
+          <button
+            type="button"
+            className={styles.cancelRemoveBtn}
+            onClick={handleCancelRemove}
+          >
+            Отменить
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -30,10 +129,7 @@ export function CartItem({ id, item }: { id: string; item: CartItem }) {
           width={24}
           height={24}
           alt=""
-          onClick={(e) => {
-            e.stopPropagation();
-            deleteItemToShop(id);
-          }}
+          onClick={handleRemoveClick}
         />
       </div>
       <div className={styles.wrapper}>
@@ -82,10 +178,7 @@ export function CartItem({ id, item }: { id: string; item: CartItem }) {
             </button>
           </div>
 
-          <p className={styles.finalyPrice}>
-            <b>Итого:</b>
-            {` ${formattedPrice(item.price * item.quantity)}`}
-          </p>
+          <p className={styles.finalyPrice}>{formattedPrice(item.price)}</p>
         </div>
       </div>
       <p className={styles.article}>Артикул: {item.SKU}</p>

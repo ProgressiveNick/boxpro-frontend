@@ -16,6 +16,12 @@ import { PersonalDataConsent } from "@/features/personal-data-consent";
 import Dropdown from "@/shared/ui/Dropdown/Dropdown";
 import styles from "./OrderForm.module.scss";
 import ym from "react-yandex-metrika";
+import {
+  pushEcommerceEvent,
+  ECOMMERCE_CURRENCY,
+  type EcommerceProduct,
+  type EcommerceActionField,
+} from "@/shared/lib/analytics/yandexEcommerce";
 
 type OrderFormProps = {
   onSubmit: (data: OrderFormData) => void;
@@ -105,10 +111,27 @@ export const OrderForm: FC<OrderFormProps> = ({
         }
 
         if (result.success) {
-          // Очищаем корзину
+          const orderItems = orderData.order ?? [];
+          const revenue = orderItems.reduce((acc, o) => acc + o.sum, 0);
+          const actionField: EcommerceActionField = {
+            id: orderId,
+            revenue,
+          };
+          const products: EcommerceProduct[] = orderItems.map((o, idx) => ({
+            id: o.documentId,
+            name: o.name,
+            price: o.count > 0 ? o.sum / o.count : 0,
+            quantity: o.count,
+            list: "Корзина",
+            position: idx + 1,
+          }));
+          pushEcommerceEvent({
+            currencyCode: ECOMMERCE_CURRENCY,
+            purchase: { actionField, products },
+          });
+
           clearCart();
 
-          // Очищаем documentId заказа из store и куки
           useCartStore.getState().setCurrentOrderDocumentId(null);
           cookieStorage.removeItem("current-order-document-id");
 
@@ -123,7 +146,6 @@ export const OrderForm: FC<OrderFormProps> = ({
             order_payment_method: orderData.paymentMethod,
           });
 
-          // Вызываем callback успеха
           setTimeout(() => {
             onSuccess?.();
             onSubmit(orderData);
@@ -142,9 +164,26 @@ export const OrderForm: FC<OrderFormProps> = ({
         const response = await orderApi.submitOrder(orderData);
 
         if (response.success) {
+          const revenue = orderData.order.reduce((acc, item) => acc + item.sum, 0);
+          const actionField: EcommerceActionField = {
+            id: orderData.order.map((o) => o.documentId).join("-") || "order",
+            revenue,
+          };
+          const products: EcommerceProduct[] = orderData.order.map((o, idx) => ({
+            id: o.documentId,
+            name: o.name,
+            price: o.count > 0 ? o.sum / o.count : 0,
+            quantity: o.count,
+            list: "Корзина",
+            position: idx + 1,
+          }));
+          pushEcommerceEvent({
+            currencyCode: ECOMMERCE_CURRENCY,
+            purchase: { actionField, products },
+          });
+
           clearCart();
 
-          // Очищаем documentId заказа из store и куки
           useCartStore.getState().setCurrentOrderDocumentId(null);
           cookieStorage.removeItem("current-order-document-id");
 
@@ -154,7 +193,7 @@ export const OrderForm: FC<OrderFormProps> = ({
 
           ym("reachGoal", "order_form_submit", {
             order_id: orderData.order.map((item) => item.documentId),
-            order_sum: orderData.order.reduce((acc, item) => acc + item.sum, 0),
+            order_sum: revenue,
             order_date: new Date().toISOString(),
             order_status: "pending",
             order_payment_method: orderData.paymentMethod,

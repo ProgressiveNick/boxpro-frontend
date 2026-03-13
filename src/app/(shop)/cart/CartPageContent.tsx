@@ -157,7 +157,9 @@ export function CartPageContent() {
                   <ul className={styles.itemsList}>
                     {items.map((item) => (
                       <li key={item.id} className={styles.orderItem}>
-                        <span className={styles.itemName}>{item.title}</span>
+                        <span className={styles.itemName}>
+                          {item.title} × {item.quantity}
+                        </span>
                         <span className={styles.itemPrice}>
                           {formattedPrice(item.price * item.quantity)}
                         </span>
@@ -165,7 +167,8 @@ export function CartPageContent() {
                     ))}
                   </ul>
                   <div className={styles.totalPrice}>
-                    Итого: <b>{formattedPrice(totalPrice)}</b>
+                    <span>Итого:</span>
+                    <b>{formattedPrice(totalPrice)}</b>
                   </div>
                 </div>
                 <button

@@ -25,6 +25,7 @@ const YandexMetrika = () => {
         clickmap: true,
         trackLinks: true,
         accurateTrackBounce: true,
+        ecommerce: true,
       }}
       version="2"
     />

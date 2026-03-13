@@ -8,6 +8,11 @@ import { ProductType } from "@/entities/product";
 import { AttributeValue } from "@/entities/product-attributes";
 import { Button } from "@/shared/ui";
 import ym from "react-yandex-metrika";
+import {
+  pushEcommerceEvent,
+  ECOMMERCE_CURRENCY,
+  type EcommerceProduct,
+} from "@/shared/lib/analytics/yandexEcommerce";
 
 type AddProductToCartButtonType = {
   product: ProductType;
@@ -69,6 +74,20 @@ export function AddProductToCartButton({
           product_name: title,
           price: price,
           currency: "RUB",
+        });
+
+        const listName = isProductPage ? "Карточка товара" : "Каталог";
+        const ecommerceProduct: EcommerceProduct = {
+          id,
+          name: title ?? "",
+          price: price ?? 0,
+          category: product.kategoria?.name,
+          quantity: 1,
+          list: listName,
+        };
+        pushEcommerceEvent({
+          currencyCode: ECOMMERCE_CURRENCY,
+          add: { products: [ecommerceProduct] },
         });
 
         setShowButton(false);

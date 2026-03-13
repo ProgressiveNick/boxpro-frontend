@@ -3,6 +3,11 @@
 import { useCartStore } from "@/entities/cart/model/store";
 import styles from "./ProductQuantityCounter.module.scss";
 import { useCallback, useState, useEffect } from "react";
+import {
+  pushEcommerceEvent,
+  ECOMMERCE_CURRENCY,
+  type EcommerceProduct,
+} from "@/shared/lib/analytics/yandexEcommerce";
 
 type ProductQuantityCounterProps = {
   id: string;
@@ -32,6 +37,21 @@ export function ProductQuantityCounter({
       if (quantity > 1) {
         updateQuantity(id, quantity - 1);
       } else {
+        const items = useCartStore.getState().items;
+        const item = items.find((i) => i.id === id);
+        if (item) {
+          const p: EcommerceProduct = {
+            id: item.id,
+            name: item.title,
+            price: item.price,
+            quantity: item.quantity,
+            list: "Корзина",
+          };
+          pushEcommerceEvent({
+            currencyCode: ECOMMERCE_CURRENCY,
+            remove: { products: [p] },
+          });
+        }
         removeItem(id);
         onRemove?.();
       }
@@ -58,7 +78,7 @@ export function ProductQuantityCounter({
         -
       </button>
       <span className={styles.counterDisplay}>
-        {isProductPage ? `Уже в корзине ${quantity}шт.` : quantity}
+        {isProductPage ? `${quantity}шт.` : quantity}
       </span>
       <button className={styles.counterBtn} onClick={handleIncrement}>
         +
