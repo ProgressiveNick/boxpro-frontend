@@ -4,11 +4,15 @@
  */
 
 import { SITE_URL } from "@/shared/config/site";
-import { getAbsoluteUrl, getAbsoluteImageUrl } from "@/shared/lib/helpers/absoluteUrl";
+import {
+  getAbsoluteUrl,
+  getAbsoluteImageUrl,
+} from "@/shared/lib/helpers/absoluteUrl";
 import type { Category } from "@/entities/categories";
 import type { ProductType } from "@/entities/product";
 import { getSku } from "@/entities/product/lib/getSku";
 import { CategoryTree } from "@/entities/categories/lib/CategoryTree";
+import categoryMapping from "@/data/category-mapping.json";
 
 /** Экранирование символов для XML (вне CDATA): " & < > ' */
 function escapeXml(text: string): string {
@@ -25,11 +29,83 @@ function stripControlChars(text: string): string {
   return text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
 }
 
-/** Идентификатор категории для YML (Strapi 5 отдаёт documentId, v4 — id). */
+/** Формат из products-management: server/data/categories-mapping.json */
+type CategoryMappingEntry = {
+  external_id: string;
+  strapi_documentId?: string;
+  name?: string;
+};
+
+const categoryIdByDocumentId: Map<string, string> = (() => {
+  const map = new Map<string, string>();
+
+  (categoryMapping as CategoryMappingEntry[]).forEach((entry) => {
+    const xmlId = String(entry.external_id || "").trim();
+    const docId = entry.strapi_documentId
+      ? String(entry.strapi_documentId).trim()
+      : "";
+
+    // Требование Яндекса: не более 18 цифр
+    if (!xmlId || !/^\d{1,18}$/.test(xmlId)) {
+      console.warn(
+        "[yml-feed] Пропускаем запись маппинга категории с некорректным external_id:",
+        entry
+      );
+      return;
+    }
+
+    if (!docId) {
+      // Записи без strapi_documentId (например status: missing_in_strapi) не попадают в карту
+      return;
+    }
+
+    if (!map.has(docId)) {
+      map.set(docId, xmlId);
+    }
+  });
+
+  return map;
+})();
+
+/** Идентификатор категории для YML: сначала по карте (xmlCategoryId), потом фолбэк. */
 function getCategoryId(cat: Category | undefined | null): string | null {
   if (!cat) return null;
-  if (cat.documentId) return cat.documentId;
-  if (cat.id != null) return String(cat.id);
+  const documentId = cat.documentId;
+
+  if (documentId) {
+    const mappedId = categoryIdByDocumentId.get(documentId);
+    if (mappedId) {
+      return mappedId;
+    }
+
+    console.warn(
+      "[yml-feed] Для категории нет маппинга xmlCategoryId, категория будет пропущена в YML:",
+      {
+        documentId,
+        name: cat.name,
+        slug: cat.slug,
+      }
+    );
+    return null;
+  }
+
+  // Фолбэк только для случаев, когда Strapi не вернул documentId,
+  // но есть простой числовой id, соответствующий требованиям Яндекса.
+  if (cat.id != null) {
+    const numericId = String(cat.id);
+    if (/^\d{1,18}$/.test(numericId)) {
+      return numericId;
+    }
+    console.warn(
+      "[yml-feed] Числовой id категории не удовлетворяет требованиям Яндекса и будет проигнорирован:",
+      {
+        id: cat.id,
+        name: cat.name,
+        slug: cat.slug,
+      }
+    );
+  }
+
   return null;
 }
 
@@ -59,7 +135,19 @@ function buildOffersXml(products: ProductType[]): string {
     if (!id || !p.name || p.price == null) continue;
 
     const categoryId = getCategoryId(p.kategoria);
-    if (categoryId == null) continue;
+    if (categoryId == null) {
+      console.warn(
+        "[yml-feed] Товар пропущен из YML из-за отсутствия корректного categoryId:",
+        {
+          productDocumentId: p.documentId,
+          productSlug: p.slug,
+          productName: p.name,
+          categoryDocumentId: p.kategoria?.documentId,
+          categoryName: p.kategoria?.name,
+        }
+      );
+      continue;
+    }
 
     const name = escapeXml(stripControlChars(p.name));
     const vendor = escapeXml(DEFAULT_VENDOR);

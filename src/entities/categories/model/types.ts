@@ -8,6 +8,11 @@
 export type Category = {
   id: number;
   documentId?: string; // Strapi автоматически добавляет это поле
+  /**
+   * ID категории из внешнего прайс-листа (external_id в Strapi).
+   * В YML-фиде используем именно его как category id, чтобы удовлетворять требованиям Яндекса.
+   */
+  external_id?: string;
   name: string;
   slug: string;
   description?: string;

@@ -1,0 +1,1053 @@
+[
+  {
+    "external_id": "268",
+    "name": "11.11",
+    "status": "synced",
+    "strapi_id": 21,
+    "strapi_documentId": "vqujh4k8slz76ez3qgtys5vp"
+  },
+  {
+    "external_id": "103",
+    "name": "Вакуумные упаковщики",
+    "status": "synced",
+    "strapi_id": 6,
+    "strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "155",
+    "name": "Бескамерные промышленные вакуумные упаковщики",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 8,
+    "strapi_documentId": "z9x8tv0ceb15cfg3pav0hdlf",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "156",
+    "name": "Бытовые вакуумные упаковщики",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 10,
+    "strapi_documentId": "tnhbcwoq5h3ewhl6ecz2uj2q",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "301",
+    "name": "Вакуумные упаковщики для продуктов",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 12,
+    "strapi_documentId": "ddvqz89fav0lvsuqbksbha9w",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "154",
+    "name": "Двух камерные вакуумные упаковщики",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 14,
+    "strapi_documentId": "piqzup1tqlqem7apw5daies5",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "265",
+    "name": "Конвейерная вакуум упаковочная машина",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 16,
+    "strapi_documentId": "dxq3d14sfed3pwj70s35adc5",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "104",
+    "name": "Однокамерные вакуумные упаковщики",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 18,
+    "strapi_documentId": "kehaw85b4xvqszs5axyhn2si",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "157",
+    "name": "Термоусадочный танк",
+    "parent_external_id": "103",
+    "status": "synced",
+    "strapi_id": 20,
+    "strapi_documentId": "a9ml7t4nhiomfoss9aslmqbq",
+    "parent_strapi_documentId": "lr1bb117jh952xftdjtrohjw"
+  },
+  {
+    "external_id": "285",
+    "name": "До -58%",
+    "status": "synced",
+    "strapi_id": 23,
+    "strapi_documentId": "lctmw0s7x31c314dvlmrujwf"
+  },
+  {
+    "external_id": "162",
+    "name": "Запайщики лотков, скин машины, термоформовочное оборудование",
+    "status": "synced",
+    "strapi_id": 25,
+    "strapi_documentId": "xaiglyachizbcfx2udts319a"
+  },
+  {
+    "external_id": "172",
+    "name": "Запайщики лотков",
+    "parent_external_id": "162",
+    "status": "synced",
+    "strapi_id": 61,
+    "strapi_documentId": "yxmm2v93bzvp23td533rxvlm",
+    "parent_strapi_documentId": "xaiglyachizbcfx2udts319a"
+  },
+  {
+    "external_id": "173",
+    "name": "Непищевые скин упаковочные машины",
+    "parent_external_id": "162",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "174",
+    "name": "Пищевые скин упаковочные машины",
+    "parent_external_id": "162",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "175",
+    "name": "Термоформеры",
+    "parent_external_id": "162",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "163",
+    "name": "Запайщики пакетов",
+    "status": "synced",
+    "strapi_id": 27,
+    "strapi_documentId": "rwmpk3j4g5itximnzid3oxwe"
+  },
+  {
+    "external_id": "217",
+    "name": "Ножные запайщики пакетов",
+    "parent_external_id": "163",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "218",
+    "name": "Пневматические запайщики пакетов",
+    "parent_external_id": "163",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "214",
+    "name": "Роликовые (конвейерные) запайщики для тяжелых пакетов",
+    "parent_external_id": "163",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "178",
+    "name": "Роликовые (конвейерные) запайщики пакетов",
+    "parent_external_id": "163",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "216",
+    "name": "Ручные запайщики пакетов",
+    "parent_external_id": "163",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "183",
+    "name": "Запасные части и расходные материалы",
+    "status": "synced",
+    "strapi_id": 29,
+    "strapi_documentId": "uvkwuv9upjtcwolyg88oqwom"
+  },
+  {
+    "external_id": "184",
+    "name": "Для вакуумного обрудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "286",
+    "name": "Для вертикального фасовочно-упаковочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "282",
+    "name": "Для горизонтального оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "206",
+    "name": "Для горячих столов",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "287",
+    "name": "Для запайщиков лотков",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "186",
+    "name": "Для запайщиков пакетов",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "185",
+    "name": "Для картонажного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "207",
+    "name": "Для маркировочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "276",
+    "name": "Для мешкозашивочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "1139",
+    "name": "Для мясоперерабатывающего оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "1140",
+    "name": "Для куттеров",
+    "parent_external_id": "1139",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "1141",
+    "name": "Для слайсеров",
+    "parent_external_id": "1139",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "208",
+    "name": "Для оборудования HoReCa",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "303",
+    "name": "Для паллетоупаковочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "211",
+    "name": "Для пельменного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "210",
+    "name": "Для пищевого оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "266",
+    "name": "Для поршневых дозаторов",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "205",
+    "name": "Для роликовых запайщиков",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "204",
+    "name": "Для скин упаковочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "281",
+    "name": "Для стреппинг машин",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "192",
+    "name": "Для термоусадочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "261",
+    "name": "Для фасовочно-упаковочного оборудования",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "262",
+    "name": "Прочие",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "288",
+    "name": "Укупорочное оборудование",
+    "parent_external_id": "183",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "164",
+    "name": "Инспекционное оборудование",
+    "status": "synced",
+    "strapi_id": 31,
+    "strapi_documentId": "glhy84exa35jju80anqyk1n9"
+  },
+  {
+    "external_id": "243",
+    "name": "Металлодетекторы",
+    "parent_external_id": "164",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "180",
+    "name": "Чеквейеры (контрольно-динамические весы)",
+    "parent_external_id": "164",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "100",
+    "name": "Картонажное оборудование",
+    "status": "synced",
+    "strapi_id": 33,
+    "strapi_documentId": "z7zv0e17c4mvz5tk8vq5z9vl"
+  },
+  {
+    "external_id": "132",
+    "name": "Заклейщики коробов",
+    "parent_external_id": "100",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "136",
+    "name": "Обандероливатели",
+    "parent_external_id": "100",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "137",
+    "name": "Стреппинг машины",
+    "parent_external_id": "100",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "481",
+    "name": "Автоматическая стреппинг машина",
+    "parent_external_id": "137",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "133",
+    "name": "Формирователи коробов",
+    "parent_external_id": "100",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "165",
+    "name": "Маркировочное и этикетировочное оборудование",
+    "status": "synced",
+    "strapi_id": 35,
+    "strapi_documentId": "m0m7j8qdb2fxahiylsel2zwe"
+  },
+  {
+    "external_id": "219",
+    "name": "Датеры встраиваемые",
+    "parent_external_id": "165",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "179",
+    "name": "Датеры стационарные",
+    "parent_external_id": "165",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "641",
+    "name": "Ручные принтеры для печати",
+    "parent_external_id": "165",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "257",
+    "name": "Этикетировщики",
+    "parent_external_id": "165",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "166",
+    "name": "Мешкозашивочное оборудование",
+    "status": "synced",
+    "strapi_id": 37,
+    "strapi_documentId": "lbc5htqdos7dp0fjf9304d9v"
+  },
+  {
+    "external_id": "147",
+    "name": "Мясоперерабатывающее оборудование",
+    "status": "synced",
+    "strapi_id": 39,
+    "strapi_documentId": "xlavmqi0j7z9vgnwezoah0mi"
+  },
+  {
+    "external_id": "635",
+    "name": "Блокорезки",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "148",
+    "name": "Вакуумные массажеры для мяса и рыбы",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "604",
+    "name": "Вспомогательное оборудование",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "510",
+    "name": "Делители сосисок",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "160",
+    "name": "Инъекторы",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "270",
+    "name": "Клипсаторы",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "190",
+    "name": "Котлетные аппараты",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "151",
+    "name": "Куттеры",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "158",
+    "name": "Вакуумные куттеры",
+    "parent_external_id": "151",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "159",
+    "name": "Невакуумные куттеры",
+    "parent_external_id": "151",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "623",
+    "name": "Маринаторы для мяса",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "267",
+    "name": "Оборудование для производства фрикаделек",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "191",
+    "name": "Пельменные аппараты",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "149",
+    "name": "Производственные мясорубки (Волчки)",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "150",
+    "name": "Профессиональные колбасные шприцы",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "325",
+    "name": "Вакуумные колбасные шприцы",
+    "parent_external_id": "150",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "332",
+    "name": "Слайсеры",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "872",
+    "name": "Термодымовые камеры",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "153",
+    "name": "Фаршемесы промышленные",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "283",
+    "name": "Шпигорезки",
+    "parent_external_id": "147",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "121",
+    "name": "Оборудование HoReCa",
+    "status": "synced",
+    "strapi_id": 41,
+    "strapi_documentId": "ikx7vfze9gnzv9lhf6rzytoj"
+  },
+  {
+    "external_id": "212",
+    "name": "Аппараты для варки кукурузы",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "230",
+    "name": "Аппараты для корн догов",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "229",
+    "name": "Аппараты для поп корна",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "201",
+    "name": "Аппараты для приготовления хот-догов",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "252",
+    "name": "Аппараты для приготовления шаурмы",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "198",
+    "name": "Аппараты для сахарной ваты",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "228",
+    "name": "Блинные аппараты",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "227",
+    "name": "Вафельницы",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "226",
+    "name": "Гастрономические слайсеры",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "225",
+    "name": "Грили для кур",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "781",
+    "name": "Грили-саламандра",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "213",
+    "name": "Дегидраторы",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "224",
+    "name": "Жарочные поверхности",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "122",
+    "name": "Контактные грили",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "223",
+    "name": "Мармиты",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "199",
+    "name": "Миксеры для молочных коктейлей",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "189",
+    "name": "Мясорубки",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "200",
+    "name": "Печи для пиццы",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "253",
+    "name": "Рисоварки",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "274",
+    "name": "Сокоохладители",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "197",
+    "name": "Фризеры для мягкого мороженого",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "222",
+    "name": "Фритюрницы",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "221",
+    "name": "Хлеборезки",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "254",
+    "name": "Электрокипятильники",
+    "parent_external_id": "121",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "167",
+    "name": "Паллетоупаковщики (Паллетообмотчики)",
+    "status": "synced",
+    "strapi_id": 43,
+    "strapi_documentId": "g18pzg3pdn5y2j45gu5f860e"
+  },
+  {
+    "external_id": "479",
+    "name": "Мобильные паллетоупаковщики",
+    "parent_external_id": "167",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "924",
+    "name": "Обмотчики багажа",
+    "parent_external_id": "167",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "925",
+    "name": "Паллетоупаковщики с механическим натяжением",
+    "parent_external_id": "167",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "927",
+    "name": "Паллетоупаковщики с престрейчем",
+    "parent_external_id": "167",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "488",
+    "name": "Роботы-паллетайзеры",
+    "parent_external_id": "167",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "116",
+    "name": "Пищевое оборудование",
+    "status": "synced",
+    "strapi_id": 45,
+    "strapi_documentId": "es3hbp5tianktvrnrt4zth9x"
+  },
+  {
+    "external_id": "251",
+    "name": "Индукционные плиты",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "249",
+    "name": "Колбасные шприцы",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "161",
+    "name": "Коллоидные мельницы",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "117",
+    "name": "Конвекционные печи",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "250",
+    "name": "Коптильные камеры",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "118",
+    "name": "Куттеры открытого типа",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "248",
+    "name": "Лапшерезки электрические",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "187",
+    "name": "Ленточные пилы для мяса",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "306",
+    "name": "Машины для нанесения кляра (панировки)",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "238",
+    "name": "Оборудование для переработки овощей",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "239",
+    "name": "Картофелечистки",
+    "parent_external_id": "238",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "241",
+    "name": "Машины для мойки овощей",
+    "parent_external_id": "238",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "242",
+    "name": "Машины для чистки овощей",
+    "parent_external_id": "238",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "240",
+    "name": "Овощерезки",
+    "parent_external_id": "238",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "236",
+    "name": "Планетарные миксеры",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "119",
+    "name": "Подовые печи",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "234",
+    "name": "Производственные слайсеры",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "235",
+    "name": "Расстоечные шкафы",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "258",
+    "name": "Спиральные тестомесы",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "233",
+    "name": "Тестоделители-округлители",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "188",
+    "name": "Тестомесы",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "231",
+    "name": "Тестораскаточные машины",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "120",
+    "name": "Фаршемесы",
+    "parent_external_id": "116",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "168",
+    "name": "Термоусадочные аппараты",
+    "status": "synced",
+    "strapi_id": 47,
+    "strapi_documentId": "y4sixsqb2xgps24ts7lqlrc9"
+  },
+  {
+    "external_id": "215",
+    "name": "Колпаковое термоусадочное оборудование",
+    "parent_external_id": "168",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "177",
+    "name": "Нож для запайки и отрезки",
+    "parent_external_id": "168",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "788",
+    "name": "Складыватели ВПП",
+    "parent_external_id": "168",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "209",
+    "name": "Термотоннель",
+    "parent_external_id": "168",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "255",
+    "name": "Термоусадочные линии",
+    "parent_external_id": "168",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "101",
+    "name": "Упаковочное оборудование",
+    "status": "synced",
+    "strapi_id": 49,
+    "strapi_documentId": "dnx6j3ry9dpz9wpf60ipqyce"
+  },
+  {
+    "external_id": "126",
+    "name": "Блистер упаковочная машина",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "102",
+    "name": "Горизонтальные упаковочные машины",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "127",
+    "name": "Горячие столы",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "128",
+    "name": "Индукционные запайщики",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "129",
+    "name": "Клипсаторы для пакетов",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "130",
+    "name": "Укупорочное оборудование",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "131",
+    "name": "Целлофанаторы",
+    "parent_external_id": "101",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "169",
+    "name": "Упаковочные материалы",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "181",
+    "name": "Вакуумные пакеты",
+    "parent_external_id": "169",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "256",
+    "name": "Пленка для скин-упаковочных машин",
+    "parent_external_id": "169",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "244",
+    "name": "Стрейч-пленка",
+    "parent_external_id": "169",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "273",
+    "name": "Стреппинг-лента",
+    "parent_external_id": "169",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "245",
+    "name": "Термоусадочная пленка ПОФ",
+    "parent_external_id": "169",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "140",
+    "name": "Фальцевальные машины",
+    "status": "synced",
+    "strapi_id": 53,
+    "strapi_documentId": "ahqrbp09npz4uuglp25btdht"
+  },
+  {
+    "external_id": "170",
+    "name": "Фармацевтическое оборудование",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "182",
+    "name": "Капсуляторы",
+    "parent_external_id": "170",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "269",
+    "name": "Счетчики капсул/таблеток",
+    "parent_external_id": "170",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "141",
+    "name": "Фасовочно-упаковочное оборудование",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "142",
+    "name": "Вертикальные упаковочные базы",
+    "parent_external_id": "141",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "143",
+    "name": "Вертикальные фасовочно упаковочные машины (со встроенным дозатором)",
+    "parent_external_id": "141",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "144",
+    "name": "Дозаторы для жидкости поршневые",
+    "parent_external_id": "141",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "145",
+    "name": "Дозаторы мелкопорционной продукции",
+    "parent_external_id": "141",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "146",
+    "name": "Дозаторы сыпучих, трудносыпучих продуктов",
+    "parent_external_id": "141",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "284",
+    "name": "Сопутствующее",
+    "parent_external_id": "141",
+    "status": "missing_in_strapi"
+  },
+  {
+    "external_id": "171",
+    "name": "Фильтр бумага",
+    "status": "missing_in_strapi"
+  }
+]
