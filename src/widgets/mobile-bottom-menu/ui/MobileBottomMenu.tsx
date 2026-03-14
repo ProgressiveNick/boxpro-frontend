@@ -1,69 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { OpenFavoritesButton } from "@/widgets/favorites-button";
 import { OpenCartButton } from "@/widgets/cart-button";
-import { MobileSearchInput } from "./MobileSearchInput";
-import { useCatalogMenuStore } from "@/widgets/catalog-menu/model";
+import { SearchInput } from "@/features/product-search";
+import { useUIStore } from "@/shared/store/useUIStore";
 import styles from "./MobileBottomMenu.module.scss";
 
 export function MobileBottomMenu() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const activeUI = useUIStore((s) => s.activeUI);
+  const openSearch = useUIStore((s) => s.openSearch);
+  const closeAll = useUIStore((s) => s.closeAll);
+
+  const isSearchOpen = activeUI === "search";
 
   const handleSearchToggle = () => {
-    const nextOpen = !isSearchOpen;
-    if (nextOpen) {
-      useCatalogMenuStore.getState().setIsOpen(false);
-    }
-    setIsSearchOpen(nextOpen);
-  };
-
-  const handleCloseSearch = () => {
-    setIsSearchOpen(false);
+    if (isSearchOpen) closeAll();
+    else openSearch();
   };
 
   useEffect(() => {
-    const unregister = useCatalogMenuStore
-      .getState()
-      .registerCloseSearch(() => setIsSearchOpen(false));
-    return unregister;
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
-      ) {
-        setIsSearchOpen(false);
-      }
-    }
-
-    if (isSearchOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      const scrollY = window.scrollY;
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-    }
-
+    if (!isSearchOpen) return;
+    const scrollY = window.scrollY;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      const scrollY = document.body.style.top;
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
       document.body.style.right = "";
-      if (scrollY) {
-        window.scrollTo(0, Math.abs(parseInt(scrollY, 10)));
-      }
+      window.scrollTo(0, scrollY);
     };
   }, [isSearchOpen]);
 
@@ -128,13 +101,16 @@ export function MobileBottomMenu() {
       </div>
 
       {isSearchOpen && (
-        <div className={styles.searchOverlay}>
-          <div className={styles.searchContainer} ref={searchContainerRef}>
+        <div
+          className={styles.searchOverlay}
+          data-ui-surface="search"
+        >
+          <div className={styles.searchContainer}>
             <div className={styles.searchHeader}>
               <h3>Поиск товаров</h3>
               <button
                 className={styles.closeButton}
-                onClick={handleCloseSearch}
+                onClick={closeAll}
                 aria-label="Закрыть поиск"
               >
                 <svg
@@ -154,7 +130,7 @@ export function MobileBottomMenu() {
                 </svg>
               </button>
             </div>
-            <MobileSearchInput onClose={handleCloseSearch} />
+            <SearchInput variant="mobile" onClose={closeAll} />
           </div>
         </div>
       )}

@@ -3,7 +3,6 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useReturnCallFormStore } from "@/widgets/return-call-form/model/store";
 import { PhoneInput, getFullPhoneNumber } from "@/shared/ui/PhoneInput";
 import { PersonalDataConsent } from "@/features/personal-data-consent";
 import {
@@ -13,8 +12,12 @@ import {
 } from "@/entities/return-call-form";
 import styles from "./ReturnCallForm.module.scss";
 
-export function ReturnCallForm() {
-  const { isOpen, closeForm } = useReturnCallFormStore();
+type ReturnCallFormProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export function ReturnCallForm({ isOpen, onClose }: ReturnCallFormProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
@@ -48,7 +51,7 @@ export function ReturnCallForm() {
         reset();
         // Закрываем форму через 3 секунды
         setTimeout(() => {
-          closeForm();
+          onClose();
           setIsSuccess(false);
         }, 3000);
       } else {
@@ -67,7 +70,11 @@ export function ReturnCallForm() {
   // Показываем состояние успеха
   if (isSuccess) {
     return (
-      <div className={styles.overlay} onClick={closeForm}>
+      <div
+        className={styles.overlay}
+        data-ui-surface="returnCall"
+        onClick={onClose}
+      >
         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
           <div className={styles.successContent}>
             <div className={styles.successIcon}>
@@ -92,7 +99,7 @@ export function ReturnCallForm() {
             <p className={styles.successMessage}>
               Менеджер свяжется с вами в течение 5-ти минут
             </p>
-            <button className={styles.closeButton} onClick={closeForm}>
+            <button className={styles.closeButton} onClick={onClose}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M18 6L6 18M6 6l12 12"
@@ -110,7 +117,11 @@ export function ReturnCallForm() {
   }
 
   return (
-    <div className={styles.overlay} onClick={closeForm}>
+    <div
+      className={styles.overlay}
+      data-ui-surface="returnCall"
+      onClick={onClose}
+    >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.headWrapper}>
           <div className={styles.headContent}>
@@ -120,7 +131,7 @@ export function ReturnCallForm() {
               время
             </p>
           </div>
-          <button className={styles.closeButton} onClick={closeForm}>
+          <button className={styles.closeButton} onClick={onClose}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M18 6L6 18M6 6l12 12"

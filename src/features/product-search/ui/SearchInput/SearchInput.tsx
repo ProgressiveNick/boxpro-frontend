@@ -4,21 +4,42 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./SearchInput.module.scss";
 import { SearchDropdown } from "../SearchDropdown/SearchDropdown";
 import { searchProducts } from "../../model/api";
-import { useCatalogMenuStore } from "@/widgets/catalog-menu/model";
+import { useUIStore } from "@/shared/store/useUIStore";
 
 import Image from "next/image";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import { ProductType } from "@/entities/product";
 
-export function SearchInput() {
+type SearchInputProps = {
+  variant?: "desktop" | "mobile";
+  onClose?: () => void;
+  pageSize?: number;
+};
+
+export function SearchInput({
+  variant = "desktop",
+  onClose,
+  pageSize: pageSizeProp,
+}: SearchInputProps = {}) {
+  const activeUI = useUIStore((s) => s.activeUI);
+  const openSearch = useUIStore((s) => s.openSearch);
+  const closeAll = useUIStore((s) => s.closeAll);
+
+  const pageSize = pageSizeProp ?? (variant === "mobile" ? 10 : 5);
+  const isMobile = variant === "mobile";
+
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<ProductType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [currentSearchQuery, setCurrentSearchQuery] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isSearchOpen = activeUI === "search";
+  const showDropdown =
+    isSearchOpen && (query.length >= 3 || products.length > 0);
 
   const loadProducts = useCallback(
     async (searchQuery: string, page: number, isNewSearch: boolean = false) => {
@@ -29,16 +50,14 @@ export function SearchInput() {
         const response = await searchProducts({
           searchQuery,
           page,
-          pageSize: 5,
+          pageSize,
         });
 
         if (isNewSearch || page === 1) {
-          // Новый поиск или первая страница - заменяем все товары
           setProducts(response.data);
           setCurrentPage(1);
           setCurrentSearchQuery(searchQuery);
         } else {
-          // Последующие страницы - добавляем только новые товары
           setProducts((prev) => {
             const existingIds = new Set(prev.map((p) => p.documentId));
             const newProducts = response.data.filter(
@@ -49,10 +68,7 @@ export function SearchInput() {
         }
 
         setHasMore(page < response.meta.pagination.pageCount);
-        setIsDropdownVisible(true);
-        if (useCatalogMenuStore.getState().isOpen) {
-          useCatalogMenuStore.getState().setIsOpen(false);
-        }
+        openSearch();
       } catch (error) {
         console.error("Error searching products:", error);
         if (isNewSearch || page === 1) {
@@ -63,7 +79,7 @@ export function SearchInput() {
         setIsLoading(false);
       }
     },
-    [],
+    [openSearch, pageSize],
   );
 
   const debouncedSearch = useDebounce((searchQuery: unknown) => {
@@ -76,8 +92,6 @@ export function SearchInput() {
           setIsLoading(false);
         }
       } else {
-        // Если запрос слишком короткий, скрываем дропдаун
-        setIsDropdownVisible(false);
         setIsLoading(false);
         setProducts([]);
         setCurrentPage(1);
@@ -97,91 +111,79 @@ export function SearchInput() {
 
   useEffect(() => {
     if (query.length >= 3) {
-      setIsDropdownVisible(true);
-      if (useCatalogMenuStore.getState().isOpen) {
-        useCatalogMenuStore.getState().setIsOpen(false);
-      }
-      // loading только при ожидании нового поиска (не перезаписываем после получения результатов)
+      openSearch();
       if (query !== currentSearchQuery) {
         setIsLoading(true);
       }
     }
     debouncedSearch(query);
-  }, [query, debouncedSearch, currentSearchQuery]);
+  }, [query, debouncedSearch, currentSearchQuery, openSearch]);
 
   useEffect(() => {
-    const unregister = useCatalogMenuStore
-      .getState()
-      .registerCloseSearch(() => setIsDropdownVisible(false));
-    return unregister;
-  }, []);
-
-  useEffect(() => {
-    useCatalogMenuStore.getState().setSearchOpen(isDropdownVisible);
-  }, [isDropdownVisible]);
-
-  const handleClear = useCallback(() => {
-    setQuery("");
-    setProducts([]);
-    setIsDropdownVisible(false);
-    setCurrentPage(1);
-    setHasMore(true);
-    setCurrentSearchQuery("");
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownVisible(false);
-      }
-    }
-
     function handleScroll() {
-      setIsDropdownVisible(false);
+      if (activeUI !== "search") return;
+      closeAll();
       setQuery("");
       setProducts([]);
       setCurrentPage(1);
       setHasMore(true);
       setCurrentSearchQuery("");
     }
-
-    document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeUI, closeAll]);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const handleClear = useCallback(() => {
+    setQuery("");
+    setProducts([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    setCurrentSearchQuery("");
+    if (!isMobile) closeAll();
+  }, [closeAll, isMobile]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
   const handleClose = () => {
-    setIsDropdownVisible(false);
+    if (isMobile && onClose) onClose();
+    else closeAll();
   };
 
-  return (
-    <div
-      className={`${styles.wrapper} ${query ? styles.hasQuery : ""}`}
-      ref={wrapperRef}
-    >
+  // Mobile: focus on mount and Escape to close
+  useEffect(() => {
+    if (!isMobile) return;
+    inputRef.current?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && onClose) onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMobile, onClose]);
+
+  const placeholder =
+    variant === "mobile" ? "Введите название товара..." : "Поиск товаров...";
+
+  const inputEl = (
+    <>
       <input
+        ref={inputRef}
         type="text"
-        className={styles.input}
-        placeholder="Поиск товаров..."
+        className={isMobile ? styles.inputMobile : styles.input}
+        placeholder={placeholder}
         value={query}
         onChange={handleInputChange}
+        onFocus={!isMobile ? openSearch : undefined}
       />
       {query && (
         <button
           type="button"
           className={styles.clearButton}
-          onClick={handleClear}
+          onClick={() => {
+            handleClear();
+            if (isMobile && inputRef.current) inputRef.current.focus();
+          }}
           aria-label="Очистить поиск"
         >
           <svg
@@ -201,14 +203,53 @@ export function SearchInput() {
           </svg>
         </button>
       )}
-      <Image
-        src="/icons/search.svg"
-        width={20}
-        height={20}
-        alt=""
-        className={styles.searchIcon}
-      />
-      {isDropdownVisible && (
+        {!isMobile && (
+          <Image
+            src="/icons/search.svg"
+            width={20}
+            height={20}
+            alt=""
+            className={styles.searchIcon}
+          />
+        )}
+        {isMobile && (
+          <div className={styles.searchIcon}>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        )}
+    </>
+  );
+
+  return (
+    <div
+      className={
+        isMobile
+          ? styles.wrapperMobile
+          : `${styles.wrapper} ${query ? styles.hasQuery : ""}`
+      }
+      ref={wrapperRef}
+      data-ui-surface={isSearchOpen ? "search" : undefined}
+    >
+      {isMobile ? (
+        <div className={styles.containerMobile}>{inputEl}</div>
+      ) : (
+        inputEl
+      )}
+      {showDropdown && (
         <SearchDropdown
           products={products}
           onClose={handleClose}

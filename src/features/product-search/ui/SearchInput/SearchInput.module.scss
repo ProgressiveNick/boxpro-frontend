@@ -59,3 +59,34 @@
   height: 20px;
   pointer-events: none;
 }
+
+// Mobile variant (used in overlay)
+.wrapperMobile {
+  width: 100%;
+  position: relative;
+}
+
+.containerMobile {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.inputMobile {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+}

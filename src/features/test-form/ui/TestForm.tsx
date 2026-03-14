@@ -3,7 +3,6 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTestFormStore } from "@/widgets/test-form/model/store";
 import { PhoneInput, getFullPhoneNumber } from "@/shared/ui/PhoneInput";
 import { FileUpload } from "@/shared/ui/FileUpload";
 import { FormInput } from "@/shared/ui/FormInput/index";
@@ -17,17 +16,20 @@ import styles from "./TestForm.module.scss";
 import ym from "react-yandex-metrika";
 
 type TestFormProps = {
+  isOpen: boolean;
+  onClose: () => void;
   title?: string;
   description?: string;
   buttonText?: string;
 };
 
 export function TestForm({
+  isOpen,
+  onClose,
   title = "Бесплатно протестируем упаковочное оборудование на ваших образцах",
   description = "Оставьте заявку и мы договоримся обо всех условиях: подготовим оборудование, запросим образцы и протестируем - результат увидите очно или в формате фото\\видеозаписи",
   buttonText = "Получить консультацию\\КП",
 }: TestFormProps) {
-  const { isOpen, closeForm } = useTestFormStore();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [showFileUpload, setShowFileUpload] = React.useState(false);
@@ -76,7 +78,7 @@ export function TestForm({
         setShowFileUpload(false);
         // Закрываем форму через 3 секунды
         setTimeout(() => {
-          closeForm();
+          onClose();
           setIsSuccess(false);
         }, 3000);
       } else {
@@ -95,7 +97,11 @@ export function TestForm({
   // Показываем состояние успеха
   if (isSuccess) {
     return (
-      <div className={styles.overlay} onClick={closeForm}>
+      <div
+        className={styles.overlay}
+        data-ui-surface="test"
+        onClick={onClose}
+      >
         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
           <div className={styles.successContent}>
             <div className={styles.successIcon}>
@@ -120,7 +126,7 @@ export function TestForm({
             <p className={styles.successMessage}>
               Менеджер свяжется с вами в течение 5-ти минут
             </p>
-            <button className={styles.closeButton} onClick={closeForm}>
+            <button className={styles.closeButton} onClick={onClose}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M18 6L6 18M6 6l12 12"
@@ -138,14 +144,18 @@ export function TestForm({
   }
 
   return (
-    <div className={styles.overlay} onClick={closeForm}>
+    <div
+      className={styles.overlay}
+      data-ui-surface="test"
+      onClick={onClose}
+    >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.headWrapper}>
           <div className={styles.headContent}>
             <h2 className={styles.title}>{title}</h2>
             <p className={styles.description}>{description}</p>
           </div>
-          <button className={styles.closeButton} onClick={closeForm}>
+          <button className={styles.closeButton} onClick={onClose}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M18 6L6 18M6 6l12 12"

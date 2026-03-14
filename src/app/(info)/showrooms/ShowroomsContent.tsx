@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTestFormStore } from "@/widgets/test-form/model/store";
+import { useUIStore } from "@/shared/store/useUIStore";
 import styles from "./Showrooms.module.scss";
 
 const SHOWROOM_IMAGES = [
@@ -15,7 +15,7 @@ const SHOWROOM_IMAGES = [
 ] as const;
 
 export function ShowroomsContent() {
-  const openForm = useTestFormStore((s) => s.openForm);
+  const openTestForm = useUIStore((s) => s.openTestForm);
 
   return (
     <section className={styles.container}>
@@ -47,7 +47,7 @@ export function ShowroomsContent() {
               <button
                 type="button"
                 className={styles.ctaButton}
-                onClick={openForm}
+                onClick={openTestForm}
               >
                 Записаться на тестирование
               </button>

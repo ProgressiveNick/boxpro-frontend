@@ -90,10 +90,14 @@
   }
 }
 
-.catalogButton {
+.catalogButtonWrapper {
   @media (max-width: 815px) {
     order: 1;
   }
+}
+
+.catalogButton {
+  // Стили порядка перенесены в .catalogButtonWrapper (обёртка для data-ui-trigger)
 }
 
 .catalogButtonAboveSearch {

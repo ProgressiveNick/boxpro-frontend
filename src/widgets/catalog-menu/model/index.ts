@@ -1,1 +1,1 @@
-export { useCatalogMenuStore } from "./catalog-menu.store";
+// UI state for catalog menu is now in useUIStore (shared/store/useUIStore)

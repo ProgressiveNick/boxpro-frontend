@@ -1,6 +1,7 @@
 "use client";
 
 import { TestForm } from "@/features/test-form";
+import { useUIStore } from "@/shared/store/useUIStore";
 
 type TestFormModalProps = {
   title?: string;
@@ -9,5 +10,14 @@ type TestFormModalProps = {
 };
 
 export function TestFormModal(props: TestFormModalProps) {
-  return <TestForm {...props} />;
+  const activeUI = useUIStore((s) => s.activeUI);
+  const closeAll = useUIStore((s) => s.closeAll);
+
+  return (
+    <TestForm
+      {...props}
+      isOpen={activeUI === "test"}
+      onClose={closeAll}
+    />
+  );
 }

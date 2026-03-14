@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 // Валидация переменных окружения в самом начале загрузки приложения
-// CI/CD: автоматический деплой при коммитах в main
 import "@/shared/lib/env-validation/init";
 
 import "@/shared/styles/globals.css";
 import "@/shared/styles/header.css";
 import "@/shared/styles/footer.css";
 import { ScrollToTop } from "@/shared/components/ScrollToTop/ScrollToTop";
+import { GlobalUICloseHandler } from "@/shared/components/GlobalUICloseHandler";
 import { TestFormModal } from "@/widgets/test-form";
 import { ConsultationFormModal } from "@/widgets/consultation-form";
 import {
@@ -93,6 +93,7 @@ export default function RootLayout({
       <body>
         <ScrollToTop />
         <LayoutProvider>{children}</LayoutProvider>
+        <GlobalUICloseHandler />
         <TestFormModal />
         <ConsultationFormModal />
         <YandexMetrikaWrapper />

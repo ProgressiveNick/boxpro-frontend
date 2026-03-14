@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import Link from "next/link";
 import { Navigation } from "swiper/modules";
-import { useTestFormStore } from "@/widgets/test-form/model/store";
+import { useUIStore } from "@/shared/store/useUIStore";
 
 const tabsData = [
   {
@@ -156,9 +156,7 @@ export function TabMenuContent() {
         <SwiperSlide className={styles.slideTab}>
           <div
             className={`${styles.tablineTab} ${styles.promoTab}`}
-            onClick={() => {
-              useTestFormStore.setState({ isOpen: true });
-            }}
+            onClick={() => useUIStore.getState().openTestForm()}
           >
             Бесплатное тестирование
           </div>

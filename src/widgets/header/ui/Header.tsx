@@ -13,17 +13,24 @@ import { CatalogButton } from "@/shared/ui";
 import Logo from "@/shared/ui/logo/Logo";
 import { OpenCartButton } from "@/widgets/cart-button";
 import { TabMenu } from "@/widgets/client-widgets";
-import { useCatalogMenuStore } from "@/widgets/catalog-menu/model";
+import { useUIStore } from "@/shared/store/useUIStore";
 import { OpenFavoritesButton } from "@/widgets/favorites-button";
-import {
-  ReturnCallFormModal,
-  useReturnCallFormStore,
-} from "@/widgets/return-call-form";
+import { ReturnCallFormModal } from "@/widgets/return-call-form";
 import styles from "./Header.module.scss";
 
 export function Header() {
-  const { isOpen, toggle, isSearchOpen } = useCatalogMenuStore();
-  const { openForm } = useReturnCallFormStore();
+  const activeUI = useUIStore((s) => s.activeUI);
+  const openCatalog = useUIStore((s) => s.openCatalog);
+  const closeAll = useUIStore((s) => s.closeAll);
+  const openReturnCallForm = useUIStore((s) => s.openReturnCallForm);
+
+  const isCatalogOpen = activeUI === "catalog";
+  const isSearchOpen = activeUI === "search";
+
+  const handleCatalogClick = () => {
+    if (isCatalogOpen) closeAll();
+    else openCatalog();
+  };
 
   return (
     <>
@@ -35,11 +42,16 @@ export function Header() {
             <CurrencyRates />
             <LocationSelector />
           </div>
-          <CatalogButton
-            isOpen={isOpen}
-            onClick={toggle}
-            className={`${styles.catalogButton} ${isSearchOpen ? styles.catalogButtonAboveSearch : ""}`}
-          />
+          <div
+            data-ui-trigger="catalog"
+            className={styles.catalogButtonWrapper}
+          >
+            <CatalogButton
+              isOpen={isCatalogOpen}
+              onClick={handleCatalogClick}
+              className={`${styles.catalogButton} ${isSearchOpen ? styles.catalogButtonAboveSearch : ""}`}
+            />
+          </div>
           <div className={styles.searchWrapper}>
             <SearchInput />
           </div>
@@ -52,7 +64,7 @@ export function Header() {
                 </Link>
               </div>
               <div className={styles.actionsContainer}>
-                <button className={styles.returnCallButton} onClick={openForm}>
+                <button className={styles.returnCallButton} onClick={openReturnCallForm}>
                   Обратный звонок
                 </button>
               </div>

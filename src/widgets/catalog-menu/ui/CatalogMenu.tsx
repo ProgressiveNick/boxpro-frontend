@@ -1,23 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 import styles from "./CatalogMenu.module.scss";
+import mobileMenuStyles from "./MobileMenu.module.scss";
 import { Category, CategoryMenuItem } from "@/entities/categories";
-import { useCatalogMenuStore } from "../model";
+import { useUIStore } from "@/shared/store/useUIStore";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
-import { MobileMenu } from "./MobileMenu";
-import { useConsultationFormStore } from "@/widgets/consultation-form";
 
 type CatalogMenuProps = {
   categories: Category[];
 };
 
 export function CatalogMenu({ categories }: CatalogMenuProps) {
-  const { isOpen, setIsOpen } = useCatalogMenuStore();
-  const { openForm } = useConsultationFormStore();
+  const activeUI = useUIStore((s) => s.activeUI);
+  const closeAll = useUIStore((s) => s.closeAll);
+  const openConsultationForm = useUIStore((s) => s.openConsultationForm);
+  const isOpen = activeUI === "catalog";
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
   const [hoveredSubCategory, setHoveredSubCategory] = useState<Category | null>(
+    null,
+  );
+  const [openCategory, setOpenCategory] = useState<Category | null>(null);
+  const [openSubCategory, setOpenedSubCategory] = useState<Category | null>(
     null,
   );
   const isMobile = useMediaQuery(640);
@@ -41,7 +47,11 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
   return (
     <>
       {!isMobile ? (
-        <div className={styles.overlay} onClick={() => setIsOpen(false)}>
+        <div
+          className={styles.overlay}
+          data-ui-surface="catalog"
+          onClick={() => closeAll()}
+        >
           <nav className={styles.menu} onClick={(e) => e.stopPropagation()}>
             <div className={styles.content}>
               {/* Первый уровень */}
@@ -52,7 +62,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                     category={category}
                     allCategories={categories}
                     onHover={() => setHoveredCategory(category)}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => closeAll()}
                   />
                 ))}
               </div>
@@ -74,7 +84,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                           category={subCategory}
                           allCategories={categories}
                           onHover={() => setHoveredSubCategory(subCategory)}
-                          onClick={() => setIsOpen(false)}
+                          onClick={() => closeAll()}
                         />
                       ))}
                     </div>
@@ -95,7 +105,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                               category={item}
                               allCategories={categories}
                               type="secondary"
-                              onClick={() => setIsOpen(false)}
+                              onClick={() => closeAll()}
                               className={styles.tertiaryCustum}
                             />
                           ))}
@@ -117,8 +127,8 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                     <button
                       className={styles.helpButton}
                       onClick={() => {
-                        setIsOpen(false);
-                        openForm();
+                        closeAll();
+                        openConsultationForm();
                       }}
                     >
                       Оставить заявку
@@ -130,7 +140,118 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
           </nav>
         </div>
       ) : (
-        <MobileMenu categories={categories} />
+        <div
+          className={mobileMenuStyles.overlay}
+          data-ui-surface="catalog"
+        >
+          <div className={mobileMenuStyles.content}>
+            {!openCategory && !openSubCategory && (
+              <h2 className={mobileMenuStyles.title}>Каталог</h2>
+            )}
+
+            {openCategory && !openSubCategory && (
+              <>
+                <div
+                  className={mobileMenuStyles.resetButton}
+                  onClick={() => {
+                    setOpenCategory(null);
+                    setOpenedSubCategory(null);
+                  }}
+                >
+                  <Image
+                    src="/icons/ArrowLeft.svg"
+                    width={32}
+                    height={32}
+                    alt=""
+                  />
+                  <p>Назад</p>
+                </div>
+                <h2 className={mobileMenuStyles.title}>{openCategory.name}</h2>
+              </>
+            )}
+
+            {openSubCategory && (
+              <>
+                <div
+                  className={mobileMenuStyles.resetButton}
+                  onClick={() => setOpenedSubCategory(null)}
+                >
+                  <Image
+                    src="/icons/ArrowLeft.svg"
+                    width={32}
+                    height={32}
+                    alt=""
+                  />
+                  <p>Назад</p>
+                </div>
+                <h2 className={mobileMenuStyles.title}>
+                  {openSubCategory.name}
+                </h2>
+              </>
+            )}
+            <div className={mobileMenuStyles.categoryList}>
+              {!openCategory &&
+                !openSubCategory &&
+                categories.map((category) => (
+                  <div
+                    className={mobileMenuStyles.categoryItem}
+                    key={category.id}
+                  >
+                    <CategoryMenuItem
+                      category={category}
+                      allCategories={categories}
+                      className={mobileMenuStyles.customCard}
+                      showArrow={
+                        category.childs && category.childs?.length > 0
+                      }
+                      onArrowClick={() => setOpenCategory(category)}
+                      onClick={closeAll}
+                    />
+                  </div>
+                ))}
+
+              {openCategory &&
+                !openSubCategory &&
+                openCategory.childs?.map((category) => (
+                  <div
+                    className={mobileMenuStyles.categoryItem}
+                    key={category.id}
+                  >
+                    <CategoryMenuItem
+                      category={category}
+                      allCategories={categories}
+                      className={mobileMenuStyles.customCard}
+                      showArrow={
+                        category.childs && category.childs?.length > 0
+                      }
+                      onArrowClick={() => setOpenedSubCategory(category)}
+                      onClick={closeAll}
+                    />
+                  </div>
+                ))}
+
+              {openCategory &&
+                openSubCategory &&
+                openSubCategory.childs?.map((category) => (
+                  <div
+                    className={mobileMenuStyles.categoryItem}
+                    key={category.id}
+                  >
+                    <CategoryMenuItem
+                      category={category}
+                      allCategories={categories}
+                      className={mobileMenuStyles.customCard}
+                      showArrow={
+                        category.childs && category.childs?.length > 0
+                      }
+                      onArrowClick={() => setOpenedSubCategory(category)}
+                      onClick={closeAll}
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

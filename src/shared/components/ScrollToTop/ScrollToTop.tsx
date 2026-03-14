@@ -20,7 +20,7 @@ export function ScrollToTop() {
 
     scrollToTop();
 
-    // Повторяем скролл: Next.js подменяет loading → контент асинхронно,
+    // Повторяем скролл: Next.js подменяет loadingч → контент асинхронно,
     // и скролл может сбрасываться. Повтор через rAF и таймауты ловит все фазы.
     const rafId = requestAnimationFrame(() => scrollToTop());
     const t1 = setTimeout(scrollToTop, 50);

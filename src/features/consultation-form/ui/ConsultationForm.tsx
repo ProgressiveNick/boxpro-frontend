@@ -83,7 +83,11 @@ export function ConsultationForm({
   // Показываем состояние успеха
   if (isSuccess) {
     return (
-      <div className={styles.overlay} onClick={onClose}>
+      <div
+        className={styles.overlay}
+        data-ui-surface="consultation"
+        onClick={onClose}
+      >
         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
           <div className={styles.successContent}>
             <div className={styles.successIcon}>
@@ -126,7 +130,11 @@ export function ConsultationForm({
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div
+      className={styles.overlay}
+      data-ui-surface="consultation"
+      onClick={onClose}
+    >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.headWrapper}>
           <div className={styles.headContent}>
