@@ -9,6 +9,9 @@ export type UIPanelId =
 
 type UIStoreState = {
   activeUI: UIPanelId | null;
+  /** Верхняя панель шапки скрыта, т.к. пользователь проскроллил вниз (через Intersection Observer) */
+  scrollPastThreshold: boolean;
+  setScrollPastThreshold: (value: boolean) => void;
   openCatalog: () => void;
   openSearch: () => void;
   openConsultationForm: () => void;
@@ -19,6 +22,8 @@ type UIStoreState = {
 
 export const useUIStore = create<UIStoreState>((set) => ({
   activeUI: null,
+  scrollPastThreshold: false,
+  setScrollPastThreshold: (value) => set({ scrollPastThreshold: value }),
 
   openCatalog: () => set({ activeUI: "catalog" }),
   openSearch: () => set({ activeUI: "search" }),

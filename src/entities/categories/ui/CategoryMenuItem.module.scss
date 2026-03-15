@@ -18,6 +18,11 @@
     cursor: pointer;
     background-color: #ececec;
   }
+
+  &.active {
+    background-color: #e2e6f7;
+    border-color: $color-blue;
+  }
 }
 
 .imageWrapper {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {
   PopularProducts,
-  CategoriesCards,
+  HomeCatalogCategories,
   ContactsBlock,
   AdvantagesBlock,
   PromoBanner,
@@ -21,7 +21,7 @@ export default async function HomePage() {
   return (
     <>
       <PromoBanner />
-      <CategoriesCards />
+      <HomeCatalogCategories />
       <PopularProducts />
       <RecentlyViewedBlock />
       <AdvantagesBlock />

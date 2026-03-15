@@ -1,0 +1,266 @@
+@use "@styles/_variables.scss" as *;
+@use "@styles/_mixins.scss" as *;
+
+.container {
+  max-width: 100%;
+  padding: 15px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 0;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 100%;
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+}
+
+.title {
+  @include headline-2;
+  font-size: 36px;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.viewAllLink {
+  display: flex;
+  align-items: center;
+  text-wrap: nowrap;
+  gap: 8px;
+  color: $color-blue;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--AccentColorBlue);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+/* Карточки в строчку, максимум 3 в ряд с переносом */
+.sectionsList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 1920px;
+  margin-right: auto;
+  margin-left: auto;
+
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Карточка: 3 контейнера с отступом 8px между ними. При наведении на карточку (кроме ссылок подкатегорий) — заголовок и стрелка в синем hover */
+.sectionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid #898989;
+  border-radius: 22px;
+
+  &:hover:not(:has(.subcategoryLink:hover)) .sectionTitleText {
+    color: var(--AccentColorBlue);
+  }
+
+  &:hover:not(:has(.subcategoryLink:hover)) .sectionTitleArrowBox {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+
+  &:hover:not(:has(.subcategoryLink:hover)) .sectionTitleArrow {
+    filter: invert(0.4) sepia(0.6) saturate(5) hue-rotate(200deg);
+  }
+}
+
+/* Контейнер 1: название категории с иконкой, без фона */
+.sectionTitleWrapper {
+  border-radius: $border-radius-small;
+  background: transparent;
+  overflow: hidden;
+  padding: 0px 8px;
+}
+
+.sectionTitleLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0px;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--AccentColorBlue);
+
+    .sectionTitleText {
+      color: var(--AccentColorBlue);
+    }
+  }
+}
+
+.sectionTitleText {
+  @include headline-3;
+  font-size: 24px;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-3-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 18px;
+  }
+}
+
+/* Стрелка в стиле иконок соцсетей из шапки: круглый контейнер + иконка */
+.sectionTitleArrowBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 60%;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+
+  .sectionTitleLink:hover & {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+}
+
+.sectionTitleArrow {
+  flex-shrink: 0;
+  filter: invert(1) brightness(0.2);
+  transition: filter 0.2s ease;
+
+  .sectionTitleLink:hover & {
+    filter: invert(0.4) sepia(0.6) saturate(5) hue-rotate(200deg);
+  }
+}
+
+/* Контейнеры 2 и 3: изображение слева (не больше 50% ширины карточки), подкатегории справа, между ними 8px */
+.sectionContent {
+  display: grid;
+  grid-template-columns: minmax(140px, 50%) 1fr;
+  gap: 8px;
+  min-height: 140px;
+
+  @media screen and (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Ссылка на категорию: обёртка картинки, кликабельна как и заголовок */
+.sectionImageLink {
+  display: block;
+  height: 100%;
+  min-height: 140px;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Контейнер 2: изображение в своём скруглённом контейнере */
+.sectionImageWrapper {
+  position: relative;
+  min-height: 140px;
+  aspect-ratio: 4/3;
+  height: 100%;
+  background: #e8e8e8;
+  border-radius: $border-radius-small;
+  overflow: hidden;
+
+  @media screen and (max-width: 720px) {
+    min-height: 140px;
+    aspect-ratio: auto;
+  }
+}
+
+.sectionImage {
+  object-fit: contain;
+  object-position: top;
+  transition: transform 0.4s ease-out;
+}
+
+/* Параллакс: при наведении на карточку (кроме ссылок подкатегорий) изображение слегка увеличивается */
+.sectionCard:hover:not(:has(.subcategoryLink:hover)) .sectionImage {
+  transform: scale(1.06);
+}
+
+/* Контейнер 3: подкатегории в своём скруглённом контейнере (светлый фон) */
+.subcategoriesBlock {
+  background: #f5f5f5;
+  padding: 12px 16px;
+  border-radius: $border-radius-small;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.subcategoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.subcategoryItem {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.subcategoryLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--AccentColorBlue);
+  }
+}
+
+.subcategoryArrow {
+  flex-shrink: 0;
+  margin-left: 8px;
+  opacity: 0.7;
+}

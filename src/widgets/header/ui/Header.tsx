@@ -25,6 +25,8 @@ export function Header() {
   const openReturnCallForm = useUIStore((s) => s.openReturnCallForm);
   const isSearchOpen = activeUI === "search";
 
+  const isScrolled = useUIStore((s) => s.scrollPastThreshold);
+
   const handleCatalogClick = () => {
     if (isCatalogOpen) closeAll();
     else openCatalog();
@@ -33,7 +35,9 @@ export function Header() {
   return (
     <>
       <header className={styles.wrapper}>
-        <div className={`${styles.topPanel} ${styles.container}`}>
+        <div
+          className={`${styles.topPanel} ${styles.container}${isScrolled ? ` ${styles.topPanelHidden}` : ""}`}
+        >
           <div className={styles.locationAndCurrency}>
             <LocationSelector />
             <CurrencyRates />
@@ -41,7 +45,10 @@ export function Header() {
           <div className={styles.topPanelRight}>
             <p className={styles.link}> Пн-пт: 10:00 - 20:00 </p>
             <span>|</span>
-            <Link href="mailto:mail@boxpro.moscow" className={styles.link}>
+            <Link
+              href="mailto:mail@boxpro.moscow"
+              className={`${styles.link} ${styles.mailLink}`}
+            >
               <Image
                 src="/icons/mail.svg"
                 alt=""
@@ -86,23 +93,63 @@ export function Header() {
 
           <div className={styles.contactWrapper}>
             <div className={styles.contactRow}>
-              <div className={styles.contactInfo}>
-                <Link href="tel:+78004444753" className={styles.phoneLink}>
+              <div className={styles.socialIcons}>
+                <Link
+                  href="https://vk.com/boxpro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialIconBox}
+                  aria-label="ВКонтакте"
+                >
+                  <Image
+                    src="/icons/vk.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                    className={styles.socialIconImg}
+                  />
+                </Link>
+                <Link
+                  href="https://t.me/boxpro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialIconBox}
+                  aria-label="Telegram"
+                >
+                  <Image
+                    src="/icons/telegram.svg"
+                    alt=""
+                    width={18}
+                    height={18}
+                    className={`${styles.socialIconImg} ${styles.socialIconImgTg}`}
+                  />
+                </Link>
+              </div>
+              <div className={styles.phoneBlock}>
+                <Link
+                  href="tel:+78004444753"
+                  className={`${styles.socialIconBox} ${styles.phoneIconBox}`}
+                  aria-label="Позвонить"
+                >
                   <Image
                     src="/icons/Iconly/Bold/Calling.svg"
                     alt=""
                     width={18}
                     height={18}
-                    className={styles.phoneIcon}
+                    className={styles.socialIconImg}
                   />
-                  <p className={styles.number}>{`8 (800) 444-47-53`}</p>
                 </Link>
-                <button
-                  className={styles.returnCallButton}
-                  onClick={openReturnCallForm}
-                >
-                  Обратный звонок
-                </button>
+                <div className={styles.contactInfo}>
+                  <Link href="tel:+78004444753" className={styles.phoneLink}>
+                    <p className={styles.number}>{`8 (800) 444-47-53`}</p>
+                  </Link>
+                  <button
+                    className={styles.returnCallButton}
+                    onClick={openReturnCallForm}
+                  >
+                    Обратный звонок
+                  </button>
+                </div>
               </div>
               <div className={styles.actionsContainer}></div>
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 import styles from "./CatalogMenu.module.scss";
@@ -17,6 +17,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
   const activeUI = useUIStore((s) => s.activeUI);
   const closeAll = useUIStore((s) => s.closeAll);
   const openConsultationForm = useUIStore((s) => s.openConsultationForm);
+  const isTopPanelHidden = useUIStore((s) => s.scrollPastThreshold);
   const isOpen = activeUI === "catalog";
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
   const [hoveredSubCategory, setHoveredSubCategory] = useState<Category | null>(
@@ -27,15 +28,33 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
     null,
   );
   const isMobile = useMediaQuery(640);
+  const scrollPositionRef = useRef(0);
 
   useEffect(() => {
-    if (isOpen && isMobile) {
+    if (isOpen) {
+      const y = window.scrollY ?? document.documentElement.scrollTop;
+      scrollPositionRef.current = y;
+      const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${y}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
       document.body.style.overflow = "hidden";
+      if (scrollbarGap > 0) {
+        document.body.style.paddingRight = `${scrollbarGap}px`;
+      }
     }
     return () => {
-      document.body.style.overflow = "unset";
+      const y = scrollPositionRef.current;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+      window.scrollTo(0, y);
     };
-  }, [isOpen, isMobile]);
+  }, [isOpen]);
 
   const handleMouseLeave = () => {
     setHoveredCategory(null);
@@ -52,15 +71,30 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
           data-ui-surface="catalog"
           onClick={() => closeAll()}
         >
-          <nav className={styles.menu} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.content}>
-              {/* Первый уровень */}
-              <div className={styles.primaryLevel}>
+          <div
+            className={styles.overlayBackdrop}
+            onMouseEnter={handleMouseLeave}
+            aria-hidden
+          />
+          <nav
+            className={`${styles.menu} ${isTopPanelHidden ? styles.menuTopCompact : ""}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className={styles.content}
+              onMouseLeave={handleMouseLeave}
+            >
+              {/* Первый уровень — при входе курсора влево сбрасываем выбор 2/3 уровня */}
+              <div
+                className={styles.primaryLevel}
+                onMouseEnter={handleMouseLeave}
+              >
                 {categories?.map((category) => (
                   <CategoryMenuItem
                     key={category.id}
                     category={category}
                     allCategories={categories}
+                    isActive={hoveredCategory?.id === category.id}
                     onHover={() => setHoveredCategory(category)}
                     onClick={() => closeAll()}
                   />
@@ -83,6 +117,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                           key={subCategory.id}
                           category={subCategory}
                           allCategories={categories}
+                          isActive={hoveredSubCategory?.id === subCategory.id}
                           onHover={() => setHoveredSubCategory(subCategory)}
                           onClick={() => closeAll()}
                         />
@@ -104,9 +139,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                               key={item.id}
                               category={item}
                               allCategories={categories}
-                              type="secondary"
                               onClick={() => closeAll()}
-                              className={styles.tertiaryCustum}
                             />
                           ))}
                         </div>

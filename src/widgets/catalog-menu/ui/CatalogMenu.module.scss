@@ -7,19 +7,30 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
   z-index: 999;
+}
+
+.overlayBackdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .menu {
   position: absolute;
-  top: 45px;
+  top: 85px; /* при видимой верхней панели шапки (topPanel) */
   background-color: #fff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   max-height: calc(100vh - var(--header-height, 80px));
   width: 100vw;
   overflow: hidden;
   z-index: 1000;
+}
+
+/* когда верхняя панель шапки скрыта (проскроллено) — меню прижимаем к основной строке шапки */
+.menuTopCompact {
+  top: 52px;
+  max-height: calc(100vh - 52px);
 }
 
 .content {
@@ -113,14 +124,22 @@
 }
 
 .tertiaryLevel {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   max-height: 100%;
+  min-height: 0;
   position: relative;
   overflow: hidden;
   padding-right: 40px;
   padding-left: 30px;
   padding-top: 40px;
-  height: 100%;
+
+  .listSubCategories {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
 
   @media screen and (min-width: 640px) and (max-width: 1100px) {
     display: none;
@@ -269,9 +288,4 @@
       background-color: #1e4bc6;
     }
   }
-}
-
-.tertiaryCustum {
-  border: 1px #666 solid;
-  // margin-right: 60px;
 }

@@ -90,6 +90,8 @@ export function ProductCard({
             hovering={hoverImg}
           />
 
+          <h3 className={styles.title}>{product.name}</h3>
+
           <ProductSku sku={sku} />
 
           <div className={styles.availabilityTabWrapper}>

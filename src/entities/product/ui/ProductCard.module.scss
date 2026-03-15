@@ -28,14 +28,16 @@
 
 .title {
   margin-top: 10px;
-  flex-wrap: wrap;
-  overflow: hidden;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  display: -webkit-box;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
-  overflow: hidden;
-  max-height: 2.3rem;
   color: $color-black;
 }
 

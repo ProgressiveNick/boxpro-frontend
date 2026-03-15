@@ -3,8 +3,10 @@
 
 .wrapper {
   padding: 15px;
-  margin-top: 30px;
-  margin-bottom: 0px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  margin-top: 0;
+  margin-bottom: 0;
   @include container;
 }
 .content {
@@ -26,6 +28,7 @@
 
 .title {
   @include headline-2;
+  font-size: 36px;
 
   @media screen and (max-width: 1200px) {
     @include headline-2-tablet;

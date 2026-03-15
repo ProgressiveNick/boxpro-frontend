@@ -26,6 +26,13 @@
   @include container;
   padding-top: 4px;
 
+  padding-left: 0px;
+  padding-right: 0px;
+
+  @media screen and (max-width: 1920px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
   @media (max-width: 520px) {
     & .searchWrapper {
       width: min-content;
@@ -44,12 +51,37 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 6px;
+  padding: 6px 0px;
   border-bottom: 1px solid #bababa;
+  max-height: 80px;
+  min-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.25s ease,
+    padding 0.25s ease,
+    border-width 0.25s ease,
+    opacity 0.2s ease;
+
+  @media screen and (max-width: 1920px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 
   @media (max-width: 640px) {
     display: none;
   }
+}
+
+.wrapper .topPanel.topPanelHidden {
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-bottom-width: 0 !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .locationAndCurrency {
@@ -125,6 +157,25 @@
   gap: 8px;
 }
 
+.phoneBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover .socialIconBox {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+
+  &:hover .socialIconImg {
+    filter: invert(0.4) sepia(0.6) saturate(5) hue-rotate(200deg);
+  }
+
+  &:hover .number {
+    color: $color-blue;
+  }
+}
+
 .contactInfo {
   display: flex;
   flex-direction: column;
@@ -141,11 +192,6 @@
 
   &:hover .number {
     color: $color-blue;
-  }
-
-  &:hover .phoneIcon {
-    filter: invert(42%) sepia(63%) saturate(1234%) hue-rotate(228deg)
-      brightness(91%) contrast(91%);
   }
 }
 
@@ -204,9 +250,49 @@
   gap: 8px;
   align-items: center;
 
-  @media (max-width: 885px) {
+  @media (max-width: 640px) {
     display: none;
   }
+}
+
+@media (max-width: 900px) {
+  .phoneIconBox {
+    display: none !important;
+  }
+}
+
+.socialIconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 60%;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+}
+
+.socialIconImg {
+  filter: invert(1) brightness(0.2);
+  transition: filter 0.2s ease;
+
+  .socialIconBox:hover & {
+    filter: invert(0.4) sepia(0.6) saturate(5) hue-rotate(200deg);
+  }
+}
+
+.socialIconImgTg {
+  width: 16px !important;
+  height: 16px !important;
 }
 
 .socialIcon {
@@ -250,6 +336,12 @@
   &:hover {
     color: $color-blue;
   }
+}
+
+.mailLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .topPanelRight {

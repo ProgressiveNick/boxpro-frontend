@@ -13,6 +13,8 @@ export interface CategoryMenuItemProps {
   allCategories?: Category[]; // Все категории для построения полного пути
   type?: "primary" | "secondary";
   className?: string;
+  /** Карточка выбрана, для неё открыт следующий уровень вложенности */
+  isActive?: boolean;
   onClick?: () => void;
   onHover?: () => void;
   showArrow?: boolean;
@@ -24,6 +26,7 @@ export function CategoryMenuItem({
   allCategories = [],
   type = "primary",
   className,
+  isActive = false,
   onClick,
   onHover,
   showArrow = false,
@@ -43,7 +46,7 @@ export function CategoryMenuItem({
   return (
     <Link
       href={categoryUrl}
-      className={`${styles.categoryItem} ${className ? className : ""}`}
+      className={`${styles.categoryItem} ${isActive ? styles.active : ""} ${className ? className : ""}`}
       onClick={onClick}
       onMouseEnter={onHover}
     >

@@ -11,13 +11,13 @@ export function SelectionByPackaging() {
   const [activeGroupId, setActiveGroupId] = useState<number>(1);
 
   const activeGroup: PackagingGroup | undefined = packagingGroups.find(
-    (group) => group.id === activeGroupId
+    (group) => group.id === activeGroupId,
   );
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>
-        Упаковочное оборудование по типу необходимой упаковки
+        Подберите упаковочное оборудование по типу необходимой упаковки
       </h2>
 
       <div className={styles.tabsContainer}>
@@ -45,13 +45,15 @@ export function SelectionByPackaging() {
                 <p className={styles.cardDescription}>{card.description}</p>
               </div>
               <div className={styles.cardImage}>
-                <Image
-                  src={card.imagePath}
-                  alt={card.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  quality={80}
-                />
+                <div className={styles.cardImageInner}>
+                  <Image
+                    src={card.imagePath}
+                    alt={card.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    quality={80}
+                  />
+                </div>
               </div>
             </div>
           </Link>
