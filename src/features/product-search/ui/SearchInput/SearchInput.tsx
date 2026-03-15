@@ -38,8 +38,24 @@ export function SearchInput({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isSearchOpen = activeUI === "search";
-  const showDropdown =
-    isSearchOpen && (query.length >= 3 || products.length > 0);
+  // На десктопе дропдаун виден по локальному состоянию (без открытия глобального «поиска»);
+  // на мобильном — только когда открыт оверлей поиска (activeUI === "search").
+  const [desktopDropdownVisible, setDesktopDropdownVisible] = useState(false);
+  const showDropdown = isMobile
+    ? isSearchOpen && (query.length >= 3 || products.length > 0)
+    : desktopDropdownVisible && (query.length >= 3 || products.length > 0);
+
+  // Единая функция полного сброса десктопного поиска (закрыть + обнулить)
+  const closeAndResetDesktopSearch = useCallback(() => {
+    setDesktopDropdownVisible(false);
+    setQuery("");
+    setProducts([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    setCurrentSearchQuery("");
+  }, []);
+  const closeAndResetDesktopSearchRef = useRef(closeAndResetDesktopSearch);
+  closeAndResetDesktopSearchRef.current = closeAndResetDesktopSearch;
 
   const loadProducts = useCallback(
     async (searchQuery: string, page: number, isNewSearch: boolean = false) => {
@@ -68,7 +84,8 @@ export function SearchInput({
         }
 
         setHasMore(page < response.meta.pagination.pageCount);
-        openSearch();
+        if (isMobile) openSearch();
+        else setDesktopDropdownVisible(true);
       } catch (error) {
         console.error("Error searching products:", error);
         if (isNewSearch || page === 1) {
@@ -79,7 +96,7 @@ export function SearchInput({
         setIsLoading(false);
       }
     },
-    [openSearch, pageSize],
+    [isMobile, openSearch, pageSize],
   );
 
   const debouncedSearch = useDebounce((searchQuery: unknown) => {
@@ -111,27 +128,81 @@ export function SearchInput({
 
   useEffect(() => {
     if (query.length >= 3) {
-      openSearch();
+      if (isMobile) openSearch();
+      else setDesktopDropdownVisible(true);
       if (query !== currentSearchQuery) {
         setIsLoading(true);
       }
+    } else if (!isMobile) {
+      setDesktopDropdownVisible(false);
     }
     debouncedSearch(query);
-  }, [query, debouncedSearch, currentSearchQuery, openSearch]);
+  }, [query, debouncedSearch, currentSearchQuery, isMobile, openSearch]);
+
+  // Ref для актуального состояния дропдауна (для обработчика из замыкания)
+  const desktopDropdownVisibleRef = useRef(desktopDropdownVisible);
+  desktopDropdownVisibleRef.current = desktopDropdownVisible;
+
+  // Десктоп: сворачивать и обнулять поиск при открытии меню, модалок
+  useEffect(() => {
+    if (isMobile) return;
+    if (activeUI !== null && activeUI !== "search") {
+      closeAndResetDesktopSearch();
+    }
+  }, [activeUI, isMobile, closeAndResetDesktopSearch]);
+
+  // Десктоп: подписка на store — при открытии другого UI закрывать и обнулять поиск
+  const prevActiveUIRef = useRef<typeof activeUI>(activeUI);
+  useEffect(() => {
+    if (isMobile) return;
+    prevActiveUIRef.current = activeUI;
+  }, [activeUI, isMobile]);
+  useEffect(() => {
+    if (isMobile) return;
+    const unsub = useUIStore.subscribe(() => {
+      const current = useUIStore.getState().activeUI;
+      const prev = prevActiveUIRef.current;
+      prevActiveUIRef.current = current;
+      if (prev !== current && current !== null && current !== "search") {
+        closeAndResetDesktopSearchRef.current();
+      }
+    });
+    return unsub;
+  }, [isMobile]);
+
+  // Десктоп: клик вне — всегда вешаем слушатель, внутри проверяем по ref
+  useEffect(() => {
+    if (isMobile) return;
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!desktopDropdownVisibleRef.current) return;
+      const wrapper = wrapperRef.current;
+      if (!wrapper) return;
+      const target = e.target as Node;
+      if (!wrapper.contains(target)) {
+        closeAndResetDesktopSearchRef.current();
+      }
+    };
+    document.addEventListener("mousedown", handleMouseDown, true);
+    return () => document.removeEventListener("mousedown", handleMouseDown, true);
+  }, [isMobile]);
 
   useEffect(() => {
     function handleScroll() {
-      if (activeUI !== "search") return;
-      closeAll();
-      setQuery("");
-      setProducts([]);
-      setCurrentPage(1);
-      setHasMore(true);
-      setCurrentSearchQuery("");
+      if (isMobile && activeUI !== "search") return;
+      if (isMobile) {
+        closeAll();
+        setQuery("");
+        setProducts([]);
+        setCurrentPage(1);
+        setHasMore(true);
+        setCurrentSearchQuery("");
+      } else {
+        closeAndResetDesktopSearch();
+      }
     }
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeUI, closeAll]);
+  }, [activeUI, closeAll, isMobile, closeAndResetDesktopSearch]);
 
   const handleClear = useCallback(() => {
     setQuery("");
@@ -139,17 +210,19 @@ export function SearchInput({
     setCurrentPage(1);
     setHasMore(true);
     setCurrentSearchQuery("");
-    if (!isMobile) closeAll();
+    if (isMobile) closeAll();
+    else setDesktopDropdownVisible(false);
   }, [closeAll, isMobile]);
+
+  const handleCloseDropdown = useCallback(() => {
+    if (isMobile && onClose) onClose();
+    else closeAndResetDesktopSearch();
+  }, [isMobile, onClose, closeAndResetDesktopSearch]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
-  const handleClose = () => {
-    if (isMobile && onClose) onClose();
-    else closeAll();
-  };
 
   // Mobile: focus on mount and Escape to close
   useEffect(() => {
@@ -174,7 +247,7 @@ export function SearchInput({
         placeholder={placeholder}
         value={query}
         onChange={handleInputChange}
-        onFocus={!isMobile ? openSearch : undefined}
+        onFocus={isMobile ? undefined : () => setDesktopDropdownVisible(true)}
       />
       {query && (
         <button
@@ -242,7 +315,9 @@ export function SearchInput({
           : `${styles.wrapper} ${query ? styles.hasQuery : ""}`
       }
       ref={wrapperRef}
-      data-ui-surface={isSearchOpen ? "search" : undefined}
+      data-ui-surface={
+        isMobile && isSearchOpen ? "search" : undefined
+      }
     >
       {isMobile ? (
         <div className={styles.containerMobile}>{inputEl}</div>
@@ -252,7 +327,7 @@ export function SearchInput({
       {showDropdown && (
         <SearchDropdown
           products={products}
-          onClose={handleClose}
+          onClose={handleCloseDropdown}
           onLoadMore={handleLoadMore}
           isLoading={isLoading}
           hasMore={hasMore}

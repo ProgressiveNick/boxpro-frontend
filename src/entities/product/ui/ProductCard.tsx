@@ -13,8 +13,11 @@ import {
 } from "@/entities/product";
 
 import { getSku } from "@/entities/product/lib/getSku";
+import { AddProductToComparisonButton } from "@/features/add-product-to-comparison";
 import { AddProductToFavoriteButton } from "@/features/add-product-to-favorite";
 import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
+import { getAvailabilityCities } from "@/widgets/product-card-buy/lib/getAvailabilityCities";
+import { AvailabilityStatusTab } from "@/widgets/product-card-buy/ui/AvailabilityStatusTab";
 
 type Props = {
   product: ProductType;
@@ -32,6 +35,7 @@ export function ProductCard({
   const [hoverImg, setHoverImg] = useState<boolean>(false);
   const pathname = usePathname();
   const sku = getSku(product.harakteristici);
+  const warehousesCount = getAvailabilityCities(product.harakteristici ?? []).length;
 
   // Определяем URL продукта с учетом вложенности
   const getProductUrl = (): string => {
@@ -88,8 +92,10 @@ export function ProductCard({
 
           <ProductSku sku={sku} />
 
-          <h4 className={styles.title}>{product.name}</h4>
-
+          <div className={styles.availabilityTabWrapper}>
+            <AvailabilityStatusTab warehousesCount={warehousesCount} />
+          </div>
+          <AddProductToComparisonButton product={product} />
           <AddProductToFavoriteButton product={product} />
 
           <ProductDetails

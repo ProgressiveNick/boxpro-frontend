@@ -10,7 +10,7 @@
   align-items: center;
   gap: 15px;
 
-  padding-top: 15чыpx;
+  padding-top: 15px;
   padding-right: 15px;
   padding-left: 15px;
   padding-bottom: 0px;
@@ -28,7 +28,7 @@
   max-width: 1920px;
   margin-right: auto;
   margin-left: auto;
-  margin-top: 65px;
+  margin-top: 100px;
   position: relative;
 
   @media (max-width: 640px) {
@@ -37,6 +37,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
 
+    margin-top: 65px;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -104,13 +105,13 @@
   background-color: rgba(0, 0, 0, 0.5);
   width: 30px;
   height: 100%;
-  border-radius: 3px;
+  border-radius: 8px;
   color: white;
   display: none;
   align-items: center;
   justify-content: center;
   position: absolute;
-  opacity: 0.3;
+  opacity: 0.4;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
@@ -126,12 +127,27 @@
   }
 }
 
-.container.hasOverflow {
-  .customSwiperButtonNext,
+.container.canGoPrev {
   .customSwiperButtonPrev {
     @media screen and (min-width: 641px) {
       display: flex;
     }
+  }
+}
+
+.container.canGoNext {
+  .customSwiperButtonNext {
+    @media screen and (min-width: 641px) {
+      display: flex;
+    }
+  }
+}
+
+.customSwiperButtonNext,
+.customSwiperButtonPrev {
+  img {
+    opacity: 1;
+    filter: brightness(0) invert(1);
   }
 }
 

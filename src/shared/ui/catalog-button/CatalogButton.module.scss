@@ -1,6 +1,6 @@
 .wrapper {
   display: inline-flex;
-  padding: 4px 1px 4px 0px;
+  padding: 4px 16px 4px 0px;
   align-items: flex-start;
   gap: 0px;
   align-items: center;
@@ -10,7 +10,7 @@
   background: var(--AccentColorBlue);
 
   color: white;
-  text-transform: uppercase;
+
   letter-spacing: 0.05rem;
   font-weight: 500;
 

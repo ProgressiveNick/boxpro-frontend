@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PhoneInput, getFullPhoneNumber } from "@/shared/ui/PhoneInput";
@@ -30,9 +30,9 @@ export function TestForm({
   description = "Оставьте заявку и мы договоримся обо всех условиях: подготовим оборудование, запросим образцы и протестируем - результат увидите очно или в формате фото\\видеозаписи",
   buttonText = "Получить консультацию\\КП",
 }: TestFormProps) {
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [isSuccess, setIsSuccess] = React.useState(false);
-  const [showFileUpload, setShowFileUpload] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
 
   const {
     control,
@@ -50,7 +50,7 @@ export function TestForm({
   });
 
   // Сбрасываем состояние загрузки файлов при закрытии формы
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isOpen) {
       setShowFileUpload(false);
       reset();
@@ -97,11 +97,7 @@ export function TestForm({
   // Показываем состояние успеха
   if (isSuccess) {
     return (
-      <div
-        className={styles.overlay}
-        data-ui-surface="test"
-        onClick={onClose}
-      >
+      <div className={styles.overlay} data-ui-surface="test" onClick={onClose}>
         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
           <div className={styles.successContent}>
             <div className={styles.successIcon}>
@@ -144,11 +140,7 @@ export function TestForm({
   }
 
   return (
-    <div
-      className={styles.overlay}
-      data-ui-surface="test"
-      onClick={onClose}
-    >
+    <div className={styles.overlay} data-ui-surface="test" onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.headWrapper}>
           <div className={styles.headContent}>

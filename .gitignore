@@ -57,3 +57,5 @@ next-env.d.ts
 public/storage/
 public/storage 2/
 public/storage.zip
+
+tasks/

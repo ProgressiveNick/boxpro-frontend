@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
-import "swiper/css/pagination";
-import "swiper/scss";
-import "swiper/scss/navigation";
-
+import { ComparisonLink } from "@/features/comparison-link";
 import { CurrencyRates } from "@/features/currency-rates";
 import { SearchInput } from "@/features/product-search";
 import { LocationSelector } from "@/features/location-selector";
@@ -21,10 +19,10 @@ import styles from "./Header.module.scss";
 export function Header() {
   const activeUI = useUIStore((s) => s.activeUI);
   const openCatalog = useUIStore((s) => s.openCatalog);
-  const closeAll = useUIStore((s) => s.closeAll);
-  const openReturnCallForm = useUIStore((s) => s.openReturnCallForm);
-
   const isCatalogOpen = activeUI === "catalog";
+  const closeAll = useUIStore((s) => s.closeAll);
+
+  const openReturnCallForm = useUIStore((s) => s.openReturnCallForm);
   const isSearchOpen = activeUI === "search";
 
   const handleCatalogClick = () => {
@@ -35,13 +33,39 @@ export function Header() {
   return (
     <>
       <header className={styles.wrapper}>
+        <div className={`${styles.topPanel} ${styles.container}`}>
+          <div className={styles.locationAndCurrency}>
+            <LocationSelector />
+            <CurrencyRates />
+          </div>
+          <div className={styles.topPanelRight}>
+            <p className={styles.link}> Пн-пт: 10:00 - 20:00 </p>
+            <span>|</span>
+            <Link href="mailto:mail@boxpro.moscow" className={styles.link}>
+              <Image
+                src="/icons/mail.svg"
+                alt=""
+                width={18}
+                height={18}
+                className={styles.phoneIcon}
+              />
+              mail@boxpro.moscow
+            </Link>
+            <span>|</span>
+            <Link href="/about" className={styles.link}>
+              О компании
+            </Link>
+            <Link href="/requisites" className={styles.link}>
+              Реквизиты
+            </Link>
+            <Link href="/contacts" className={styles.link}>
+              Контакты
+            </Link>
+          </div>
+        </div>
         <div className={styles.container}>
           <Logo className={styles.logo} />
 
-          <div className={styles.locationAndCurrency}>
-            <CurrencyRates />
-            <LocationSelector />
-          </div>
           <div
             data-ui-trigger="catalog"
             className={styles.catalogButtonWrapper}
@@ -50,8 +74,12 @@ export function Header() {
               isOpen={isCatalogOpen}
               onClick={handleCatalogClick}
               className={`${styles.catalogButton} ${isSearchOpen ? styles.catalogButtonAboveSearch : ""}`}
-            />
+            >
+              {" "}
+              <p>Каталог</p>
+            </CatalogButton>
           </div>
+
           <div className={styles.searchWrapper}>
             <SearchInput />
           </div>
@@ -59,24 +87,35 @@ export function Header() {
           <div className={styles.contactWrapper}>
             <div className={styles.contactRow}>
               <div className={styles.contactInfo}>
-                <Link href="tel:+78004444753">
+                <Link href="tel:+78004444753" className={styles.phoneLink}>
+                  <Image
+                    src="/icons/Iconly/Bold/Calling.svg"
+                    alt=""
+                    width={18}
+                    height={18}
+                    className={styles.phoneIcon}
+                  />
                   <p className={styles.number}>{`8 (800) 444-47-53`}</p>
                 </Link>
-              </div>
-              <div className={styles.actionsContainer}>
-                <button className={styles.returnCallButton} onClick={openReturnCallForm}>
+                <button
+                  className={styles.returnCallButton}
+                  onClick={openReturnCallForm}
+                >
                   Обратный звонок
                 </button>
               </div>
+              <div className={styles.actionsContainer}></div>
             </div>
           </div>
 
           <div className={styles.rightPanel}>
+            <ComparisonLink />
             <OpenFavoritesButton />
             <OpenCartButton />
           </div>
         </div>
       </header>
+
       <TabMenu />
       <ReturnCallFormModal />
     </>

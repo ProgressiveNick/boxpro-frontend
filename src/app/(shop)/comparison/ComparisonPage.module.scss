@@ -1,0 +1,205 @@
+@use "@/shared/styles/variables" as *;
+@use "@/shared/styles/mixins" as *;
+
+.container {
+  @include container;
+  padding-top: $padding-small;
+  padding-bottom: $padding-big;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $padding-medium;
+}
+
+.breadcrumbsWrapper {
+  margin-bottom: 0;
+  padding-left: 0 !important;
+}
+
+.title {
+  @include headline-2;
+  color: $color-black;
+
+  @media screen and (max-width: 1200px) {
+    @include headline-2-tablet;
+  }
+
+  @media screen and (max-width: 480px) {
+    @include headline-2-mobile;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: $color-black;
+  background: transparent;
+  border: 1px solid $color-border-white;
+  border-radius: $border-radius-tiny;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+
+  &:hover {
+    border-color: $color-blue;
+    background-color: rgba($color-blue, 0.06);
+  }
+}
+
+.actionIcon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("/icons/trash.svg") no-repeat 50% 50%;
+  mask: url("/icons/trash.svg") no-repeat 50% 50%;
+}
+
+.tableScroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid $color-border-white;
+  border-radius: $border-radius-tiny;
+  background: $color-white;
+}
+
+.table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.colCharacteristic {
+  width: 220px;
+  min-width: 220px;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: $color-black;
+  background: $color-background-white;
+  border-bottom: 1px solid $color-border-white;
+  border-right: 1px solid $color-border-white;
+  vertical-align: top;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
+}
+
+.colProduct {
+  min-width: 200px;
+  width: 200px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: $color-black;
+  border-bottom: 1px solid $color-border-white;
+  border-right: 1px solid $color-border-white;
+  vertical-align: top;
+  background: $color-white;
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.productHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+}
+
+.productName {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.35;
+  color: $color-black;
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  &:hover {
+    color: $color-blue;
+    text-decoration: underline;
+  }
+}
+
+.productImageWrapper {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: $border-radius-tiny;
+  overflow: hidden;
+  background: $color-background-white;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.removeProduct {
+  font-size: 12px;
+  color: $color-blue;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.table tbody tr:nth-child(even) .colProduct {
+  background: rgba($color-background-white, 0.5);
+}
+
+.table tbody tr:last-child .colCharacteristic,
+.table tbody tr:last-child .colProduct {
+  border-bottom: none;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  text-align: center;
+  gap: 16px;
+}
+
+.emptyText {
+  @include text-2;
+  color: $color-black;
+  opacity: 0.7;
+}
+
+.catalogLink {
+  @include text-2;
+  color: $color-blue;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

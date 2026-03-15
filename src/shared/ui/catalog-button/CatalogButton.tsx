@@ -4,12 +4,14 @@ interface CatalogButtonProps {
   onClick?: () => void;
   isOpen?: boolean;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export function CatalogButton({
   onClick,
   isOpen,
   className,
+  children,
 }: CatalogButtonProps) {
   const handleClick = () => {
     onClick?.();
@@ -21,7 +23,7 @@ export function CatalogButton({
         <svg
           className={`${styles.ham7} ${isOpen ? styles.active : ""}`}
           viewBox="0 0 100 100"
-          width="51"
+          width="44"
         >
           <path
             className={styles.top}
@@ -33,6 +35,7 @@ export function CatalogButton({
             d="m 69.575405,67.073826 h -40 c -5.592752,0 -6.873604,-9.348582 1.371031,-9.348582 8.244634,0 19.053564,21.797129 19.053564,12.274756 l 0,-40"
           ></path>
         </svg>
+        {children}
       </div>
     </>
   );

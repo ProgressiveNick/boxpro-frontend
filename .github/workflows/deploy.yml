@@ -9,21 +9,21 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.15.0'
-          cache: 'npm'
+          node-version: "22.15.0"
+          cache: "npm"
           cache-dependency-path: package-lock.json
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run linter
         run: |
           if [ -f "eslint.config.mjs" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.js" ]; then
@@ -32,7 +32,7 @@ jobs:
             echo "No ESLint config found, skipping lint step"
           fi
         continue-on-error: true
-        
+
       - name: Build application
         run: npm run build
         env:
@@ -44,7 +44,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NEXT_PUBLIC_STRAPI_API_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_API_URL }}
           NEXT_PUBLIC_STRAPI_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
-          
+
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -62,6 +62,8 @@ jobs:
             if [ -d "public/storage" ]; then
               cp -r public/storage /tmp/storage-backup-$(date +%s)
             fi
+            # Удаляем старые бэкапы (оставляем только 2 последних)
+            ls -td /tmp/storage-backup-* 2>/dev/null | tail -n +3 | xargs -r rm -rf
             # Получаем последние изменения (сбрасываем локальные изменения на сервере)
             git fetch origin
             git reset --hard origin/main
@@ -75,7 +77,7 @@ jobs:
             # Очищаем старые Docker образы для освобождения места
             docker system prune -f --volumes || true
             docker image prune -af || true
-            
+
             # Пересобираем Docker контейнер с переменными окружения из .env.frontend
             cd /var/www
             # Загружаем переменные из .env.frontend для build args

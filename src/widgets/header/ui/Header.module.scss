@@ -2,7 +2,7 @@
 @use "@styles/_mixins.scss" as *;
 
 .wrapper {
-  width: 100%;
+  width: 100vw;
   background: $color-background-white;
   border-bottom: $border-line-white;
   position: fixed;
@@ -25,25 +25,8 @@
   background: $color-background-white;
   @include container;
   padding-top: 4px;
-  padding-left: $padding-small;
-  padding-right: $padding-small;
-
-  @media (max-width: 920px) {
-    max-width: 920px;
-    padding-left: $padding-small;
-    padding-right: $padding-small;
-  }
-
-  @media (max-width: 640px) {
-    max-width: 600px;
-    padding-left: $padding-small;
-    padding-right: $padding-small;
-  }
 
   @media (max-width: 520px) {
-    max-width: 520px;
-    padding-left: $padding-small;
-    padding-right: $padding-small;
     & .searchWrapper {
       width: min-content;
     }
@@ -56,6 +39,19 @@
   }
 }
 
+.topPanel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+  border-bottom: 1px solid #bababa;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
 .locationAndCurrency {
   display: flex;
   flex-direction: row;
@@ -65,7 +61,7 @@
   margin-left: 0px;
   margin-right: 0px;
 
-  @media (max-width: 815px) {
+  @media (max-width: 640px) {
     display: none;
   }
 }
@@ -96,10 +92,6 @@
   }
 }
 
-.catalogButton {
-  // Стили порядка перенесены в .catalogButtonWrapper (обёртка для data-ui-trigger)
-}
-
 .catalogButtonAboveSearch {
   position: relative;
   z-index: 1002;
@@ -124,10 +116,6 @@
   @media screen and (max-width: 1020px) {
     margin-left: 10px;
   }
-
-  // @media screen and (max-width: 400px) {
-  //   display: none;
-  // }
 }
 
 .contactRow {
@@ -146,17 +134,35 @@
   text-wrap: nowrap;
 }
 
+.phoneLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover .number {
+    color: $color-blue;
+  }
+
+  &:hover .phoneIcon {
+    filter: invert(42%) sepia(63%) saturate(1234%) hue-rotate(228deg)
+      brightness(91%) contrast(91%);
+  }
+}
+
+.phoneIcon {
+  flex-shrink: 0;
+  transition: filter 0.2s ease;
+}
+
 .number {
   color: $color-black;
   font-size: 16px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.005em;
   line-height: 140%;
   width: max-content;
-
-  &:hover {
-    color: $color-blue;
-  }
+  transition: color 0.2s ease;
 
   @media screen and (max-width: 1020px) {
     font-size: 16px;
@@ -174,11 +180,9 @@
 }
 
 .returnCallButton {
-  background: #fff;
-  color: #2e3535;
-  border: 1px solid #eae8e8;
-  padding: 8px 8px;
-  border-radius: 8px;
+  color: $color-blue;
+  border: none;
+  background: none;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -186,8 +190,7 @@
   white-space: nowrap;
 
   &:hover {
-    background: #e0e0e0;
-    color: #2e3535;
+    color: $color-blue-secondr;
   }
 
   &:active {
@@ -233,4 +236,25 @@
   &:active {
     transform: translateY(0);
   }
+}
+
+.link {
+  color: $color-black;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  opacity: 0.8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $color-blue;
+  }
+}
+
+.topPanelRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }

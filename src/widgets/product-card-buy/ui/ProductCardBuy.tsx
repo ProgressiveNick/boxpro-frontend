@@ -7,6 +7,7 @@ import styles from "./ProductCardBuy.module.scss";
 
 import { ProductType, Price } from "@/entities/product";
 import { AddProductToCartButton } from "@/features/add-product-to-cart";
+import { AddProductToComparisonButton } from "@/features/add-product-to-comparison";
 import { AddProductToFavoriteButton } from "@/features/add-product-to-favorite";
 import { OrderOneClickButton } from "@/features/order-one-click";
 import { ProductTabs } from "@/features/product-tabs/ui/ProductTabs";
@@ -199,6 +200,10 @@ export function ProductCardBuy(props: ProductCardBuyProps) {
                 />
               )}
               <div className={styles.actionButtons}>
+                <AddProductToComparisonButton
+                  product={product}
+                  className={styles.customComparison}
+                />
                 <AddProductToFavoriteButton
                     product={product}
                     className={styles.customFavorite}

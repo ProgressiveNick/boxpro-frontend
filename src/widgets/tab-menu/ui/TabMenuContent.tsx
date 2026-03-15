@@ -1,72 +1,27 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import styles from "./TabMenu.module.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import Link from "next/link";
+import Image from "next/image";
 import { Navigation } from "swiper/modules";
 import { useUIStore } from "@/shared/store/useUIStore";
-
-const tabsData = [
-  {
-    label: "Сервисный центр",
-    url: "/services",
-  },
-
-  {
-    label: "Лизинг",
-    url: "/lizing",
-  },
-  {
-    label: "Доставка",
-    url: "/delivery",
-  },
-  {
-    label: "Гарантия",
-    url: "/garant-and-remont",
-  },
-  {
-    label: "Шоу-румы",
-    url: "/showrooms",
-  },
-  {
-    label: "Контакты",
-    url: "/contacts",
-  },
-];
+import { tabsData } from "../model/const";
 
 export function TabMenuContent() {
-  const [hasOverflow, setHasOverflow] = useState(false);
+  const [canGoPrev, setCanGoPrev] = useState(false);
+  const [canGoNext, setCanGoNext] = useState(false);
 
   const updateNavVisibility = useCallback((swiper: SwiperType) => {
-    const overflow = !swiper.isBeginning || !swiper.isEnd;
-    setHasOverflow(overflow);
-  }, []);
-
-  React.useEffect(() => {
-    const nextButton = document.querySelector(
-      `.${styles.customSwiperButtonNext}`,
-    ) as HTMLElement;
-    const prevButton = document.querySelector(
-      `.${styles.customSwiperButtonPrev}`,
-    ) as HTMLElement;
-
-    const clickNextButton = () => (nextButton ? nextButton.click() : null);
-    const clickPrevButton = () => (prevButton ? prevButton.click() : null);
-
-    nextButton?.addEventListener("mouseover", clickNextButton);
-    prevButton?.addEventListener("mouseover", clickPrevButton);
-
-    return () => {
-      nextButton?.removeEventListener("mouseover", clickNextButton);
-      prevButton?.removeEventListener("mouseover", clickPrevButton);
-    };
+    setCanGoPrev(!swiper.isBeginning);
+    setCanGoNext(!swiper.isEnd);
   }, []);
 
   return (
     <section
-      className={`${styles.container} ${hasOverflow ? styles.hasOverflow : ""}`}
+      className={`${styles.container} ${canGoPrev ? styles.canGoPrev : ""} ${canGoNext ? styles.canGoNext : ""}`}
     >
       <Swiper
         modules={[Navigation]}
@@ -116,40 +71,12 @@ export function TabMenuContent() {
         <div
           className={`${styles.customSwiperButtonNext} ${styles.navigationButton}`}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 4l8 8-8 8"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Image src="/icons/ArrowRight.svg" alt="" width={24} height={24} />
         </div>
         <div
           className={`${styles.customSwiperButtonPrev} ${styles.navigationButton}`}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M16 4l-8 8 8 8"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Image src="/icons/ArrowLeft.svg" alt="" width={24} height={24} />
         </div>
 
         {/* Promo TAB "Бесплатное тестирование" */}
@@ -162,20 +89,12 @@ export function TabMenuContent() {
           </div>
         </SwiperSlide>
 
-        {/* "Каталог" после "Бесплатное тестирование" */}
-        <SwiperSlide className={styles.slideTab}>
-          <Link href="/catalog">
-            <p className={styles.tablineTab}>Каталог</p>
-          </Link>
-        </SwiperSlide>
-
         {tabsData.map((tab, index) => (
           <SwiperSlide key={index} className={styles.slideTab}>
             <Link href={tab.url}>
               <p className={styles.tablineTab}>{tab.label}</p>
             </Link>
           </SwiperSlide>
-          //swiper navigation button
         ))}
       </Swiper>
     </section>

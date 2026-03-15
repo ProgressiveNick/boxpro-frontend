@@ -39,6 +39,17 @@
   color: $color-black;
 }
 
+.availabilityTabWrapper {
+  position: absolute;
+  left: 25px;
+  top: 25px;
+  z-index: 1;
+
+  span {
+    margin: 0;
+  }
+}
+
 .comparisonsBtn {
   position: absolute;
   right: 58px;
