@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "fetch-cities": "node scripts/fetch-cities.js",
-    "prebuild": "node scripts/fetch-cities.js",
+    "generate-category-map": "npx tsx scripts/generate-category-map.ts",
+    "prebuild": "node scripts/fetch-cities.js && npx tsx scripts/generate-category-map.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -25,7 +26,7 @@
     "react-type-animation": "^3.2.0",
     "react-yandex-metrika": "^2.6.0",
     "sass": "^1.88.0",
-    "swiper": "^11.2.6",
+    "swiper": "^12.1.2",
     "zod": "^4.0.14",
     "zustand": "^5.0.7"
   },
@@ -33,10 +34,12 @@
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/node-telegram-bot-api": "^0.64.10",
+    "@types/qs": "^6.15.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "tsx": "^4.19.0",
     "typescript": "^5"
   },
   "overrides": {

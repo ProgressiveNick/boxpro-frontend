@@ -3,26 +3,31 @@ import { Category } from "../model";
 import { getServerCache, setServerCache } from "@/shared/lib/server-cache";
 import { categoriesService } from "@/shared/api/server";
 import { CategoryTree } from "../lib/CategoryTree";
+import {
+  getCategoryMap,
+  getTreeForMenu,
+  getAllPathsFromMap,
+} from "../lib/categoryMap";
 
 const CACHE_KEY = "catalog_menu";
 const CACHE_VERSION = "1.1"; // Версия кэша, можно увеличивать при изменении структуры (обновлено для загрузки img_menu у вложенных категорий)
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 дней в миллисекундах
 
 /**
- * Получить структуру каталога с серверным кэшированием
- * Использует файловый кэш на сервере для оптимизации производительности
+ * Получить структуру каталога: приоритет — статическая карта (public/data/category-map.json), иначе API + серверный кэш.
  */
 export const getCatalogMenu = cache(async (): Promise<Category[]> => {
-  // Проверяем кэш на сервере
+  const map = await getCategoryMap();
+  if (map && map.tree.length > 0) {
+    return getTreeForMenu(map);
+  }
+
   const cached = await getServerCache<Category[]>(CACHE_KEY, CACHE_VERSION);
   if (cached && Array.isArray(cached) && cached.length > 0) {
     return cached;
   }
 
-  // Если в кэше нет, делаем запрос к API
   const data = await getCatalogMenuFromAPI();
-
-  // Сохраняем в кэш асинхронно (не блокируем ответ)
   setServerCache(CACHE_KEY, data, CACHE_TTL, CACHE_VERSION).catch((error) => {
     console.warn("Failed to cache catalog menu:", error);
   });
@@ -119,11 +124,14 @@ async function getCatalogMenuFromAPI(): Promise<Category[]> {
 }
 
 /**
- * Получить все пути категорий для generateStaticParams
- * Используется для статической генерации страниц категорий
- * @returns массив массивов slug'ов (пути категорий)
+ * Получить все пути категорий для generateStaticParams.
+ * При наличии карты — из неё, иначе из getCatalogMenu + CategoryTree.
  */
 export async function getAllCategoryPaths(): Promise<string[][]> {
+  const map = await getCategoryMap();
+  if (map && map.tree.length > 0) {
+    return getAllPathsFromMap(map);
+  }
   const allCategories = await getCatalogMenu();
   const tree = new CategoryTree(allCategories);
   return tree.getAllPaths();

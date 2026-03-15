@@ -26,7 +26,6 @@ export function ProductsCatalog({
   hasActiveFilters,
   attributes,
   hideFilters,
-  categoryPath,
   hideMobileFilterButton,
   containerPadding,
 }: ProductsCatalogProps) {
@@ -125,7 +124,6 @@ export function ProductsCatalog({
             pageSize={pageSize}
             hasActiveFilters={hasActiveFilters}
             isLoading={isLoading}
-            categoryPath={categoryPath}
           />
         </main>
       </div>

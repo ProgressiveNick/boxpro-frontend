@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { SITE_URL } from "@/shared/config/site";
 import { getAllProductSlugs } from "@/entities/product/server";
-import { getAllCategoryPaths } from "@/entities/categories";
+import { getAllCategoryPaths } from "@/entities/categories/api/getCatalogMenu";
 import {
   getBlogSections,
   getAllBlogArticlePaths,

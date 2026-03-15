@@ -6,7 +6,14 @@ import { CoverCategory } from "@/widgets/client-widgets";
 import { ProductsCatalog } from "@/widgets/products-catalog";
 import { getProducts } from "@/entities/product/server";
 import { getChildsCategory } from "@/entities/categories/api/getCategories";
-import { getCategoryByPath, getAllCategoryPaths } from "@/entities/categories";
+import { getCategoryByPath } from "@/entities/categories/lib/getCategoryByPath";
+import { getAllCategoryPaths } from "@/entities/categories/api/getCatalogMenu";
+import {
+  getCategoryMap,
+  getChildDocumentIds,
+  getBreadcrumbOverridesFromMap,
+  getNodeByPath,
+} from "@/entities/categories/lib/categoryMap";
 import { getCatalogMenu } from "@/entities/categories/api/getCatalogMenu";
 import { CategoryTree } from "@/entities/categories/lib/CategoryTree";
 import { getCategoryAttributes } from "@/entities/product-attributes/api/getCategoryAttributes";
@@ -102,60 +109,46 @@ export default async function CatalogSectionPage(props: {
   // Используем новую утилиту для парсинга параметров
   const parsedParams = parseCatalogParams(searchParams);
 
-  // Сначала загружаем меню и категорию (нужны для оптимизации остальных запросов)
-  const [categoryResult, menuResult] = await Promise.allSettled([
+  const [categoryResult, menuResult, mapResult] = await Promise.allSettled([
     getCategoryByPath(slugs),
     getCatalogMenu(),
+    getCategoryMap(),
   ]);
 
-  // Обрабатываем результат поиска категории
   const currentCategory =
     categoryResult.status === "fulfilled" ? categoryResult.value : null;
-
-  // Если категория не найдена
   if (!currentCategory) {
     notFound();
   }
 
-  // Обрабатываем результат получения меню (все категории)
   const menuData = menuResult.status === "fulfilled" ? menuResult.value : [];
+  const categoryMap = mapResult.status === "fulfilled" ? mapResult.value : null;
 
-  // Логирование для отладки
-  if (menuResult.status === "rejected") {
-    console.warn(
-      "[CatalogSectionPage] Error fetching menu:",
-      menuResult.reason,
-    );
-  } else {
-    console.log(
-      `[CatalogSectionPage] Menu loaded: ${menuData.length} root categories`,
-    );
-  }
-
-  // Используем уже загруженные категории для оптимизации остальных запросов
-  // Создаем CategoryTree один раз для переиспользования
   const tree = new CategoryTree(menuData);
-
-  // Используем slug из найденной категории, а не последний slug из пути
-  // Это важно для вложенных категорий, где slug может отличаться
   const categorySlug = currentCategory.slug || currentSlug;
-
-  // В разделе запасных частей показываем товары с part=true
   const includeParts = isSparePartsSection(slugs);
 
-  // Выполняем критичные запросы параллельно (товары и дочерние категории)
-  // Атрибуты загружаем отдельно, чтобы не блокировать основную загрузку
+  // Используем карту только если она заполнена и в ней есть текущая категория (иначе товары и крошки — через API/меню)
+  const categoryInMap =
+    categoryMap?.tree?.length &&
+    currentCategory.documentId &&
+    categoryMap.byDocumentId[currentCategory.documentId];
+  const categoryDocumentIds = categoryInMap
+    ? getChildDocumentIds(categoryMap!, currentCategory.documentId!)
+    : undefined;
+
   const [productsResult, childsResult] = await Promise.allSettled([
     getProducts({
       page: parsedParams.currentPage,
       pageSize: parsedParams.pageSize,
       sort: parsedParams.sort,
-      kategoria: categorySlug,
+      kategoria: categoryDocumentIds ? undefined : categorySlug,
       filters: createApiFilters(parsedParams),
-      allCategories: menuData, // Передаем уже загруженные категории для оптимизации
+      allCategories: menuData,
+      categoryDocumentIds,
       includeParts,
     }),
-    getChildsCategory(categorySlug, menuData), // Передаем уже загруженные категории для оптимизации
+    getChildsCategory(categorySlug, menuData),
   ]);
 
   // Загружаем атрибуты отдельно (неблокирующе) - они нужны только для фильтров
@@ -223,11 +216,13 @@ export default async function CatalogSectionPage(props: {
 
   const initialFilters: FilterState = createPropsFilters(parsedParams);
 
-  // Формируем breadcrumbOverrides: для каждого slug находим категорию в menuData
-  // tree уже создан выше
-  const breadcrumbOverrides = tree.getBreadcrumbOverrides(slugs);
-
-  // Также добавляем текущую категорию (на случай, если она не была найдена в menuData)
+  // Хлебные крошки из карты только если по пути slugs в карте найден узел (полный маршрут)
+  const categoryNodeFromMap =
+    categoryMap?.tree?.length &&
+    getNodeByPath(categoryMap, slugs);
+  const breadcrumbOverrides = categoryNodeFromMap
+    ? getBreadcrumbOverridesFromMap(categoryMap!, slugs)
+    : tree.getBreadcrumbOverrides(slugs);
   if (currentCategory.slug && !breadcrumbOverrides[currentCategory.slug]) {
     breadcrumbOverrides[currentCategory.slug] = currentCategory.name;
   }
@@ -281,7 +276,6 @@ export default async function CatalogSectionPage(props: {
           initialFilters={initialFilters}
           hasActiveFilters={parsedParams.hasActiveFilters}
           attributes={attributes}
-          categoryPath={slugs}
           hideMobileFilterButton={includeParts}
         />
       </div>

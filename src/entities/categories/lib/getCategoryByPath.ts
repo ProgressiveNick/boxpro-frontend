@@ -3,11 +3,23 @@ import { categoriesService } from "@/shared/api/server";
 import { cache } from "react";
 import { getCatalogMenu } from "../api/getCatalogMenu";
 import { CategoryTree } from "./CategoryTree";
+import { getCategoryMap, getNodeByPath } from "./categoryMap";
+import type { CategoryMapTreeNode } from "./categoryMap";
+
+function mapTreeNodeToCategory(n: CategoryMapTreeNode): Category {
+  return {
+    id: 0,
+    documentId: n.documentId,
+    name: n.name,
+    slug: n.slug,
+    img_menu: n.image ? { url: n.image } : undefined,
+    childs: n.children.length ? n.children.map(mapTreeNodeToCategory) : undefined,
+  };
+}
 
 /**
- * Получить категорию по полному пути (массив slug'ов)
- * @param slugs - массив slug'ов от корня до категории
- * @returns категория или null
+ * Получить категорию по полному пути (массив slug'ов).
+ * При наличии карты — поиск по дереву карты, иначе getCatalogMenu + CategoryTree или API.
  */
 export const getCategoryByPath = cache(
   async (slugs: string[]): Promise<Category | null> => {
@@ -16,14 +28,16 @@ export const getCategoryByPath = cache(
     }
 
     try {
-      // Загружаем все категории из меню для построения пути (используем кэш)
+      const map = await getCategoryMap();
+      if (map && map.tree.length > 0) {
+        const node = getNodeByPath(map, slugs);
+        if (node) return mapTreeNodeToCategory(node);
+      }
+
       const allCategories = await getCatalogMenu();
       const tree = new CategoryTree(allCategories);
-
-      // Пытаемся найти категорию по пути
       let category = tree.getByPath(slugs);
 
-      // Если категория не найдена в меню, загружаем её напрямую из API
       if (!category) {
         const targetSlug = slugs[slugs.length - 1];
         console.warn(`[getCategoryByPath] Category not found in menu, fetching from API: ${targetSlug}`);

@@ -7,7 +7,6 @@ export type ProductsListProps = {
   pageSize?: number;
   hasActiveFilters?: boolean;
   isLoading?: boolean;
-  categoryPath?: string[]; // Путь категории для сохранения вложенности в URL продукта
   /** Имя списка для eCommerce (impressions): "Category", "Search", "Recommendations" */
   listName?: string;
 };

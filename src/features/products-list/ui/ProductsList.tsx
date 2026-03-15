@@ -22,7 +22,6 @@ export function ProductsList({
   pageSize = DEFAULT_PAGE_SIZE,
   hasActiveFilters,
   isLoading = false,
-  categoryPath,
   listName = "Category",
 }: ProductsListProps) {
   const router = useRouter();
@@ -162,7 +161,6 @@ export function ProductsList({
             <ProductCard
               product={product}
               key={product.documentId}
-              categoryPath={categoryPath}
               isLoadingAttributes={showAttributesPlaceholder}
             />
           ))

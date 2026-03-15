@@ -66,7 +66,7 @@ export const catalogSectionsData: CatalogSectionItem[] = [
   {
     name: "Паллетоупаковщики",
     url: "/catalog/palletoupakovshchiki",
-    imgSrc: "/img/pallet.png",
+    imgSrc: "/img/catalogRazdels/pallet.png",
     subcategories: [
       {
         name: "Подкатегория 1",

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import styles from "./ProductCard.module.scss";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   ProductCtaBlock,
   ProductDetails,
@@ -22,41 +21,17 @@ import { AvailabilityStatusTab } from "@/widgets/product-card-buy/ui/Availabilit
 type Props = {
   product: ProductType;
   showAllCharacteristics?: boolean;
-  categoryPath?: string[]; // Опциональный путь категории для сохранения вложенности
   isLoadingAttributes?: boolean; // Флаг загрузки характеристик
 };
 
 export function ProductCard({
   product,
   showAllCharacteristics = false,
-  categoryPath,
   isLoadingAttributes = false,
 }: Props) {
   const [hoverImg, setHoverImg] = useState<boolean>(false);
-  const pathname = usePathname();
   const sku = getSku(product.harakteristici);
   const warehousesCount = getAvailabilityCities(product.harakteristici ?? []).length;
-
-  // Определяем URL продукта с учетом вложенности
-  const getProductUrl = (): string => {
-    // Если передан categoryPath, добавляем его как query параметр
-    if (categoryPath && categoryPath.length > 0) {
-      return `/product/${product.slug}?categoryPath=${categoryPath.join("/")}`;
-    }
-
-    // Если находимся в каталоге (pathname начинается с /catalog/), сохраняем вложенность
-    if (pathname && pathname.startsWith("/catalog/")) {
-      // Извлекаем путь категории из текущего URL
-      const catalogPath = pathname.replace("/catalog/", "").split("/").filter(Boolean);
-      
-      if (catalogPath.length > 0) {
-        return `/product/${product.slug}?categoryPath=${catalogPath.join("/")}`;
-      }
-    }
-
-    // Во всех остальных случаях используем простой путь
-    return `/product/${product.slug}`;
-  };
 
   const handleCardClick = () => {
     // Скроллим вверх перед переходом
@@ -71,7 +46,7 @@ export function ProductCard({
         onMouseLeave={() => setHoverImg(false)}
       >
         <Link
-          href={getProductUrl()}
+          href={`/product/${product.slug}`}
           onClick={handleCardClick}
           scroll={true}
         >

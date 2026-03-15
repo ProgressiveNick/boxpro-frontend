@@ -24,6 +24,8 @@ type FetchProductsParams = {
   pageSize?: number;
   kategoria?: string;
   allCategories?: Category[]; // Опционально: уже загруженные категории для оптимизации
+  /** При наличии — список documentId категории и всех дочерних (из карты); не делаем запросы к Strapi за категориями */
+  categoryDocumentIds?: string[];
   /** true = показывать запасные части (part=true), false/undefined = только оборудование (part=false) */
   includeParts?: boolean;
 };
@@ -60,24 +62,19 @@ export const getProducts = cache(
       includeParts = false,
     } = params;
 
-    // Создаем ключ кэша на основе параметров запроса
-    const cacheKey = `${CACHE_KEY_PREFIX}_${params.kategoria || "all"}_${page}_${pageSize}_${sort}_${includeParts}_${JSON.stringify(params.filters)}`;
+    const cacheKey = `${CACHE_KEY_PREFIX}_${params.kategoria || "all"}_${page}_${pageSize}_${sort}_${includeParts}_${JSON.stringify(params.filters)}_${(params.categoryDocumentIds ?? []).join(",")}`;
 
-    // Проверяем кэш
     const cached = await getServerCache<FetchProductsResponse>(
       cacheKey,
       CACHE_VERSION,
     );
-    if (cached) {
-      console.log(`[getProducts] Cache hit for ${cacheKey}`);
-      return cached;
-    }
-    console.log(
-      `[getProducts] Cache miss for ${cacheKey}, fetching from API...`,
-    );
+    if (cached) return cached;
+
     let targetCategoryIds: string[] = [];
 
-    if (params.kategoria) {
+    if (params.categoryDocumentIds && params.categoryDocumentIds.length > 0) {
+      targetCategoryIds = params.categoryDocumentIds;
+    } else if (params.kategoria) {
       try {
         const parentCategory = await Promise.race([
           categoriesService.find({
@@ -92,27 +89,14 @@ export const getProducts = cache(
 
         if (parentCategory.data.length > 0) {
           const categoryDocId = parentCategory.data[0].documentId;
-          // Используем уже загруженные категории для оптимизации (быстро, без API запросов)
           targetCategoryIds = await getAllCategoryIds(
             categoryDocId,
             params.allCategories,
           );
-
-          // Проверяем, что getAllCategoryIds вернул хотя бы саму категорию
           if (targetCategoryIds.length === 0) {
-            console.warn(
-              `[getProducts] getAllCategoryIds returned empty array for category ${params.kategoria} (${categoryDocId}), using category ID only`,
-            );
             targetCategoryIds = [categoryDocId];
           }
-
-          console.log(
-            `[getProducts] Category ${params.kategoria} (${categoryDocId}) has ${targetCategoryIds.length} total categories (including children) for filtering`,
-          );
         } else {
-          console.warn(
-            `[getProducts] Category ${params.kategoria} not found in API`,
-          );
           return {
             data: [],
             meta: {
@@ -127,8 +111,6 @@ export const getProducts = cache(
         }
 
         if (params.filters?.categories?.length > 0) {
-          // Разворачиваем выбранные категории: включаем саму категорию + все дочерние
-          // (товары могут быть в дочерних категориях, а не только в выбранной)
           const selectedIds: string[] = Array.isArray(params.filters.categories)
             ? params.filters.categories
             : (Array.from(params.filters.categories) as string[]);

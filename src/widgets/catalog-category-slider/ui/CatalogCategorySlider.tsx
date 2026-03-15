@@ -12,7 +12,7 @@ import {
 import { getImageUrl } from "@/shared/lib/helpers/imageUrl";
 import styles from "./CatalogCategorySlider.module.scss";
 
-import "swiper/scss";
+import "swiper/css";
 
 type CatalogCategorySliderProps = {
   categories: Category[];

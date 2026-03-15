@@ -2,56 +2,44 @@ import { categoriesService } from "@/shared/api/server";
 import { cache } from "react";
 import { Category } from "../model";
 import { CategoryTree } from "../lib/CategoryTree";
+import {
+  getCategoryMap,
+  getChildDocumentIds,
+  getDocumentIdBySlug,
+  getChildCategoriesFromMap,
+} from "../lib/categoryMap";
 
-// Кэш для getAllCategoryIds чтобы не делать повторные запросы
-// Очищаем кэш при необходимости
 const categoryIdsCache = new Map<string, string[]>();
 
-// Функция для очистки кэша (можно вызвать при необходимости)
 export function clearCategoryIdsCache() {
   categoryIdsCache.clear();
 }
 
 /**
- * Получить все ID дочерних категорий (оптимизированная версия с использованием CategoryTree)
- * @param categoryId - documentId родительской категории
- * @param allCategories - опционально: уже загруженные категории из getCatalogMenu
- * @returns массив documentId всех дочерних категорий (включая саму категорию)
+ * Получить все ID дочерних категорий (включая саму категорию).
+ * При наличии карты — getChildDocumentIds, иначе CategoryTree или API.
  */
 export const getAllCategoryIds = cache(
   async (
     categoryId: string,
     allCategories?: Category[]
   ): Promise<string[]> => {
-    // Проверяем кэш
     if (categoryIdsCache.has(categoryId)) {
-      const cached = categoryIdsCache.get(categoryId)!;
-      console.log(
-        `[getAllCategoryIds] Cache hit for ${categoryId}: ${cached.length} categories`
-      );
-      return cached;
+      return categoryIdsCache.get(categoryId)!;
     }
 
-    // Если переданы уже загруженные категории, используем CategoryTree (быстро, без API запросов)
+    const map = await getCategoryMap();
+    if (map && map.byDocumentId[categoryId]) {
+      const ids = getChildDocumentIds(map, categoryId);
+      categoryIdsCache.set(categoryId, ids);
+      return ids;
+    }
+
     if (allCategories && allCategories.length > 0) {
       const tree = new CategoryTree(allCategories);
-      
-      // Проверяем, что категория действительно найдена в дереве
       const category = tree.getById(categoryId);
-      
-      if (!category) {
-        // Категория не найдена в дереве, используем fallback на API
-        console.log(
-          `[getAllCategoryIds] Category ${categoryId} not found in CategoryTree, using API fallback`
-        );
-        // Продолжаем выполнение ниже (fallback на API)
-      } else {
-        // Категория найдена в дереве, получаем все дочерние категории
+      if (category) {
         const categoryIds = tree.getAllChildIds(categoryId);
-        console.log(
-          `[getAllCategoryIds] Using CategoryTree for ${categoryId}: ${categoryIds.length} categories (fast, no API calls)`
-        );
-        // Сохраняем в кэш
         categoryIdsCache.set(categoryId, categoryIds);
         return categoryIds;
       }
@@ -86,9 +74,7 @@ export const getAllCategoryIds = cache(
         }
 
         if (children.data.length > 0 && level === 0) {
-          console.log(
-            `[getAllCategoryIds] Found ${children.data.length} direct children for category ${parentId} (API fallback)`
-          );
+          // API fallback
         }
       } catch (error) {
         console.warn(
@@ -100,10 +86,6 @@ export const getAllCategoryIds = cache(
     }
 
     await getChildren(categoryId);
-
-    console.log(
-      `[getAllCategoryIds] Total categories (including children) for ${categoryId}: ${categoryIds.length} (API fallback)`
-    );
 
     // Сохраняем в кэш
     categoryIdsCache.set(categoryId, categoryIds);
@@ -122,7 +104,14 @@ export const getChildsCategory = cache(
     }
 
     try {
-      // Если переданы уже загруженные категории, используем CategoryTree (быстро, без API запросов)
+      const map = await getCategoryMap();
+      if (map && map.tree.length > 0) {
+        const parentId = getDocumentIdBySlug(map, categorSlug);
+        if (parentId) {
+          return getChildCategoriesFromMap(map, parentId);
+        }
+      }
+
       if (allCategories && allCategories.length > 0) {
         const tree = new CategoryTree(allCategories);
         const category = tree.getBySlug(categorSlug);
@@ -152,10 +141,6 @@ export const getChildsCategory = cache(
           const childCategories = childIds
             .map((id) => tree.getById(id))
             .filter((cat): cat is Category => cat !== undefined);
-
-          console.log(
-            `[getChildsCategory] Using CategoryTree for ${categorSlug}: ${childCategories.length} categories (fast, no API calls)`
-          );
 
           return childCategories;
         }

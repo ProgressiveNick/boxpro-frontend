@@ -1,6 +1,4 @@
 export * from './ui'
 export * from './model'
 export { getCategoryPath, getCategoryUrl } from './lib/getCategoryPath'
-export { getCategoryByPath } from './lib/getCategoryByPath'
-export { getAllCategoryPaths } from './api/getCatalogMenu'
 export { CategoryTree } from './lib/CategoryTree'

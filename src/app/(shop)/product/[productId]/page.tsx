@@ -32,8 +32,11 @@ import Image from "next/image";
 import { ProductViewTracker } from "@/widgets/product-view-tracker";
 import { RecentlyViewedSlider } from "@/features/recently-viewed-slider";
 import { getAvailabilityCities } from "@/widgets/product-card-buy/lib/getAvailabilityCities";
-import { getCatalogMenu } from "@/entities/categories/api/getCatalogMenu";
-import { CategoryTree } from "@/entities/categories/lib/CategoryTree";
+import {
+  getCategoryMap,
+  getPathByDocumentId,
+  getBreadcrumbOverridesFromMap,
+} from "@/entities/categories/lib/categoryMap";
 
 // ISR: ревалидация каждые 60 минут (3600 секунд)
 export const revalidate = 3600;
@@ -110,51 +113,45 @@ export default async function ProductPage({
   searchParams: SearchParams;
 }) {
   const { productId } = await params;
-  const search = await searchParams;
-
-  // Получаем categoryPath из query параметров
-  const categoryPathParam = search.categoryPath;
-  const categoryPath =
-    typeof categoryPathParam === "string"
-      ? categoryPathParam.split("/").filter(Boolean)
-      : [];
 
   const data = await getProductsBySlug(productId);
+  const categoryMap = await getCategoryMap();
+  const categoryPathSlugs =
+    categoryMap && data.kategoria?.documentId
+      ? getPathByDocumentId(categoryMap, data.kategoria.documentId)
+      : [];
+
   const seeMoreProducts = await getProducts({
     filters: { categories: [] },
-    kategoria: data.kategoria.slug,
+    kategoria: data.kategoria?.slug,
   });
 
   const sku = getSku(data.harakteristici);
   const availabilityCities = getAvailabilityCities(data.harakteristici);
   const warehousesCount = availabilityCities.length;
 
-  // Если передан categoryPath, формируем breadcrumbs с учетом категорий
   let breadcrumbOverrides: Record<string, string> = {};
   let breadcrumbItems: Array<{ position: number; name: string; item: string }> =
     [];
 
-  if (categoryPath.length > 0) {
-    const menuData = await getCatalogMenu();
-    const tree = new CategoryTree(menuData);
-    breadcrumbOverrides = tree.getBreadcrumbOverrides(categoryPath);
-
-    // Формируем breadcrumbs для JSON-LD
+  if (categoryPathSlugs.length > 0 && categoryMap) {
+    breadcrumbOverrides = getBreadcrumbOverridesFromMap(
+      categoryMap,
+      categoryPathSlugs
+    );
     breadcrumbItems = [
       { position: 1, name: "Главная", item: SITE_URL },
       { position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
     ];
-
-    categoryPath.forEach((slug, index) => {
-      const categoryName = breadcrumbOverrides[slug] || slug;
-      const categoryPathStr = categoryPath.slice(0, index + 1).join("/");
+    categoryPathSlugs.forEach((slug, index) => {
+      const categoryName = breadcrumbOverrides[slug] || slug.replace(/-/g, " ");
+      const pathStr = categoryPathSlugs.slice(0, index + 1).join("/");
       breadcrumbItems.push({
         position: index + 3,
         name: categoryName,
-        item: `${SITE_URL}/catalog/${categoryPathStr}`,
+        item: `${SITE_URL}/catalog/${pathStr}`,
       });
     });
-
     breadcrumbItems.push({
       position: breadcrumbItems.length + 1,
       name: data.name,
@@ -194,8 +191,7 @@ export default async function ProductPage({
       )}
 
       <div className={styles.container}>
-        {categoryPath.length > 0 ? (
-          // Кастомные breadcrumbs с категориями
+        {categoryPathSlugs.length > 0 ? (
           <div className={breadcrumbStyles.container}>
             <div className={breadcrumbStyles.wrapper}>
               <nav aria-label="breadcrumb" className={breadcrumbStyles.nav}>
@@ -211,17 +207,17 @@ export default async function ProductPage({
                       Каталог
                     </Link>
                   </li>
-                  {categoryPath.map((slug, index) => {
+                  {categoryPathSlugs.map((slug, index) => {
                     const categoryName =
                       breadcrumbOverrides[slug] || slug.replace(/-/g, " ");
-                    const categoryPathStr = categoryPath
+                    const pathStr = categoryPathSlugs
                       .slice(0, index + 1)
                       .join("/");
                     return (
                       <li key={slug} className={breadcrumbStyles.item}>
                         <span className={breadcrumbStyles.separator}> / </span>
                         <Link
-                          href={`/catalog/${categoryPathStr}`}
+                          href={`/catalog/${pathStr}`}
                           className={breadcrumbStyles.link}
                         >
                           {categoryName}

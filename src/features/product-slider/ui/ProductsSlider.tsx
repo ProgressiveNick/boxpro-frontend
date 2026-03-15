@@ -23,7 +23,6 @@ const ProductsSliderContent = dynamic(
 type Props = {
   data: ProductType[];
   showAllCharacteristics?: boolean;
-  categoryPath?: string[]; // Путь категории для сохранения вложенности в URL продукта
 };
 
 export type { ProductsSliderRef };

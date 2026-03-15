@@ -1,7 +1,7 @@
 "use client";
 
-import "swiper/scss";
-import "swiper/scss/navigation";
+import "swiper/css";
+import "swiper/css/navigation";
 
 import { useState, useCallback } from "react";
 import styles from "./TabMenu.module.scss";

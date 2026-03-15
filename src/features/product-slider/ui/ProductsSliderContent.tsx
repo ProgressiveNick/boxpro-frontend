@@ -4,8 +4,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import styles from "./ProductsSlider.module.scss";
 import { useState, useImperativeHandle, forwardRef } from "react";
-import "swiper/scss";
-import "swiper/scss/navigation";
+import "swiper/css";
+import "swiper/css/navigation";
 import type { Swiper as SwiperType } from "swiper";
 
 import { ProductCard, ProductType } from "@/entities/product";
@@ -13,7 +13,6 @@ import { ProductCard, ProductType } from "@/entities/product";
 type Props = {
   data: ProductType[];
   showAllCharacteristics?: boolean;
-  categoryPath?: string[]; // Путь категории для сохранения вложенности в URL продукта
 };
 
 export type ProductsSliderRef = {
@@ -23,7 +22,7 @@ export type ProductsSliderRef = {
 };
 
 export const ProductsSliderContent = forwardRef<ProductsSliderRef, Props>(
-  ({ data, showAllCharacteristics = false, categoryPath }, ref) => {
+  ({ data, showAllCharacteristics = false }, ref) => {
     const [swiper, setSwiper] = useState<SwiperType | null>(null);
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
@@ -91,7 +90,6 @@ export const ProductsSliderContent = forwardRef<ProductsSliderRef, Props>(
               <ProductCard
                 product={product}
                 showAllCharacteristics={showAllCharacteristics}
-                categoryPath={categoryPath}
               />
             </SwiperSlide>
           ))}

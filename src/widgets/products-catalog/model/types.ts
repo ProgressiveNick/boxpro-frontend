@@ -17,7 +17,6 @@ export type ProductsCatalogProps = {
   hasActiveFilters?: boolean;
   attributes?: AttributeFilter[];
   hideFilters?: boolean; // скрыть колонку фильтров и растянуть контент на всю ширину
-  categoryPath?: string[]; // Путь категории для сохранения вложенности в URL продукта
   /** Скрыть мобильную кнопку фильтров и FilterDrawer (для каталога запчастей) */
   hideMobileFilterButton?: boolean;
   /** Добавить отступы слева/справа у контейнера (только для корневого /catalog, чтобы не прилипал к краям) */

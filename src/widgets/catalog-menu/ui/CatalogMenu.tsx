@@ -91,10 +91,13 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
               >
                 {categories?.map((category) => (
                   <CategoryMenuItem
-                    key={category.id}
+                    key={category.documentId ?? `${category.id}-${category.slug}`}
                     category={category}
                     allCategories={categories}
-                    isActive={hoveredCategory?.id === category.id}
+                    isActive={
+                      (hoveredCategory?.documentId ?? hoveredCategory?.id) ===
+                      (category.documentId ?? category.id)
+                    }
                     onHover={() => setHoveredCategory(category)}
                     onClick={() => closeAll()}
                   />
@@ -114,10 +117,13 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                     <div className={styles.listSubCategories}>
                       {hoveredCategory.childs?.map((subCategory: Category) => (
                         <CategoryMenuItem
-                          key={subCategory.id}
+                          key={subCategory.documentId ?? `${subCategory.id}-${subCategory.slug}`}
                           category={subCategory}
                           allCategories={categories}
-                          isActive={hoveredSubCategory?.id === subCategory.id}
+                          isActive={
+                            (hoveredSubCategory?.documentId ?? hoveredSubCategory?.id) ===
+                            (subCategory.documentId ?? subCategory.id)
+                          }
                           onHover={() => setHoveredSubCategory(subCategory)}
                           onClick={() => closeAll()}
                         />
@@ -136,7 +142,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                         <div className={styles.listSubCategories}>
                           {hoveredSubCategory.childs.map((item: Category) => (
                             <CategoryMenuItem
-                              key={item.id}
+                              key={item.documentId ?? `${item.id}-${item.slug}`}
                               category={item}
                               allCategories={categories}
                               onClick={() => closeAll()}
@@ -228,7 +234,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                 categories.map((category) => (
                   <div
                     className={mobileMenuStyles.categoryItem}
-                    key={category.id}
+                    key={category.documentId ?? `${category.id}-${category.slug}`}
                   >
                     <CategoryMenuItem
                       category={category}
@@ -248,7 +254,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                 openCategory.childs?.map((category) => (
                   <div
                     className={mobileMenuStyles.categoryItem}
-                    key={category.id}
+                    key={category.documentId ?? `${category.id}-${category.slug}`}
                   >
                     <CategoryMenuItem
                       category={category}
@@ -268,7 +274,7 @@ export function CatalogMenu({ categories }: CatalogMenuProps) {
                 openSubCategory.childs?.map((category) => (
                   <div
                     className={mobileMenuStyles.categoryItem}
-                    key={category.id}
+                    key={category.documentId ?? `${category.id}-${category.slug}`}
                   >
                     <CategoryMenuItem
                       category={category}

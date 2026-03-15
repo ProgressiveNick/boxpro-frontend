@@ -1,6 +1,43 @@
 import type { NextConfig } from "next";
+import { readFile } from "fs/promises";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    try {
+      const filePath = path.join(process.cwd(), "public/data/category-map.json");
+      const raw = await readFile(filePath, "utf-8");
+      const data = JSON.parse(raw) as {
+        byDocumentId?: Record<
+          string,
+          { slug?: string; url?: string; parentDocumentId?: string | null }
+        >;
+      };
+      if (!data?.byDocumentId || typeof data.byDocumentId !== "object") {
+        return [];
+      }
+      const redirects: Array<{
+        source: string;
+        destination: string;
+        permanent: boolean;
+      }> = [];
+      for (const node of Object.values(data.byDocumentId)) {
+        if (node.parentDocumentId != null && node.slug && node.url) {
+          const destination = node.url.startsWith("/")
+            ? node.url
+            : `/${node.url}`;
+          redirects.push({
+            source: `/catalog/${node.slug}`,
+            destination,
+            permanent: true,
+          });
+        }
+      }
+      return redirects;
+    } catch {
+      return [];
+    }
+  },
   images: {
     remotePatterns: [
       {
