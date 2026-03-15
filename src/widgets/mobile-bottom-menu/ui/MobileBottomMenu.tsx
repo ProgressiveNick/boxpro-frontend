@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { ComparisonLink } from "@/features/comparison-link";
 import { OpenFavoritesButton } from "@/widgets/favorites-button";
 import { OpenCartButton } from "@/widgets/cart-button";
 import { SearchInput } from "@/features/product-search";
@@ -44,27 +44,7 @@ export function MobileBottomMenu() {
     <>
       <div className={styles.mobileBottomMenu}>
         <div className={styles.menuItem}>
-          <Link
-            href="/contacts"
-            aria-label="Контакты"
-            className={styles.contactsButton}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M22 16.92V20a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 2 3.18 2 2 0 0 1 4 1h3.09a1 1 0 0 1 1 .75l1.21 5.05a1 1 0 0 1-.27.95L7.91 9.91a16 16 0 0 0 6.18 6.18l2.16-2.16a1 1 0 0 1 .95-.27l5.05 1.21a1 1 0 0 1 .75 1Z"
-                stroke="currentColor"
-                strokeWidth="2.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+          <ComparisonLink />
         </div>
 
         <div className={styles.menuItem}>

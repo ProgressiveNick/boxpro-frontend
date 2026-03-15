@@ -48,7 +48,9 @@
   border: 1px solid $color-border-white;
   border-radius: $border-radius-tiny;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 
   &:hover {
     border-color: $color-blue;
@@ -96,6 +98,15 @@
   left: 0;
   z-index: 1;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
+
+  @media (max-width: 768px) {
+    width: 100px;
+    min-width: 100px;
+    font-size: 10px;
+    font-weight: 400;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
 }
 
 .colProduct {
@@ -111,6 +122,11 @@
 
   &:last-child {
     border-right: none;
+  }
+
+  @media (max-width: 768px) {
+    padding-left: 5px;
+    padding-right: 5px;
   }
 }
 
