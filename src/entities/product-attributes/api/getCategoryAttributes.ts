@@ -1,14 +1,35 @@
+import { readFile } from "fs/promises";
+import path from "path";
 import { cache } from "react";
 import {
   attributesValuesServerService,
   productsServerService,
 } from "@/shared/api/server";
 import { getAllCategoryIds } from "@/entities/categories/api/getCategories";
-import { categoriesService } from "@/shared/api/server";
+import { getCategoryMap, getDocumentIdBySlug } from "@/entities/categories/lib/categoryMap";
 import { getServerCache, setServerCache } from "@/shared/lib/server-cache";
 import type { Category } from "@/entities/categories";
 
+const FILTERS_CACHE_PATH = "public/data/filters-cache.json";
 const CACHE_KEY_PREFIX = "category_attributes";
+
+let staticFiltersCache: { byDocumentId: Record<string, AttributeFilter[]> } | null = null;
+
+async function getStaticFiltersCache(): Promise<{ byDocumentId: Record<string, AttributeFilter[]> } | null> {
+  if (staticFiltersCache) return staticFiltersCache;
+  try {
+    const filePath = path.join(process.cwd(), FILTERS_CACHE_PATH);
+    const raw = await readFile(filePath, "utf-8");
+    const data = JSON.parse(raw) as { byDocumentId: Record<string, AttributeFilter[]> };
+    if (data && data.byDocumentId && typeof data.byDocumentId === "object") {
+      staticFiltersCache = data;
+      return staticFiltersCache;
+    }
+  } catch {
+    // файл отсутствует или невалиден — используем fallback на API
+  }
+  return null;
+}
 const CACHE_VERSION = "8.0"; // Увеличили версию для получения всех товаров через пагинацию (не только первые 1000)
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 часа
 
@@ -18,6 +39,8 @@ export type AttributeFilter = {
   type: "number" | "range" | "string" | "boolean";
   unit?: string;
   values: AttributeFilterValueItem[];
+  /** SEO-slug по названию (для короткого URL) */
+  slug?: string;
 };
 
 export type AttributeFilterValueItem = {
@@ -26,6 +49,8 @@ export type AttributeFilterValueItem = {
   label?: string; // для string и boolean
   min?: number; // для range
   max?: number; // для range
+  /** SEO-slug для URL (число, диапазон или транслит подписи) */
+  slug?: string;
 };
 
 export type GetCategoryAttributesOptions = {
@@ -60,50 +85,34 @@ export const getCategoryAttributes = cache(
       return [];
     }
 
+    // Статический кэш фильтров (генерируется при билде)
+    const filtersCache = await getStaticFiltersCache();
+    const map = await getCategoryMap();
+    const documentId = map ? getDocumentIdBySlug(map, categorySlug) : null;
+    if (filtersCache && documentId) {
+      const staticAttrs = filtersCache.byDocumentId[documentId];
+      if (Array.isArray(staticAttrs)) {
+        return staticAttrs;
+      }
+    }
+
     const cacheKey = `${CACHE_KEY_PREFIX}_${categorySlug}_${includeParts}`;
 
-    // Проверяем кэш
+    // Проверяем runtime-кэш
     const cached = await getServerCache<AttributeFilter[]>(
       cacheKey,
       CACHE_VERSION,
     );
     if (cached && Array.isArray(cached) && cached.length > 0) {
-      console.log(
-        `[getCategoryAttributes] Cache hit for ${categorySlug}: ${cached.length} attributes`,
-      );
       return cached;
     }
-    console.log(
-      `[getCategoryAttributes] Cache miss for ${categorySlug}, fetching from API...`,
-    );
 
     try {
-      // Получаем родительскую категорию
-      const parentCategory = await Promise.race([
-        categoriesService.find({
-          filters: {
-            slug: categorySlug,
-          },
-        }),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Request timeout")), 5000),
-        ),
-      ]);
-
-      if (!parentCategory.data?.length) {
+      if (!documentId) {
         return [];
       }
 
-      // Получаем все ID категорий (включая дочерние)
-      // Используем уже загруженные категории для оптимизации (быстро, без API запросов)
-      const targetCategoryIds = await getAllCategoryIds(
-        parentCategory.data[0].documentId,
-        allCategories,
-      );
-
-      console.log(
-        `[getCategoryAttributes] Category ${categorySlug} (${parentCategory.data[0].documentId}) has ${targetCategoryIds.length} total categories (including children)`,
-      );
+      const targetCategoryIds = await getAllCategoryIds(documentId, allCategories);
 
       if (targetCategoryIds.length === 0) {
         return [];
@@ -150,17 +159,7 @@ export const getCategoryAttributes = cache(
         const pageCount = productsResponse.meta?.pagination?.pageCount || 0;
         hasMorePages = currentPage < pageCount;
         currentPage++;
-
-        if (currentPage % 10 === 0) {
-          console.log(
-            `[getCategoryAttributes] Fetched ${productIds.length} of ${total} products...`,
-          );
-        }
       }
-
-      console.log(
-        `[getCategoryAttributes] Found ${productIds.length} products for category ${categorySlug}`,
-      );
 
       if (productIds.length === 0) {
         return [];
@@ -264,10 +263,6 @@ export const getCategoryAttributes = cache(
         }
       }
 
-      console.log(
-        `[getCategoryAttributes] Fetched ${allAttributeValues.length} attribute values`,
-      );
-
       // Обрабатываем характеристики
       const attributesMap = new Map<
         string,
@@ -299,6 +294,15 @@ export const getCategoryAttributes = cache(
           attrName === "Артикул" ||
           attrName === "Вес брутто (кг)" ||
           attrName === "Вес нетто (кг)"
+        ) {
+          continue;
+        }
+
+        // Исключаем все фильтры с габаритами: (Длина), (Ширина), (Высота)
+        if (
+          attrName.includes("(Длина)") ||
+          attrName.includes("(Ширина)") ||
+          attrName.includes("(Высота)")
         ) {
           continue;
         }
@@ -380,13 +384,6 @@ export const getCategoryAttributes = cache(
 
         const attr = attributesMap.get(targetKey)!;
 
-        // Логирование для отладки габаритов
-        if (isDimensionsAttribute && (hasWidth || hasHeight || hasLength)) {
-          console.log(
-            `[getCategoryAttributes] Processing dimension attribute: "${originalAttrName}" -> "${attrName}", type: ${attrType}, number_value: ${attrValue.number_value}, string_value: "${attrValue.string_value}"`,
-          );
-        }
-
         // Обрабатываем значения в зависимости от типа
         if (attrType === "number") {
           // Для number типа может быть как number_value, так и string_value (если в БД хранится строка)
@@ -417,11 +414,6 @@ export const getCategoryAttributes = cache(
               }
               stringValue = stringValue.replace(/\s+/g, " ").trim();
 
-              if (originalValue !== stringValue) {
-                console.log(
-                  `[getCategoryAttributes] Cleaned number value: "${originalValue}" -> "${stringValue}"`,
-                );
-              }
             }
 
             // Извлекаем число из строки (берем первое число)
@@ -453,12 +445,6 @@ export const getCategoryAttributes = cache(
                 if (!existingIds.includes(externalId)) {
                   existingIds.push(externalId);
                   existing.id = existingIds.join(",");
-                  // Логирование для отладки накопления
-                  if (existingIds.length > 5 && existingIds.length % 10 === 0) {
-                    console.log(
-                      `[getCategoryAttributes] Accumulated ${existingIds.length} external_ids for "${attrName}" value "${valueKey}"`,
-                    );
-                  }
                 }
               } else {
                 existing.id = externalId;
@@ -507,13 +493,6 @@ export const getCategoryAttributes = cache(
             }
             // Удаляем лишние пробелы
             stringValue = stringValue.replace(/\s+/g, " ").trim();
-
-            // Логирование для отладки
-            if (originalValue !== stringValue) {
-              console.log(
-                `[getCategoryAttributes] Cleaned value: "${originalValue}" -> "${stringValue}"`,
-              );
-            }
           }
 
           const valueKey = stringValue;
@@ -576,41 +555,6 @@ export const getCategoryAttributes = cache(
           console.warn("Failed to cache category attributes:", error);
         },
       );
-
-      // Логирование для отладки
-      if (result.length === 0) {
-        console.log(
-          `[getCategoryAttributes] No attributes found for category ${categorySlug}. Products: ${productIds.length}, Attributes in map: ${attributesMap.size}`,
-        );
-      } else {
-        console.log(
-          `[getCategoryAttributes] Found ${result.length} attributes for category ${categorySlug}:`,
-          result.map((a) => `${a.name} (${a.type}, ${a.values.length} values)`),
-        );
-        // Логирование для отладки number фильтров
-        result
-          .filter((a) => a.type === "number")
-          .forEach((attr) => {
-            attr.values.forEach((val) => {
-              const idCount = val.id.split(",").filter(Boolean).length;
-              console.log(
-                `[getCategoryAttributes] Attribute "${attr.name}" value "${val.value}" has ${idCount} external_ids`,
-              );
-              if (idCount > 1) {
-                const ids = val.id.split(",").filter(Boolean);
-                console.log(
-                  `[getCategoryAttributes] First 5 external_ids:`,
-                  ids.slice(0, 5),
-                );
-                if (ids.length > 5) {
-                  console.log(
-                    `[getCategoryAttributes] ... and ${ids.length - 5} more`,
-                  );
-                }
-              }
-            });
-          });
-      }
 
       return result;
     } catch (error) {

@@ -65,6 +65,14 @@
   color: $color-black;
 }
 
+.highlight {
+  background-color: #fff3cd;
+  color: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
 .description {
   color: #666;
   font-size: 12px;

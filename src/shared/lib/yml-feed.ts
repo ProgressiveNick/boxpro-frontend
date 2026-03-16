@@ -29,9 +29,10 @@ function stripControlChars(text: string): string {
   return text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
 }
 
-/** Формат из products-management: server/data/categories-mapping.json */
+/** Формат src/data/category-mapping.json (documentId, external_id) */
 type CategoryMappingEntry = {
   external_id: string;
+  documentId?: string;
   strapi_documentId?: string;
   name?: string;
 };
@@ -41,15 +42,15 @@ const categoryIdByDocumentId: Map<string, string> = (() => {
 
   (categoryMapping as CategoryMappingEntry[]).forEach((entry) => {
     const xmlId = String(entry.external_id || "").trim();
-    const docId = entry.strapi_documentId
-      ? String(entry.strapi_documentId).trim()
+    const docId = (entry.documentId ?? entry.strapi_documentId)
+      ? String((entry.documentId ?? entry.strapi_documentId)!).trim()
       : "";
 
     // Требование Яндекса: не более 18 цифр
     if (!xmlId || !/^\d{1,18}$/.test(xmlId)) {
       console.warn(
         "[yml-feed] Пропускаем запись маппинга категории с некорректным external_id:",
-        entry
+        entry,
       );
       return;
     }
@@ -84,7 +85,7 @@ function getCategoryId(cat: Category | undefined | null): string | null {
         documentId,
         name: cat.name,
         slug: cat.slug,
-      }
+      },
     );
     return null;
   }
@@ -102,7 +103,7 @@ function getCategoryId(cat: Category | undefined | null): string | null {
         id: cat.id,
         name: cat.name,
         slug: cat.slug,
-      }
+      },
     );
   }
 
@@ -119,7 +120,9 @@ function buildCategoriesXml(categories: Category[]): string {
     const name = escapeXml(stripControlChars(cat.name));
     const parentCatId = cat.parent ? getCategoryId(cat.parent) : null;
     const parentId = parentCatId ? ` parentId="${escapeXml(parentCatId)}"` : "";
-    lines.push(`    <category id="${escapeXml(catId)}"${parentId}>${name}</category>`);
+    lines.push(
+      `    <category id="${escapeXml(catId)}"${parentId}>${name}</category>`,
+    );
   }
   return lines.join("\n");
 }
@@ -144,7 +147,7 @@ function buildOffersXml(products: ProductType[]): string {
           productName: p.name,
           categoryDocumentId: p.kategoria?.documentId,
           categoryName: p.kategoria?.name,
-        }
+        },
       );
       continue;
     }
@@ -158,15 +161,16 @@ function buildOffersXml(products: ProductType[]): string {
       p.previousPrice != null && p.previousPrice > 0
         ? `\n      <oldprice>${Math.round(Number(p.previousPrice))}</oldprice>`
         : "";
-    const picture = getAbsoluteImageUrl(
-      p.pathsImgs?.[0]?.path ?? null
-    );
+    const picture = getAbsoluteImageUrl(p.pathsImgs?.[0]?.path ?? null);
     const pictureEscaped = escapeXml(picture);
 
     let descriptionContent = (p.description || p.name || "").trim();
     descriptionContent = stripControlChars(descriptionContent);
     if (descriptionContent.includes("<") || descriptionContent.includes(">")) {
-      descriptionContent = descriptionContent.replace(/]]>/g, "]]]]><![CDATA[>");
+      descriptionContent = descriptionContent.replace(
+        /]]>/g,
+        "]]]]><![CDATA[>",
+      );
     }
     const descriptionXml = `      <description><![CDATA[${descriptionContent}]]></description>`;
 
@@ -197,7 +201,10 @@ export type BuildYmlFeedParams = {
  * Собирает XML фида YML по данным магазина, категорий и товаров.
  * Дата в атрибуте date — момент генерации (RFC 3339).
  */
-export function buildYmlFeed({ categories, products }: BuildYmlFeedParams): string {
+export function buildYmlFeed({
+  categories,
+  products,
+}: BuildYmlFeedParams): string {
   const date = new Date().toISOString();
   const categoriesXml = buildCategoriesXml(categories);
   const offersXml = buildOffersXml(products);

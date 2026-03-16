@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "fetch-cities": "node scripts/fetch-cities.js",
     "generate-category-map": "npx tsx scripts/generate-category-map.ts",
-    "prebuild": "node scripts/fetch-cities.js && npx tsx scripts/generate-category-map.ts",
+    "export-products-for-filters": "npx tsx scripts/export-products-for-filters.ts",
+    "prebuild": "node scripts/fetch-cities.js && npx tsx scripts/generate-category-map.ts && npx tsx scripts/generate-filters-cache.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

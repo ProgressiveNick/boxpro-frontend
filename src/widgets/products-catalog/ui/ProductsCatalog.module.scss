@@ -22,7 +22,7 @@
   position: fixed;
   bottom: 80px; // Над нижним меню (MobileBottomMenu ~60px + отступ)
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-15px);
   z-index: 999;
   // Стили в соответствии с виджетом фильтров
   background-color: rgb(36, 36, 36);
@@ -45,7 +45,7 @@
   }
 
   &:active {
-    transform: translateX(-50%) scale(0.98);
+    transform: translateX(-50%) translateY(-15px) scale(0.98);
   }
 
   // Показываем кнопку как только появляется нижнее мобильное меню (тот же breakpoint 768px)

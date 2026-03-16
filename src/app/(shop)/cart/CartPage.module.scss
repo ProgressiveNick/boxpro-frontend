@@ -138,6 +138,11 @@
   color: $color-white !important;
   flex: 1;
   font-size: 18px !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 0;
+  align-content: flex-start;
+  min-width: 0;
 
   @media screen and (max-width: 1200px) {
     @include text-2-tablet;
@@ -201,6 +206,7 @@
 .itemName {
   @include text-3;
   color: $color-black;
+  font-weight: 400;
   flex: 1;
 
   @media screen and (max-width: 1200px) {
@@ -209,6 +215,7 @@
 
   @media screen and (max-width: 480px) {
     @include text-3-mobile;
+    font-weight: 300;
   }
 }
 
@@ -298,6 +305,7 @@
     color: $color-blue;
     border-radius: 12px;
     padding: 10px 12px;
+    font-size: 15px;
   }
 }
 

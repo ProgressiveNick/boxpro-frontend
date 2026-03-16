@@ -620,7 +620,7 @@
 }
 
 .customFavorite {
-  position: static !important;
+  position: relative !important;
   right: auto !important;
   top: auto !important;
   width: 48px !important;
@@ -647,6 +647,7 @@
   }
 
   &::before {
+    display: block;
     background-color: white;
     content: "";
     height: 20px;
@@ -654,16 +655,17 @@
     background-repeat: no-repeat;
     background-position: center center;
     border-radius: 4px;
-    position: relative;
-    left: 13% !important;
-    top: 24% !important;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     -webkit-mask: url("/icons/favorites.svg") no-repeat 50% 50%;
     mask: url("/icons/favorites.svg") no-repeat 50% 50%;
   }
 }
 
 .customComparison {
-  position: static !important;
+  position: relative !important;
   right: auto !important;
   top: auto !important;
   width: 48px !important;
@@ -689,6 +691,7 @@
   }
 
   &::before {
+    display: block;
     background-color: white;
     content: "";
     height: 20px;
@@ -696,9 +699,10 @@
     background-repeat: no-repeat;
     background-position: center center;
     border-radius: 4px;
-    position: relative;
-    left: 13% !important;
-    top: 24% !important;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     -webkit-mask: url("/icons/comparison.svg") no-repeat 50% 50%;
     mask: url("/icons/comparison.svg") no-repeat 50% 50%;
   }

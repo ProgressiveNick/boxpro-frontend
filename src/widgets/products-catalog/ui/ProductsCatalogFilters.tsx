@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import styles from "./ProductsCatalogFilters.module.scss";
 import { FilterPrice } from "@/widgets/filters";
@@ -13,7 +13,10 @@ import {
   isFiltersChanged,
   initializeFilters,
 } from "../lib/utils";
-import { createFiltersQueryString } from "../lib/url-utils";
+import {
+  createFiltersQueryStringWithFallback,
+  getFiltersFromSession,
+} from "../lib/url-utils";
 import { FilterState } from "@/widgets/filters";
 
 export function ProductsCatalogFilters({
@@ -22,6 +25,7 @@ export function ProductsCatalogFilters({
   onFilterApply,
 }: Omit<ProductsCatalogFiltersProps, "categories" | "currentCategoryId">) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [appliedFilters, setAppliedFilters] = useState(() =>
     initializeFilters(initialFilters)
   );
@@ -29,6 +33,18 @@ export function ProductsCatalogFilters({
     initializeFilters(initialFilters)
   );
   const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (searchParams.get("fs") === "1") {
+      const fromSession = getFiltersFromSession(window.location.pathname);
+      if (fromSession) {
+        const merged = initializeFilters(fromSession);
+        setAppliedFilters(merged);
+        setTempFilters(merged);
+      }
+    }
+  }, [searchParams]);
 
   const applyFilters = () => {
     setAppliedFilters(tempFilters);
@@ -39,7 +55,13 @@ export function ProductsCatalogFilters({
   };
 
   const updateURL = (filtersToApply: FilterState) => {
-    const queryString = createFiltersQueryString(filtersToApply);
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+    const queryString = createFiltersQueryStringWithFallback(
+      filtersToApply,
+      pathname,
+      DEFAULT_FILTERS,
+      attributes
+    );
     const currentUrl = new URL(window.location.href);
     currentUrl.search = queryString ? `?${queryString}` : "";
     currentUrl.searchParams.delete("page");
@@ -153,8 +175,9 @@ export function ProductsCatalogFilters({
       }
 
       if (current.stringValues && current.stringValues.length > 0) {
+        // Группируем по подписи (один чип на одно значение, а не на каждый external_id)
+        const stringValueGroups = new Map<string, string[]>(); // label -> [external_ids]
         current.stringValues.forEach((valId) => {
-          // Ищем valueMeta, учитывая что v.id может содержать несколько id через запятую
           const valueMeta = attr.values.find((v) => {
             if (v.id === valId) return true;
             if (v.id.includes(",")) {
@@ -163,9 +186,16 @@ export function ProductsCatalogFilters({
             return false;
           });
           const valueLabel = valueMeta?.label ?? String(valId);
+          if (!stringValueGroups.has(valueLabel)) {
+            stringValueGroups.set(valueLabel, []);
+          }
+          const ids = stringValueGroups.get(valueLabel)!;
+          if (!ids.includes(valId)) ids.push(valId);
+        });
 
+        stringValueGroups.forEach((externalIds, valueLabel) => {
           activeChips.push({
-            id: `attr-${attr.id}-str-${valId}`,
+            id: `attr-${attr.id}-str-${valueLabel}`,
             label: `${attr.name}: ${valueLabel}`,
             onRemove: () => {
               const nextAttributes = { ...appliedFilters.attributes };
@@ -173,7 +203,7 @@ export function ProductsCatalogFilters({
                 ...nextAttributes[attr.id],
                 stringValues: (
                   nextAttributes[attr.id].stringValues || []
-                ).filter((id) => id !== valId),
+                ).filter((id) => !externalIds.includes(id)),
               };
               if (
                 !nextValue.stringValues ||

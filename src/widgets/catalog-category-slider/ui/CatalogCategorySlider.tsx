@@ -27,9 +27,7 @@ export function CatalogCategorySlider({
   excludeId,
   variant = "root",
 }: CatalogCategorySliderProps) {
-  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(
-    null
-  );
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
@@ -58,19 +56,6 @@ export function CatalogCategorySlider({
 
   const cards: CategoryCards[] = filteredCategories.map((category) => {
     const url = getCategoryUrl(category, categoriesForPath);
-    if (process.env.NODE_ENV === "development") {
-      console.log(
-        `[CatalogCategorySlider] Category: ${category.name} (${
-          category.slug
-        }), parent: ${
-          category.parent
-            ? typeof category.parent === "object"
-              ? category.parent.slug
-              : category.parent
-            : "none"
-        }, URL: ${url}`
-      );
-    }
     return {
       name: category.name,
       url,

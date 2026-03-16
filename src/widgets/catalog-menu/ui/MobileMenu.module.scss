@@ -13,11 +13,14 @@
 
 .content {
   position: absolute;
-  top: 50px;
+  top: 55px; /* опущено на 15px ниже (было 50px) */
+  bottom: 0;
   background-color: #fff;
   width: 100vw;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  height: calc(100vh - var(--header-height, 80px));
+  height: calc(100vh - 55px);
+  padding-bottom: 60px;
+  box-sizing: border-box;
   overflow: hidden;
   display: flex;
   flex-direction: column;

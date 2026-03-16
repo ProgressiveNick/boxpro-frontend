@@ -63,7 +63,7 @@ export const catalogSectionsData: CatalogSectionItem[] = [
   },
   {
     name: "Фасовочное оборудование",
-    url: "/catalog/fasovochnoe-oborudovanie",
+    url: "/catalog/fasovochno-upakovochnoe-oborudovanie",
     imgSrc: "/img/catalogRazdels/fasovan.png",
     subcategories: [
       {
@@ -124,7 +124,7 @@ export const catalogSectionsData: CatalogSectionItem[] = [
   },
   {
     name: "Паллетоупаковщики",
-    url: "/catalog/palletoupakovshchiki",
+    url: "/catalog/palletoupakovschiki-palletoobmotchiki",
     imgSrc: "/img/catalogRazdels/pallet.png",
     subcategories: [
       {
@@ -147,7 +147,7 @@ export const catalogSectionsData: CatalogSectionItem[] = [
   },
   {
     name: "Запчасти и детали",
-    url: "/catalog/zapchasti-i-detali",
+    url: "/catalog/zapasnye-chasti-i-rashodnye-materialy",
     imgSrc: "/img/catalogRazdels/zapchasty.png",
     subcategories: [
       {
@@ -189,7 +189,7 @@ export const catalogSectionsData: CatalogSectionItem[] = [
   },
   {
     name: "Сервисный центр",
-    url: "/services/remont",
+    url: "/services",
     imgSrc: "/img/services.png",
     subcategories: [
       { name: "Выездная диагностика", url: "/services/field-diagnostics" },

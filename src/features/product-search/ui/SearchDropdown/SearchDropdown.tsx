@@ -8,8 +8,37 @@ import { ProductType } from "@/entities/product";
 import { getProductImageUrl } from "@/shared/lib/helpers/imageUrl";
 import { stripHtml } from "@/shared/lib/helpers/stripHtml";
 
+/** Разбивает текст на сегменты: совпадения с запросом и остальной текст (для подсветки) */
+function getHighlightSegments(
+  text: string,
+  query: string,
+): Array<{ text: string; match: boolean }> {
+  const q = query.trim();
+  if (!q) return [{ text, match: false }];
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "gi");
+  const segments: Array<{ text: string; match: boolean }> = [];
+  let lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = regex.exec(text)) !== null) {
+    if (m.index > lastIndex) {
+      segments.push({
+        text: text.slice(lastIndex, m.index),
+        match: false,
+      });
+    }
+    segments.push({ text: m[0], match: true });
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    segments.push({ text: text.slice(lastIndex), match: false });
+  }
+  return segments.length ? segments : [{ text, match: false }];
+}
+
 interface SearchDropdownProps {
   products: ProductType[];
+  query?: string;
   onClose: () => void;
   onLoadMore: () => void;
   isLoading: boolean;
@@ -18,6 +47,7 @@ interface SearchDropdownProps {
 
 export function SearchDropdown({
   products,
+  query = "",
   onClose,
   onLoadMore,
   isLoading,
@@ -134,9 +164,30 @@ export function SearchDropdown({
                 />
               </div>
               <div className={styles.content}>
-                <h3 className={styles.title}>{product.name}</h3>
+                <h3 className={styles.title}>
+                  {getHighlightSegments(product.name, query).map((seg, i) =>
+                    seg.match ? (
+                      <mark key={i} className={styles.highlight}>
+                        {seg.text}
+                      </mark>
+                    ) : (
+                      <span key={i}>{seg.text}</span>
+                    ),
+                  )}
+                </h3>
                 <p className={styles.description}>
-                  {stripHtml(product.description) || "Описание отсутствует"}
+                  {getHighlightSegments(
+                    stripHtml(product.description) || "Описание отсутствует",
+                    query,
+                  ).map((seg, i) =>
+                    seg.match ? (
+                      <mark key={i} className={styles.highlight}>
+                        {seg.text}
+                      </mark>
+                    ) : (
+                      <span key={i}>{seg.text}</span>
+                    ),
+                  )}
                 </p>
                 <div className={styles.meta}>
                   <span className={styles.price}>

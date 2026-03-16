@@ -1,9 +1,7 @@
 import { getAllCategoryIds } from "@/entities/categories/api/getCategories";
+import { getCategoryMap, getDocumentIdBySlug } from "@/entities/categories/lib/categoryMap";
 import { AttributeValue } from "@/entities/product-attributes";
-import {
-  attributesServerService,
-  categoriesService,
-} from "@/shared/api/server";
+import { attributesServerService } from "@/shared/api/server";
 
 type GetAllProductsAttributesParams = {
   categoriesIds?: string[];
@@ -93,19 +91,12 @@ export async function getAllAttributes({
 
   let targetCategoryIds: string[] = [];
 
-  if (categoriesIds) {
-    // Предполагаем, что params.kategoria содержит slug родительской категории,
-
-    const parentCategory = await categoriesService.find({
-      filters: {
-        slug: categoriesIds,
-      },
-    });
-
-    if (parentCategory.data?.length > 0) {
-      targetCategoryIds = await getAllCategoryIds(
-        parentCategory.data?.[0].documentId
-      );
+  if (categoriesIds?.length) {
+    const map = await getCategoryMap();
+    const firstSlug = Array.isArray(categoriesIds) ? categoriesIds[0] : categoriesIds;
+    const documentId = map ? getDocumentIdBySlug(map, firstSlug) : null;
+    if (documentId) {
+      targetCategoryIds = await getAllCategoryIds(documentId);
     }
   }
 

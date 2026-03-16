@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styles from "./ProductsCatalog.module.scss";
 import { ProductsCatalogFilters } from "./ProductsCatalogFilters";
 import { ProductsList, ProductsListControls } from "@/features/products-list";
@@ -10,8 +10,11 @@ import { FilterDrawer } from "@/widgets/filters/ui/filter-drawer";
 import { FilterState } from "@/widgets/filters";
 import { DEFAULT_FILTERS } from "../lib/constants";
 import { initializeFilters } from "../lib/utils";
-import { createFiltersQueryString } from "../lib/url-utils";
-import { useRouter } from "next/navigation";
+import {
+  createFiltersQueryStringWithFallback,
+  getFiltersFromSession,
+} from "../lib/url-utils";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Category } from "@/entities/categories";
 
 export function ProductsCatalog({
@@ -31,18 +34,32 @@ export function ProductsCatalog({
 }: ProductsCatalogProps) {
   const { isLoading, startLoading } = useLoadingState();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [mobileFilters, setMobileFilters] = useState<FilterState>(() =>
     initializeFilters(initialFilters),
   );
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (searchParams.get("fs") === "1") {
+      const fromSession = getFiltersFromSession(window.location.pathname);
+      if (fromSession) {
+        setMobileFilters(initializeFilters(fromSession));
+      }
+    }
+  }, [searchParams]);
+
   const handleMobileFilterChange = (newFilters: FilterState) => {
     setMobileFilters(newFilters);
-    const queryString = createFiltersQueryString(newFilters);
-    const currentUrl = new URL(window.location.href);
-    currentUrl.search = queryString ? `?${queryString}` : "";
-    currentUrl.searchParams.delete("page");
-    router.push(currentUrl.pathname + currentUrl.search);
+    const pathname = window.location.pathname;
+    const queryString = createFiltersQueryStringWithFallback(
+      newFilters,
+      pathname,
+      DEFAULT_FILTERS,
+      attributes
+    );
+    router.push(pathname + (queryString ? `?${queryString}` : ""));
     setIsMobileFilterOpen(false);
     startLoading();
   };
@@ -64,6 +81,17 @@ export function ProductsCatalog({
   // Для мобильного фильтра категорий: только дочерние категории текущего раздела
   const filterCategories =
     childCategories && childCategories.length > 0 ? childCategories : [];
+
+  // Наличие — первым после цены, остальные атрибуты в исходном порядке
+  const sortedAttributes = useMemo(() => {
+    if (!attributes?.length) return attributes ?? [];
+    const availability = attributes.find(
+      (a) => a.id === "availability" || a.name === "Наличие"
+    );
+    if (!availability) return attributes;
+    const rest = attributes.filter((a) => a !== availability);
+    return [availability, ...rest];
+  }, [attributes]);
 
   return (
     <div
@@ -110,7 +138,7 @@ export function ProductsCatalog({
           <aside className={styles.filtersColumn}>
             <ProductsCatalogFilters
               initialFilters={initialFilters}
-              attributes={attributes}
+              attributes={sortedAttributes}
               onFilterApply={startLoading}
             />
           </aside>
@@ -137,7 +165,7 @@ export function ProductsCatalog({
           categories={filterCategories}
           filters={mobileFilters}
           reset={handleMobileFilterReset}
-          attributes={attributes}
+          attributes={sortedAttributes}
         />
       )}
     </div>

@@ -22,6 +22,7 @@
   }
 
   &::before {
+    display: block;
     background-color: white;
     content: "";
     height: 24px;
@@ -30,8 +31,9 @@
     background-position: center center;
     border-radius: 4px;
     position: absolute;
-    left: calc(50% - 12px);
-    top: calc(50% - 12px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     -webkit-mask: url("/icons/comparison.svg") no-repeat 50% 50%;
     mask: url("/icons/comparison.svg") no-repeat 50% 50%;
   }

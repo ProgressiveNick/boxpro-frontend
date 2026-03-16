@@ -1,39 +1,19 @@
 /**
- * Генерация статической карты категорий из Strapi при билде.
+ * Генерация статической карты категорий из src/data/category-mapping.json.
  * Результат: public/data/category-map.json (tree + byDocumentId).
- * Требует STRAPI_API_BASE_URL и STRAPI_API_TOKEN в .env.
- * При ошибке или недоступности Strapi не перезаписывает существующий файл.
+ * Источник истины — плоский массив; корни — записи с parent === null (14 штук).
+ * Запуск: npx tsx scripts/generate-category-map.ts (или при билде).
  */
 
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import qs from "qs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-function loadEnv(filePath: string): void {
-  if (!fs.existsSync(filePath)) return;
-  const content = fs.readFileSync(filePath, "utf-8");
-  for (const line of content.split("\n")) {
-    const match = line.match(/^([^#=]+)=(.*)$/);
-    if (match) {
-      const key = match[1].trim();
-      const value = match[2].trim().replace(/^["']|["']$/g, "");
-      if (!process.env[key]) process.env[key] = value;
-    }
-  }
-}
-
-loadEnv(path.join(__dirname, "../.env"));
-loadEnv(path.join(__dirname, "../.env.local"));
-
-const BASE_URL = process.env.STRAPI_API_BASE_URL?.replace(/\/$/, "");
-const TOKEN = process.env.STRAPI_API_TOKEN;
+const INPUT_FILE = path.join(__dirname, "../src/data/category-mapping.json");
 const OUTPUT_DIR = path.join(__dirname, "../public/data");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "category-map.json");
-
-const COLLECTION = "kategorii-tovarovs";
 
 // --- Типы (совпадают с форматом JSON и entities/categories) ---
 
@@ -60,200 +40,87 @@ export interface CategoryMapOutput {
   byDocumentId: Record<string, CategoryMapNodeFlat>;
 }
 
-interface StrapiCategoryRaw {
-  documentId?: string;
-  id?: number;
-  slug?: string;
-  name?: string;
-  img_menu?: { url?: string; data?: { attributes?: { url?: string } } };
-  childs?: StrapiCategoryRaw[];
-  children?: StrapiCategoryRaw[];
+interface CategoryMappingEntry {
+  documentId: string;
+  name: string;
+  slug: string;
+  img_menu?: { url?: string } | null;
+  parent: string | null;
+  external_id?: string;
 }
 
-interface TransformResult {
-  node: CategoryMapTreeNode;
-  flat: CategoryMapNodeFlat;
-  children: CategoryMapTreeNode[];
-}
+function buildTreeFromMapping(
+  entries: CategoryMappingEntry[],
+): CategoryMapOutput {
+  const byDocumentId: Record<string, CategoryMapNodeFlat> = {};
+  const byId = new Map<string, CategoryMappingEntry>();
+  for (const e of entries) {
+    if (e.documentId) byId.set(e.documentId, e);
+  }
 
-/**
- * Строим query в формате Strapi 5 (как @strapi/client).
- * Используем qs, чтобы сериализация совпадала с ожиданиями API.
- */
-function buildQuery(): string {
-  const query = {
-    filters: {
-      parent: {
-        $null: true,
-      },
-    },
-    populate: {
-      img_menu: { populate: "*" },
-      childs: {
-        populate: {
-          img_menu: { populate: "*" },
-          childs: {
-            populate: {
-              img_menu: { populate: "*" },
-              childs: {
-                populate: {
-                  img_menu: { populate: "*" },
-                  childs: {
-                    populate: {
-                      img_menu: { populate: "*" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-  return qs.stringify(query, {
-    encodeValuesOnly: true,
-    arrayFormat: "indices",
-  });
-}
+  function buildNode(
+    entry: CategoryMappingEntry,
+    pathSlugs: string[],
+    parentDocumentId: string | null,
+  ): CategoryMapTreeNode {
+    const slug = entry.slug ?? "";
+    const pathSoFar = [...pathSlugs, slug].filter(Boolean);
+    const url =
+      pathSoFar.length > 0 ? `/catalog/${pathSoFar.join("/")}` : "/catalog";
+    const image = entry.img_menu?.url ?? null;
 
-function transformNode(
-  raw: StrapiCategoryRaw,
-  pathSlugs: string[] = [],
-  parentDocumentId: string | null = null
-): TransformResult | null {
-  const documentId = raw.documentId ?? raw.id?.toString?.();
-  if (!documentId) return null;
+    const flat: CategoryMapNodeFlat = {
+      documentId: entry.documentId,
+      name: entry.name ?? "",
+      slug,
+      url,
+      image,
+      parentDocumentId,
+    };
+    byDocumentId[entry.documentId] = flat;
 
-  const slug = raw.slug ?? "";
-  const pathSoFar = [...pathSlugs, slug].filter(Boolean);
-  const url =
-    pathSoFar.length > 0 ? `/catalog/${pathSoFar.join("/")}` : "/catalog";
-  const image =
-    raw.img_menu?.url ?? raw.img_menu?.data?.attributes?.url ?? null;
+    const childrenEntries = entries.filter(
+      (e) => e.parent === entry.documentId,
+    );
+    const children = childrenEntries
+      .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
+      .map((child) => buildNode(child, pathSoFar, entry.documentId));
 
-  const flat: CategoryMapNodeFlat = {
-    documentId,
-    name: raw.name ?? "",
-    slug,
-    url,
-    image,
-    parentDocumentId,
-  };
-
-  const childList = raw.childs ?? raw.children ?? [];
-  const children: CategoryMapTreeNode[] = childList
-    .map((child) => {
-      const res = transformNode(child, pathSoFar, documentId);
-      return res?.node ?? null;
-    })
-    .filter((n): n is CategoryMapTreeNode => n !== null);
-
-  return {
-    node: {
-      documentId: flat.documentId,
+    return {
+      documentId: entry.documentId,
       name: flat.name,
       slug: flat.slug,
       url: flat.url,
       image: flat.image,
       children,
-    },
-    flat,
-    children,
-  };
-}
-
-function collectFlatInto(
-  node: CategoryMapTreeNode,
-  byDocumentId: Record<string, CategoryMapNodeFlat>,
-  parentDocumentId: string | null
-): void {
-  byDocumentId[node.documentId] = {
-    documentId: node.documentId,
-    name: node.name,
-    slug: node.slug,
-    url: node.url,
-    image: node.image,
-    parentDocumentId,
-  };
-  for (const child of node.children) {
-    collectFlatInto(child, byDocumentId, node.documentId);
+    };
   }
-}
 
-function buildMap(data: { data?: StrapiCategoryRaw[] } | StrapiCategoryRaw[]): CategoryMapOutput {
-  const byDocumentId: Record<string, CategoryMapNodeFlat> = {};
-  const tree: CategoryMapTreeNode[] = [];
-
-  const list = Array.isArray(data) ? data : data?.data ?? [];
-  for (const raw of list) {
-    const result = transformNode(raw, [], null);
-    if (!result) continue;
-
-    tree.push(result.node);
-    collectFlatInto(result.node, byDocumentId, null);
-  }
+  const roots = entries.filter((e) => e.parent === null);
+  const tree = roots
+    .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
+    .map((root) => buildNode(root, [], null));
 
   return { tree, byDocumentId };
 }
 
-function getCategoriesApiUrl(): string {
-  // STRAPI_API_BASE_URL часто уже с /api (как в доке: http://localhost:1337/api)
-  const base = BASE_URL!.replace(/\/$/, "");
-  const path = base.endsWith("/api") ? `${base}/${COLLECTION}` : `${base}/api/${COLLECTION}`;
-  return `${path}?${buildQuery()}`;
-}
-
-async function fetchCatalogFromStrapi(): Promise<unknown> {
-  const url = getCategoriesApiUrl();
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    const safeUrl = url.replace(/\?.*/, "?...");
-    throw new Error(
-      `Strapi API ${response.status}: ${response.statusText}. URL: ${safeUrl}`
-    );
+function main(): void {
+  if (!fs.existsSync(INPUT_FILE)) {
+    console.error("[generate-category-map] Input file not found:", INPUT_FILE);
+    process.exit(1);
   }
 
-  return response.json();
-}
-
-async function main(): Promise<void> {
-  if (!BASE_URL || !TOKEN) {
-    console.warn(
-      "[generate-category-map] STRAPI_API_BASE_URL or STRAPI_API_TOKEN not set. Skip generation."
-    );
-    return;
-  }
-
-  let data: unknown;
+  const raw = fs.readFileSync(INPUT_FILE, "utf-8");
+  let entries: CategoryMappingEntry[];
   try {
-    console.log("[generate-category-map] Fetching categories from Strapi...");
-    data = await fetchCatalogFromStrapi();
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error("[generate-category-map] Strapi request failed:", message);
-    if (fs.existsSync(OUTPUT_FILE)) {
-      console.log("[generate-category-map] Keeping existing category-map.json");
-    } else {
-      const empty: CategoryMapOutput = { tree: [], byDocumentId: {} };
-      if (!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-      }
-      fs.writeFileSync(OUTPUT_FILE, JSON.stringify(empty), "utf-8");
-      console.log("[generate-category-map] Created empty category-map.json");
-    }
-    return;
+    const parsed = JSON.parse(raw);
+    entries = Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error("[generate-category-map] Invalid JSON in", INPUT_FILE, e);
+    process.exit(1);
   }
 
-  const { tree, byDocumentId } = buildMap(
-    data as { data?: StrapiCategoryRaw[] } | StrapiCategoryRaw[]
-  );
+  const { tree, byDocumentId } = buildTreeFromMapping(entries);
 
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -262,14 +129,11 @@ async function main(): Promise<void> {
   fs.writeFileSync(
     OUTPUT_FILE,
     JSON.stringify({ tree, byDocumentId }, null, 0),
-    "utf-8"
+    "utf-8",
   );
   console.log(
-    `[generate-category-map] Saved ${tree.length} root nodes, ${Object.keys(byDocumentId).length} total in byDocumentId -> ${OUTPUT_FILE}`
+    `[generate-category-map] Saved ${tree.length} root nodes, ${Object.keys(byDocumentId).length} total in byDocumentId -> ${OUTPUT_FILE}`,
   );
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main();

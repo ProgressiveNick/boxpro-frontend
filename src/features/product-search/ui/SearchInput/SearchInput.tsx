@@ -327,6 +327,7 @@ export function SearchInput({
       {showDropdown && (
         <SearchDropdown
           products={products}
+          query={query}
           onClose={handleCloseDropdown}
           onLoadMore={handleLoadMore}
           isLoading={isLoading}

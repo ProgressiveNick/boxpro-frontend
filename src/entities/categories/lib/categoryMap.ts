@@ -36,7 +36,7 @@ let cachedMap: CategoryMap | null = null;
 
 /**
  * Загружает карту категорий с диска (с кэшем в памяти).
- * Возвращает null, если файла нет (fallback на getCatalogMenu).
+ * Возвращает null, если файла нет.
  */
 export async function getCategoryMap(): Promise<CategoryMap | null> {
   if (cachedMap) return cachedMap;

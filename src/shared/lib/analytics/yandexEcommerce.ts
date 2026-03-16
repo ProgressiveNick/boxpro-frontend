@@ -41,7 +41,4 @@ export function pushEcommerceEvent(ecommerce: Record<string, unknown>): void {
   if (typeof window === "undefined") return;
   const dataLayer = (window.dataLayer = window.dataLayer || []);
   dataLayer.push({ ecommerce });
-  if (process.env.NODE_ENV === "development") {
-    console.debug("[Yandex Ecommerce]", ecommerce);
-  }
 }

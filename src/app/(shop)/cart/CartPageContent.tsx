@@ -180,7 +180,8 @@ export function CartPageContent() {
                 </button>
                 <div className={styles.mobileOrderWidget}>
                   <div className={styles.mobileTotalPrice}>
-                    Итого: <b>{formattedPrice(totalPrice)}</b>
+                    <span>Итого:</span>
+                    <b>{formattedPrice(totalPrice)}</b>
                   </div>
                   <button
                     className={styles.orderButton}

@@ -3,8 +3,12 @@
  * Используются только в server components
  */
 
-import { categoriesService, productsServerService } from "@/shared/api/server";
+import { productsServerService } from "@/shared/api/server";
 import { getAllCategoryIds } from "@/entities/categories/api/getCategories";
+import {
+  getCategoryMap,
+  getDocumentIdBySlug,
+} from "@/entities/categories/lib/categoryMap";
 import type { ProductType } from "../model/types";
 import { getServerCache, setServerCache } from "@/shared/lib/server-cache";
 import { cache } from "react";
@@ -75,41 +79,31 @@ export const getProducts = cache(
     if (params.categoryDocumentIds && params.categoryDocumentIds.length > 0) {
       targetCategoryIds = params.categoryDocumentIds;
     } else if (params.kategoria) {
+      const map = await getCategoryMap();
+      const categoryDocId = map
+        ? getDocumentIdBySlug(map, params.kategoria)
+        : null;
+      if (!categoryDocId) {
+        return {
+          data: [],
+          meta: {
+            pagination: {
+              total: 0,
+              page: 1,
+              pageSize: 24,
+              pageCount: 0,
+            },
+          },
+        } as unknown as FetchProductsResponse;
+      }
+      targetCategoryIds = await getAllCategoryIds(
+        categoryDocId,
+        params.allCategories,
+      );
+      if (targetCategoryIds.length === 0) {
+        targetCategoryIds = [categoryDocId];
+      }
       try {
-        const parentCategory = await Promise.race([
-          categoriesService.find({
-            filters: {
-              slug: params.kategoria,
-            },
-          }),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Request timeout")), 30000),
-          ),
-        ]);
-
-        if (parentCategory.data.length > 0) {
-          const categoryDocId = parentCategory.data[0].documentId;
-          targetCategoryIds = await getAllCategoryIds(
-            categoryDocId,
-            params.allCategories,
-          );
-          if (targetCategoryIds.length === 0) {
-            targetCategoryIds = [categoryDocId];
-          }
-        } else {
-          return {
-            data: [],
-            meta: {
-              pagination: {
-                total: 0,
-                page: 1,
-                pageSize: 24,
-                pageCount: 0,
-              },
-            },
-          } as unknown as FetchProductsResponse;
-        }
-
         if (params.filters?.categories?.length > 0) {
           const selectedIds: string[] = Array.isArray(params.filters.categories)
             ? params.filters.categories
@@ -188,64 +182,67 @@ export const getProducts = cache(
       for (const [attrId, attrValue] of Object.entries(
         params.filters.attributes,
       )) {
+        // Один фильтр может объединять несколько documentId (одинаковое имя в разных категориях)
+        const documentIds = attrId
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const singleId = documentIds.length === 1 ? documentIds[0]! : null;
+
         if (attrValue.numberValues && attrValue.numberValues.length > 0) {
-          // Для number: фильтруем товары, у которых есть harakteristici с нужной характеристикой и external_id
-          // В Strapi для фильтрации по связанным данным нужно использовать правильный синтаксис
-          console.log(
-            `[getProducts] Filtering by attribute ${attrId} with ${attrValue.numberValues.length} external_ids:`,
-            attrValue.numberValues.slice(0, 5),
-            attrValue.numberValues.length > 5 ? "..." : "",
-          );
+          const docId = singleId ?? documentIds[0]!;
           attributeFilters.push({
-            harakteristici: {
-              $and: [
-                {
-                  harakteristica: {
-                    documentId: {
-                      $eq: attrId,
-                    },
+            harakteristici:
+              documentIds.length <= 1
+                ? {
+                    $and: [
+                      { harakteristica: { documentId: { $eq: docId } } },
+                      { external_id: { $in: attrValue.numberValues } },
+                    ],
+                  }
+                : {
+                    $or: documentIds.map((id) => ({
+                      $and: [
+                        { harakteristica: { documentId: { $eq: id } } },
+                        { external_id: { $in: attrValue.numberValues } },
+                      ],
+                    })),
                   },
-                },
-                {
-                  external_id: {
-                    $in: attrValue.numberValues,
-                  },
-                },
-              ],
-            },
           });
         } else if (
           attrValue.stringValues &&
           attrValue.stringValues.length > 0
         ) {
-          // Для string и boolean (включая объединенный "Наличие"): фильтруем по external_id значений
-          if (attrId === "availability") {
-            // Для объединенного фильтра "Наличие" фильтруем только по external_id
-            attributeFilters.push({
-              harakteristici: {
-                external_id: {
-                  $in: attrValue.stringValues,
-                },
-              },
-            });
-          } else {
-            // Для обычных string фильтруем по характеристике и external_id
+          if (attrId === "availability" || singleId === "availability") {
+            // Короткий фильтр по смыслу, чтобы не раздувать URL (414) списком из десятков external_id
             attributeFilters.push({
               harakteristici: {
                 $and: [
+                  { harakteristica: { name: { $containsi: "Наличие" } } },
                   {
-                    harakteristica: {
-                      documentId: {
-                        $eq: attrId,
-                      },
-                    },
-                  },
-                  {
-                    external_id: {
-                      $in: attrValue.stringValues,
-                    },
+                    $or: [{ boolean_value: true }, { string_value: "Да" }],
                   },
                 ],
+              },
+            });
+          } else if (documentIds.length <= 1) {
+            attributeFilters.push({
+              harakteristici: {
+                $and: [
+                  { harakteristica: { documentId: { $eq: documentIds[0] } } },
+                  { external_id: { $in: attrValue.stringValues } },
+                ],
+              },
+            });
+          } else {
+            attributeFilters.push({
+              harakteristici: {
+                $or: documentIds.map((id) => ({
+                  $and: [
+                    { harakteristica: { documentId: { $eq: id } } },
+                    { external_id: { $in: attrValue.stringValues } },
+                  ],
+                })),
               },
             });
           }
@@ -253,63 +250,40 @@ export const getProducts = cache(
           attrValue.rangeMin !== undefined ||
           attrValue.rangeMax !== undefined
         ) {
-          // Для range: фильтруем по range_min и range_max
-          // Товар должен иметь характеристику, у которой диапазон пересекается с выбранным
-          const rangeFilter: Record<string, unknown> = {
-            harakteristici: {
-              harakteristica: {
-                documentId: {
-                  $eq: attrId,
-                },
-              },
-            },
+          const buildRangeCondition = (id: string): Record<string, unknown> => {
+            const base: Record<string, unknown> = {
+              harakteristica: { documentId: { $eq: id } },
+            };
+            if (
+              attrValue.rangeMin !== undefined &&
+              attrValue.rangeMax !== undefined
+            ) {
+              return {
+                $and: [
+                  base,
+                  { range_min: { $lte: attrValue.rangeMax } },
+                  { range_max: { $gte: attrValue.rangeMin } },
+                ],
+              };
+            }
+            if (attrValue.rangeMin !== undefined) {
+              return { ...base, range_max: { $gte: attrValue.rangeMin } };
+            }
+            return { ...base, range_min: { $lte: attrValue.rangeMax } };
           };
 
-          // Диапазон товара должен пересекаться с выбранным диапазоном
-          // range_min товара <= rangeMax выбранного И range_max товара >= rangeMin выбранного
-          if (
-            attrValue.rangeMin !== undefined &&
-            attrValue.rangeMax !== undefined
-          ) {
-            rangeFilter.harakteristici = {
-              ...(rangeFilter.harakteristici as Record<string, unknown>),
-              $and: [
-                {
-                  harakteristica: {
-                    documentId: {
-                      $eq: attrId,
-                    },
-                  },
-                },
-                {
-                  range_min: {
-                    $lte: attrValue.rangeMax,
-                  },
-                },
-                {
-                  range_max: {
-                    $gte: attrValue.rangeMin,
-                  },
-                },
-              ],
-            };
-          } else if (attrValue.rangeMin !== undefined) {
-            rangeFilter.harakteristici = {
-              ...(rangeFilter.harakteristici as Record<string, unknown>),
-              range_max: {
-                $gte: attrValue.rangeMin,
+          if (documentIds.length <= 1) {
+            const id = documentIds[0]!;
+            attributeFilters.push({
+              harakteristici: buildRangeCondition(id),
+            });
+          } else {
+            attributeFilters.push({
+              harakteristici: {
+                $or: documentIds.map((id) => buildRangeCondition(id)),
               },
-            };
-          } else if (attrValue.rangeMax !== undefined) {
-            rangeFilter.harakteristici = {
-              ...(rangeFilter.harakteristici as Record<string, unknown>),
-              range_min: {
-                $lte: attrValue.rangeMax,
-              },
-            };
+            });
           }
-
-          attributeFilters.push(rangeFilter);
         }
       }
 
@@ -349,7 +323,12 @@ export const getProducts = cache(
                   fields: ["name", "type"], // Только имя и тип характеристики
                 },
               },
-              fields: ["string_value", "number_value", "boolean_value", "external_id"], // boolean_value нужен для таба наличия в карточке
+              fields: [
+                "string_value",
+                "number_value",
+                "boolean_value",
+                "external_id",
+              ], // boolean_value нужен для таба наличия в карточке
             },
             // Категория - только базовые поля
             kategoria: {
@@ -519,12 +498,12 @@ export async function getProductsBySlugs(
   return res.data as unknown as ProductType[];
 }
 
-/** Размер страницы при постраничной выборке slug'ов для sitemap (не превышать maxLimit Strapi, по умолчанию 100) */
+/** Размер страницы при постраничной выборке slug'ов для sitemap и generateStaticParams (не превышать maxLimit Strapi, по умолчанию 100) */
 const SITEMAP_PAGE_SIZE = 100;
 
 /**
- * Получить все slugs товаров для generateStaticParams и sitemap.
- * Используется для статической генерации страниц товаров.
+ * Получить все slugs товаров (включая part) для generateStaticParams и sitemap.
+ * Используется для статической генерации страниц товаров и для полного списка URL в sitemap.
  * Обходит все страницы (Strapi REST API по умолчанию ограничивает pageSize до 100).
  */
 export async function getAllProductSlugs(): Promise<string[]> {
@@ -535,11 +514,6 @@ export async function getAllProductSlugs(): Promise<string[]> {
   try {
     do {
       const res = await productsServerService.find({
-        filters: {
-          part: {
-            $ne: true,
-          },
-        },
         fields: ["slug"],
         pagination: {
           page,
@@ -577,31 +551,21 @@ export async function getPopularProducts(): Promise<ProductType[]> {
 
   const allProducts: ProductType[] = [];
 
+  const map = await getCategoryMap();
   try {
     // Получаем товары из каждой категории
     for (const categorySlug of categorySlugs) {
       try {
-        // Получаем родительскую категорию
-        const parentCategory = await Promise.race([
-          categoriesService.find({
-            filters: {
-              slug: categorySlug,
-            },
-          }),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Request timeout")), 10000),
-          ),
-        ]);
-
-        if (parentCategory.data.length === 0) {
+        const categoryDocId = map
+          ? getDocumentIdBySlug(map, categorySlug)
+          : null;
+        if (!categoryDocId) {
           console.warn(
-            `[getPopularProducts] Category ${categorySlug} not found`,
+            `[getPopularProducts] Category ${categorySlug} not found in map`,
           );
           continue;
         }
 
-        // Получаем все ID категорий (включая дочерние)
-        const categoryDocId = parentCategory.data[0].documentId;
         const categoryIds = await getAllCategoryIds(categoryDocId);
 
         if (categoryIds.length === 0) {
@@ -669,11 +633,12 @@ export async function getPopularProducts(): Promise<ProductType[]> {
   }
 }
 
-const FEED_PAGE_SIZE = 200;
+/** Размер страницы для фида (Strapi часто ограничивает max 100, используем 100 для надёжности) */
+const FEED_PAGE_SIZE = 100;
 
 /**
- * Получить все товары для генерации YML-фида (без запчастей).
- * Используется в API маршруте /api/feed/yml.
+ * Получить все товары для генерации YML-фида (включая запчасти).
+ * Используется в API маршруте /api/feed/yml. Обходит все страницы пагинации.
  */
 export async function getProductsForFeed(): Promise<ProductType[]> {
   const all: ProductType[] = [];
@@ -683,9 +648,6 @@ export async function getProductsForFeed(): Promise<ProductType[]> {
   try {
     do {
       const res = await productsServerService.find({
-        filters: {
-          part: { $ne: true },
-        },
         pagination: { page, pageSize: FEED_PAGE_SIZE },
         populate: {
           kategoria: true,
