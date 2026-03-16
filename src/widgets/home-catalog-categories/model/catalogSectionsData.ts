@@ -20,10 +20,22 @@ export const catalogSectionsData: CatalogSectionItem[] = [
     url: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki",
     imgSrc: "/img/catalogRazdels/obrabotka.png",
     subcategories: [
-      { name: "Для теста", url: "/catalog/dlya-testa" },
-      { name: "Для мяса и рыбы", url: "/catalog/dlya-myasa-i-ryby" },
-      { name: "Термообработка", url: "/catalog/termoobrabotka" },
-      { name: "Прочее", url: "/catalog/prochee" },
+      {
+        name: "Для теста",
+        url: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki/obrabotka-testa",
+      },
+      {
+        name: "Для мяса и рыбы",
+        url: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki/myasopererabatyvayuschee-oborudovanie",
+      },
+      {
+        name: "Термообработка",
+        url: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki/termoobrabotka",
+      },
+      {
+        name: "Прочее",
+        url: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki/prochee-obrabatyvayushhee-oborudovanie",
+      },
     ],
   },
   {
@@ -31,9 +43,22 @@ export const catalogSectionsData: CatalogSectionItem[] = [
     url: "/catalog/upakovochnoe-oborudovanie",
     imgSrc: "/img/catalogRazdels/upack.png",
     subcategories: [
-      { name: "Подкатегория 1", url: "/catalog/upakovochnoe/podkategoria-1" },
-      { name: "Подкатегория 2", url: "/catalog/upakovochnoe/podkategoria-2" },
-      { name: "Подкатегория 3", url: "/catalog/upakovochnoe/podkategoria-3" },
+      {
+        name: "Горизонтальные упаковочные машины",
+        url: "/catalog/upakovochnoe-oborudovanie/gorizontal-nye-upakovochnye-mashiny",
+      },
+      {
+        name: "Вакуумные упаковщики ",
+        url: "/catalog/upakovochnoe-oborudovanie/vakuumnye-upakovschiki",
+      },
+      {
+        name: "Запайщики пакетов",
+        url: "/catalog/upakovochnoe-oborudovanie/zapayschiki-paketov",
+      },
+      {
+        name: "Термоусадочное",
+        url: "/catalog/upakovochnoe-oborudovanie/termousadochnye-apparaty",
+      },
     ],
   },
   {
@@ -41,8 +66,18 @@ export const catalogSectionsData: CatalogSectionItem[] = [
     url: "/catalog/fasovochnoe-oborudovanie",
     imgSrc: "/img/catalogRazdels/fasovan.png",
     subcategories: [
-      { name: "Подкатегория 1", url: "/catalog/fasovochnoe/podkategoria-1" },
-      { name: "Подкатегория 2", url: "/catalog/fasovochnoe/podkategoria-2" },
+      {
+        name: "Вертикальные упаковочные базы",
+        url: "/catalog/fasovochno-upakovochnoe-oborudovanie/vertikal-nye-upakovochnye-bazy",
+      },
+      {
+        name: "Дозаторы для жидкости",
+        url: "/catalog/fasovochno-upakovochnoe-oborudovanie/dozatory-dlya-zhidkosti-porshnevye",
+      },
+      {
+        name: "Дозаторы для сыпучих продуктов",
+        url: "/catalog/fasovochno-upakovochnoe-oborudovanie/dozatory-sypuchih-trudnosypuchih-produktov",
+      },
     ],
   },
   {
@@ -50,17 +85,41 @@ export const catalogSectionsData: CatalogSectionItem[] = [
     url: "/catalog/oborudovanie-horeca",
     imgSrc: "/img/catalogRazdels/horeca.png",
     subcategories: [
-      { name: "Подкатегория 1", url: "/catalog/horeca/podkategoria-1" },
-      { name: "Подкатегория 2", url: "/catalog/horeca/podkategoria-2" },
+      {
+        name: "Слайсеры",
+        url: "/catalog/oborudovanie-horeca/gastronomicheskie-slaysery",
+      },
+      {
+        name: "Фритюрницы",
+        url: "/catalog/oborudovanie-horeca/frityurnitsy",
+      },
+      {
+        name: "Мармиты",
+        url: "/catalog/oborudovanie-horeca/marmity",
+      },
     ],
   },
   {
     name: "Оборудование для маркетплейсов",
-    url: "/catalog/oborudovanie-dlya-marketpleysov",
+    url: "/catalog/palletoupakovschiki-palletoobmotchiki/roboty-palletayzery",
     imgSrc: "/img/catalogRazdels/marketplace.png",
     subcategories: [
-      { name: "Подкатегория 1", url: "/catalog/marketpleysy/podkategoria-1" },
-      { name: "Подкатегория 2", url: "/catalog/marketpleysy/podkategoria-2" },
+      {
+        name: "Запайщики лотков",
+        url: "/catalog/upakovochnoe-oborudovanie/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie",
+      },
+      {
+        name: "Роботы паллетайзеры",
+        url: "/catalog/palletoupakovschiki-palletoobmotchiki/roboty-palletayzery",
+      },
+      {
+        name: "Термоусадочное оборудование",
+        url: "/catalog/upakovochnoe-oborudovanie/termousadochnye-apparaty",
+      },
+      {
+        name: "Картонажное оборудование",
+        url: "/catalog/upakovochnoe-oborudovanie/kartonazhnoe-oborudovanie",
+      },
     ],
   },
   {
@@ -69,31 +128,63 @@ export const catalogSectionsData: CatalogSectionItem[] = [
     imgSrc: "/img/catalogRazdels/pallet.png",
     subcategories: [
       {
-        name: "Подкатегория 1",
-        url: "/catalog/palletoupakovshchiki/podkategoria-1",
+        name: "Мобильные ",
+        url: "/catalog/palletoupakovschiki-palletoobmotchiki/mobil-nye-palletoupakovschiki",
       },
       {
-        name: "Подкатегория 2",
-        url: "/catalog/palletoupakovshchiki/podkategoria-2",
+        name: "C престрейчем",
+        url: "/catalog/palletoupakovschiki-palletoobmotchiki/palletoupakovschiki-s-prestreychem",
+      },
+      {
+        name: "C механическим натяжением",
+        url: "/catalog/palletoupakovschiki-palletoobmotchiki/palletoupakovschiki-s-mehanicheskim-natyazheniem",
+      },
+      {
+        name: "Роботы паллетайзеры",
+        url: "/catalog/palletoupakovschiki-palletoobmotchiki/roboty-palletayzery",
       },
     ],
   },
   {
     name: "Запчасти и детали",
     url: "/catalog/zapchasti-i-detali",
-    imgSrc: "/img/rasshodnye.png",
+    imgSrc: "/img/catalogRazdels/zapchasty.png",
     subcategories: [
-      { name: "Подкатегория 1", url: "/catalog/zapchasti/podkategoria-1" },
-      { name: "Подкатегория 2", url: "/catalog/zapchasti/podkategoria-2" },
+      {
+        name: "Для упаковочного ",
+        url: "/catalog/zapasnye-chasti-i-rashodnye-materialy/dlya-gorizontal-nogo-oborudovaniya",
+      },
+      {
+        name: "Для фасовочного ",
+        url: "/catalog/zapasnye-chasti-i-rashodnye-materialy/dlya-porshnevyh-dozatorov",
+      },
+      {
+        name: "Для термоусадочного ",
+        url: "/catalog/zapasnye-chasti-i-rashodnye-materialy/dlya-termousadochnogo-oborudovaniya",
+      },
+      {
+        name: "Для вакуумного ",
+        url: "/catalog/zapasnye-chasti-i-rashodnye-materialy/dlya-vakuumnogo-obrudovaniya",
+      },
     ],
   },
   {
     name: "Упаковочные материалы",
     url: "/catalog/upakovochnye-materialy",
-    imgSrc: "/img/materialy.png",
+    imgSrc: "/img/catalogRazdels/matheryals.png",
     subcategories: [
-      { name: "Подкатегория 1", url: "/catalog/materialy/podkategoria-1" },
-      { name: "Подкатегория 2", url: "/catalog/materialy/podkategoria-2" },
+      {
+        name: "Пленка для скин машин",
+        url: "/catalog/upakovochnye-materialy/plenka-dlya-skin-upakovochnyh-mashin",
+      },
+      {
+        name: "Стрейч пленка",
+        url: "/catalog/upakovochnye-materialy/streych-plenka",
+      },
+      {
+        name: "Термоусадочная пленка",
+        url: "/catalog/upakovochnye-materialy/termousadochnaya-plenka-pof",
+      },
     ],
   },
   {

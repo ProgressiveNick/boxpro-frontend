@@ -171,7 +171,7 @@
   }
 }
 
-/* Контейнеры 2 и 3: изображение слева (не больше 50% ширины карточки), подкатегории справа, между ними 8px */
+/* Контейнеры 2 и 3: изображение слева прижато к низу, подкатегории справа на всю высоту */
 .sectionContent {
   display: grid;
   grid-template-columns: minmax(140px, 50%) 1fr;
@@ -183,34 +183,36 @@
   }
 }
 
-/* Ссылка на категорию: обёртка картинки, кликабельна как и заголовок */
+/* Ссылка на категорию: обёртка картинки, прижата к низу карточки */
 .sectionImageLink {
   display: block;
-  height: 100%;
-  min-height: 140px;
+  min-width: 0; /* не даём колонке вылезать за grid */
   text-decoration: none;
   color: inherit;
+  align-self: end; /* картинка к нижнему краю карточки раздела */
 }
 
 /* Контейнер 2: изображение в своём скруглённом контейнере */
 .sectionImageWrapper {
   position: relative;
   min-height: 140px;
+  min-width: 0;
   aspect-ratio: 4/3;
   height: 100%;
+  width: 100%;
   background: #e8e8e8;
   border-radius: $border-radius-small;
   overflow: hidden;
 
   @media screen and (max-width: 720px) {
     min-height: 140px;
-    aspect-ratio: auto;
+    aspect-ratio: 4/3; /* на мобильных контейнер заполняется по ширине, картинка — object-fit: cover */
   }
 }
 
 .sectionImage {
-  object-fit: contain;
-  object-position: top;
+  object-fit: cover;
+  object-position: center;
   transition: transform 0.4s ease-out;
 }
 
@@ -219,7 +221,7 @@
   transform: scale(1.06);
 }
 
-/* Контейнер 3: подкатегории в своём скруглённом контейнере (светлый фон) */
+/* Контейнер 3: подкатегории на всю доступную высоту карточки */
 .subcategoriesBlock {
   background: #f5f5f5;
   padding: 12px 16px;
@@ -228,6 +230,8 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  min-height: 140px;
+  align-self: stretch; /* на всю высоту строки grid */
 }
 
 .subcategoryList {

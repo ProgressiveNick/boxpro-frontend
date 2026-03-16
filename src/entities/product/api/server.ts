@@ -349,7 +349,7 @@ export const getProducts = cache(
                   fields: ["name", "type"], // Только имя и тип характеристики
                 },
               },
-              fields: ["string_value", "number_value", "external_id"], // Только нужные поля значения
+              fields: ["string_value", "number_value", "boolean_value", "external_id"], // boolean_value нужен для таба наличия в карточке
             },
             // Категория - только базовые поля
             kategoria: {

@@ -11,13 +11,13 @@ export function Footer() {
       items: [
         {
           label: "Пищевое оборудование",
-          link: "/catalog/pischevoe-oborudovanie",
+          link: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki",
         },
 
         { label: "Оборудование HORECA", link: "/catalog/oborudovanie-horeca" },
         {
           label: "Мясопереработка",
-          link: "/catalog/myasopererabatyvayuschee-oborudovanie",
+          link: "/catalog/oborudovanie-dlya-obrabotki-i-pererabotki/myasopererabatyvayuschee-oborudovanie",
         },
       ],
     },
@@ -26,7 +26,7 @@ export function Footer() {
       items: [
         {
           label: "Для гранулированной и сыпучей продукции",
-          link: "catalog/fasovochno-upakovochnoe-oborudovanie/dozatory-sypuchih-trudnosypuchih-produktov",
+          link: "/catalog/fasovochno-upakovochnoe-oborudovanie/dozatory-melkoportsionnoy-produktsii",
         },
         {
           label: "Для жидкой продукции",
@@ -42,12 +42,12 @@ export function Footer() {
           link: "/catalog/upakovochnoe-oborudovanie/gorizontal-nye-upakovochnye-mashiny",
         },
         {
-          label: "Термоусадочное оборудование",
-          link: "/catalog/termousadochnye-apparaty",
+          label: "Термоусадочные аппараты",
+          link: "/catalog/upakovochnoe-oborudovanie/termousadochnye-apparaty",
         },
         {
           label: "Вакуумное оборудование",
-          link: "/catalog/vakuumnye-upakovschiki",
+          link: "/catalog/upakovochnoe-oborudovanie/vakuumnye-upakovschiki",
         },
         {
           label: "Паллетоупаковщики",
@@ -55,11 +55,11 @@ export function Footer() {
         },
         {
           label: "Запайщики лотков",
-          link: "/catalog/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie/zapayschiki-lotkov",
+          link: "/catalog/upakovochnoe-oborudovanie/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie/zapayschiki-lotkov",
         },
         {
           label: "Термоформеры",
-          link: "/catalog/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie/termoformery",
+          link: "/catalog/upakovochnoe-oborudovanie/zapayschiki-lotkov-skin-mashiny-termoformovochnoe-oborudovanie/termoformery",
         },
       ],
     },

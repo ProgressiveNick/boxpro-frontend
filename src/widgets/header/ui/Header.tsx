@@ -95,7 +95,7 @@ export function Header() {
             <div className={styles.contactRow}>
               <div className={styles.socialIcons}>
                 <Link
-                  href="https://vk.com/boxpro"
+                  href="https://vk.com/boxpro.moscow"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialIconBox}
@@ -110,7 +110,7 @@ export function Header() {
                   />
                 </Link>
                 <Link
-                  href="https://t.me/boxpro"
+                  href="https://t.me/mshvarc"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialIconBox}
