@@ -17,6 +17,7 @@ import {
 import { LayoutProvider } from "@/widgets/layout-provider";
 import YandexMetrikaWrapper from "@/shared/components/YandexMetrikaWrapper";
 import { JivoWidget } from "@/shared/components/JivoWidget/JivoWidget";
+import GoogleAnalyticsWrapper from "@/shared/components/GoogleAnalyticsWrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -98,6 +99,7 @@ export default function RootLayout({
         <TestFormModal />
         <ConsultationFormModal />
         <YandexMetrikaWrapper />
+        <GoogleAnalyticsWrapper />
         <JivoWidget />
       </body>
     </html>
