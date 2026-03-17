@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 // Валидация переменных окружения в самом начале загрузки приложения
 import "@/shared/lib/env-validation/init";
@@ -84,6 +85,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   return (
     <html lang="ru">
       <head>
@@ -97,6 +100,13 @@ export default function RootLayout({
         <TestFormModal />
         <ConsultationFormModal />
         <YandexMetrikaWrapper />
+        {isProduction ? (
+          <Script
+            id="jivo-widget"
+            src="https://code.jivo.ru/widget/cNhXPM7OZo"
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   );
