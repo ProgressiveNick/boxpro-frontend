@@ -89,6 +89,18 @@ export const OrderForm: FC<OrderFormProps> = ({
         order: data.order ?? [],
       };
 
+      // CRM Метрики: фиксируем контакты посетителя
+      try {
+        if (typeof ym === "function") {
+          ym("userParams", {
+            name: orderData.fullName,
+            phone: orderData.phone,
+          });
+        }
+      } catch (error) {
+        console.warn("Yandex Metrika userParams error:", error);
+      }
+
       if (orderId) {
         // Обновляем существующий заказ
         const formData = new FormData();
@@ -111,17 +123,20 @@ export const OrderForm: FC<OrderFormProps> = ({
         }
 
         if (result.success) {
-          const orderItems = orderData.order ?? [];
-          const revenue = orderItems.reduce((acc, o) => acc + o.sum, 0);
+          const cartItems = useCartStore.getState().items;
+          const revenue = cartItems.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+          );
           const actionField: EcommerceActionField = {
             id: orderId,
             revenue,
           };
-          const products: EcommerceProduct[] = orderItems.map((o, idx) => ({
-            id: o.documentId,
-            name: o.name,
-            price: o.count > 0 ? o.sum / o.count : 0,
-            quantity: o.count,
+          const products: EcommerceProduct[] = cartItems.map((item, idx) => ({
+            id: item.id,
+            name: item.title,
+            price: item.price,
+            quantity: item.quantity,
             list: "Корзина",
             position: idx + 1,
           }));
@@ -141,6 +156,8 @@ export const OrderForm: FC<OrderFormProps> = ({
 
           ym("reachGoal", "order_form_submit", {
             order_id: orderId,
+            contact_name: orderData.fullName,
+            contact_phone: orderData.phone,
             order_date: new Date().toISOString(),
             order_status: "processing",
             order_payment_method: orderData.paymentMethod,
@@ -164,9 +181,12 @@ export const OrderForm: FC<OrderFormProps> = ({
         const response = await orderApi.submitOrder(orderData);
 
         if (response.success) {
-          const revenue = orderData.order.reduce((acc, item) => acc + item.sum, 0);
+          const revenue = orderData.order.reduce(
+            (acc, item) => acc + item.sum,
+            0
+          );
           const actionField: EcommerceActionField = {
-            id: orderData.order.map((o) => o.documentId).join("-") || "order",
+            id: String(response.orderId ?? "order"),
             revenue,
           };
           const products: EcommerceProduct[] = orderData.order.map((o, idx) => ({
@@ -193,6 +213,8 @@ export const OrderForm: FC<OrderFormProps> = ({
 
           ym("reachGoal", "order_form_submit", {
             order_id: orderData.order.map((item) => item.documentId),
+            contact_name: orderData.fullName,
+            contact_phone: orderData.phone,
             order_sum: revenue,
             order_date: new Date().toISOString(),
             order_status: "pending",

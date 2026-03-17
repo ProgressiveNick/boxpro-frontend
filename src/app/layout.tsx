@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 
 // Валидация переменных окружения в самом начале загрузки приложения
 import "@/shared/lib/env-validation/init";
@@ -17,6 +16,7 @@ import {
 } from "@/shared/components/JsonLd/JsonLd";
 import { LayoutProvider } from "@/widgets/layout-provider";
 import YandexMetrikaWrapper from "@/shared/components/YandexMetrikaWrapper";
+import { JivoWidget } from "@/shared/components/JivoWidget/JivoWidget";
 
 export const metadata: Metadata = {
   title: {
@@ -85,8 +85,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isProduction = process.env.NODE_ENV === "production";
-
   return (
     <html lang="ru">
       <head>
@@ -100,13 +98,7 @@ export default function RootLayout({
         <TestFormModal />
         <ConsultationFormModal />
         <YandexMetrikaWrapper />
-        {isProduction ? (
-          <Script
-            id="jivo-widget"
-            src="https://code.jivo.ru/widget/cNhXPM7OZo"
-            strategy="afterInteractive"
-          />
-        ) : null}
+        <JivoWidget />
       </body>
     </html>
   );
