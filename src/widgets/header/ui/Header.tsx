@@ -95,14 +95,14 @@ export function Header() {
             <div className={styles.contactRow}>
               <div className={styles.socialIcons}>
                 <Link
-                  href="https://vk.com/boxpro.moscow"
+                  href="https://max.ru/u/f9LHodD0cOJHpcYWXaRdKe81AlVNCBoq3RgSFAkQCYU82Uv-pCMrjfTxreo"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialIconBox}
-                  aria-label="ВКонтакте"
+                  aria-label="MAX"
                 >
                   <Image
-                    src="/icons/vk.svg"
+                    src="/icons/max.svg"
                     alt=""
                     width={20}
                     height={20}

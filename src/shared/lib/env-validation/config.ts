@@ -23,6 +23,7 @@ export const envValidationConfig: Record<Environment, EnvValidationConfig> = {
     client: ["NEXT_PUBLIC_STRAPI_API_URL"],
     optional: {
       NEXT_PUBLIC_STRAPI_URL: "http://localhost:1337",
+      REVALIDATION_SECRET: "",
     },
   },
   production: {
@@ -36,5 +37,8 @@ export const envValidationConfig: Record<Environment, EnvValidationConfig> = {
       "NEXT_PUBLIC_STRAPI_API_URL",
       "NEXT_PUBLIC_STRAPI_URL",
     ],
+    optional: {
+      REVALIDATION_SECRET: "",
+    },
   },
 };
