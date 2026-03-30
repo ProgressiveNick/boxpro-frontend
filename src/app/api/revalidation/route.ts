@@ -15,8 +15,8 @@ import { revalidatePath } from "next/cache";
 import { clearServerCache } from "@/shared/lib/server-cache";
 
 export async function POST(req: Request) {
-  const secret = process.env.REVALIDATION_SECRET;
-  const authHeader = req.headers.get("authorization");
+  const secret = process.env.REVALIDATION_SECRET?.trim();
+  const authHeader = req.headers.get("authorization")?.trim();
 
   if (secret && authHeader !== `Bearer ${secret}`) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });

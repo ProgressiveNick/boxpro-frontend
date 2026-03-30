@@ -44,9 +44,9 @@ export async function getBlogs(
   }
 
   if (search) {
-    apiParams["filters[$or][0][name][$contains]"] = search;
-    apiParams["filters[$or][1][description][$contains]"] = search;
-    apiParams["filters[$or][2][article][$contains]"] = search;
+    apiParams["filters[$or][0][name][$containsi]"] = search;
+    apiParams["filters[$or][1][description][$containsi]"] = search;
+    apiParams["filters[$or][2][article][$containsi]"] = search;
   }
 
   return getStrapiRecords("blogs", apiParams);

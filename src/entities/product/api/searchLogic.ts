@@ -44,9 +44,9 @@ export async function searchProductsLogic(
     const offset = (pageNum - 1) * pageSizeNum;
 
     const searchFilters = {
-      "filters[$or][0][name][$contains]": query,
-      "filters[$or][1][description][$contains]": query,
-      "filters[$or][2][slug][$contains]": query,
+      "filters[$or][0][name][$containsi]": query,
+      "filters[$or][1][description][$containsi]": query,
+      "filters[$or][2][slug][$containsi]": query,
     };
 
     const baseParams = {
@@ -136,9 +136,9 @@ export async function searchProductsLogic(
       "populate[preview]": "*",
       "pagination[page]": String(params.page ?? 1),
       "pagination[pageSize]": String(params.pageSize ?? 24),
-      "filters[$or][0][name][$contains]": query,
-      "filters[$or][1][description][$contains]": query,
-      "filters[$or][2][article][$contains]": query,
+      "filters[$or][0][name][$containsi]": query,
+      "filters[$or][1][description][$containsi]": query,
+      "filters[$or][2][article][$containsi]": query,
       sort: "publish_date:desc",
     });
     results.blogs = blogsResult;
