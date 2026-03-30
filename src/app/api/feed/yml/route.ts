@@ -2,7 +2,8 @@
  * GET /api/feed/yml — товарный фид в формате YML для Яндекс Товаров.
  * @see https://yandex.ru/support/merchants/ru/connect/form-feed.html
  *
- * Генерируется при билде и по запросу с ревалидацией раз в 6 часов (не на каждый запрос).
+ * Генерируется только в runtime (без пререндера на этапе билда) и по запросу
+ * с ревалидацией раз в 6 часов (не на каждый запрос).
  * Опциональная защита: если задана переменная FEED_SECRET_KEY, запрос должен
  * содержать query-параметр key с тем же значением (например: /api/feed/yml?key=...).
  */
@@ -12,6 +13,8 @@ import { getCatalogMenu } from "@/entities/categories/api/getCatalogMenu";
 import { getProductsForFeed } from "@/entities/product/api/server";
 import { buildYmlFeed } from "@/shared/lib/yml-feed";
 
+/** Отключаем пререндер на build: фид генерируется только в runtime */
+export const dynamic = "force-dynamic";
 /** Ревалидация фида раз в 6 часов (значение должно быть статически анализируемым) */
 export const revalidate = 21600;
 

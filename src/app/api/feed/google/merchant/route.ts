@@ -14,6 +14,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getProductsForFeed } from "@/entities/product/api/server";
 import { buildGoogleMerchantFeed } from "@/shared/lib/google-merchant-feed";
 
+/** Отключаем пререндер на build: фид генерируется только в runtime */
+export const dynamic = "force-dynamic";
 /** Ревалидация фида раз в 6 часов (значение должно быть статически анализируемым) */
 export const revalidate = 21600;
 
