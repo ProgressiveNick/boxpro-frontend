@@ -5,9 +5,9 @@ import styles from "./SearchInput.module.scss";
 import { SearchDropdown } from "../SearchDropdown/SearchDropdown";
 import { searchProducts } from "../../model/api";
 import { useUIStore } from "@/shared/store/useUIStore";
+import { useRouter } from "next/navigation";
 
 import Image from "next/image";
-import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import { ProductType } from "@/entities/product";
 
 type SearchInputProps = {
@@ -21,6 +21,7 @@ export function SearchInput({
   onClose,
   pageSize: pageSizeProp,
 }: SearchInputProps = {}) {
+  const router = useRouter();
   const activeUI = useUIStore((s) => s.activeUI);
   const openSearch = useUIStore((s) => s.openSearch);
   const closeAll = useUIStore((s) => s.closeAll);
@@ -36,6 +37,7 @@ export function SearchInput({
   const [currentSearchQuery, setCurrentSearchQuery] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const latestRequestIdRef = useRef(0);
 
   const isSearchOpen = activeUI === "search";
   // На десктопе дропдаун виден по локальному состоянию (без открытия глобального «поиска»);
@@ -61,6 +63,7 @@ export function SearchInput({
     async (searchQuery: string, page: number, isNewSearch: boolean = false) => {
       if (searchQuery.length < 3) return;
 
+      const requestId = ++latestRequestIdRef.current;
       setIsLoading(true);
       try {
         const response = await searchProducts({
@@ -68,6 +71,7 @@ export function SearchInput({
           page,
           pageSize,
         });
+        if (requestId !== latestRequestIdRef.current) return;
 
         if (isNewSearch || page === 1) {
           setProducts(response.data);
@@ -87,36 +91,20 @@ export function SearchInput({
         if (isMobile) openSearch();
         else setDesktopDropdownVisible(true);
       } catch (error) {
+        if (requestId !== latestRequestIdRef.current) return;
         console.error("Error searching products:", error);
         if (isNewSearch || page === 1) {
           setProducts([]);
           setHasMore(false);
         }
       } finally {
-        setIsLoading(false);
+        if (requestId === latestRequestIdRef.current) {
+          setIsLoading(false);
+        }
       }
     },
     [isMobile, openSearch, pageSize],
   );
-
-  const debouncedSearch = useDebounce((searchQuery: unknown) => {
-    if (typeof searchQuery === "string") {
-      if (searchQuery.length >= 3) {
-        // Только если запрос изменился, делаем новый поиск
-        if (searchQuery !== currentSearchQuery) {
-          loadProducts(searchQuery, 1, true);
-        } else {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-        setProducts([]);
-        setCurrentPage(1);
-        setHasMore(true);
-        setCurrentSearchQuery("");
-      }
-    }
-  }, 300);
 
   const handleLoadMore = useCallback(() => {
     if (!isLoading && hasMore && currentSearchQuery.length >= 3) {
@@ -127,17 +115,37 @@ export function SearchInput({
   }, [isLoading, hasMore, currentPage, currentSearchQuery, loadProducts]);
 
   useEffect(() => {
-    if (query.length >= 3) {
+    const normalizedQuery = query.trim();
+
+    if (normalizedQuery.length >= 3) {
       if (isMobile) openSearch();
       else setDesktopDropdownVisible(true);
-      if (query !== currentSearchQuery) {
+      if (normalizedQuery !== currentSearchQuery) {
         setIsLoading(true);
       }
     } else if (!isMobile) {
       setDesktopDropdownVisible(false);
     }
-    debouncedSearch(query);
-  }, [query, debouncedSearch, currentSearchQuery, isMobile, openSearch]);
+
+    const timeout = setTimeout(() => {
+      if (normalizedQuery.length >= 3) {
+        if (normalizedQuery !== currentSearchQuery) {
+          loadProducts(normalizedQuery, 1, true);
+        } else {
+          setIsLoading(false);
+        }
+      } else {
+        latestRequestIdRef.current += 1;
+        setIsLoading(false);
+        setProducts([]);
+        setCurrentPage(1);
+        setHasMore(true);
+        setCurrentSearchQuery("");
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [query, currentSearchQuery, isMobile, openSearch, loadProducts]);
 
   // Ref для актуального состояния дропдауна (для обработчика из замыкания)
   const desktopDropdownVisibleRef = useRef(desktopDropdownVisible);
@@ -223,6 +231,28 @@ export function SearchInput({
     setQuery(e.target.value);
   };
 
+  const handleSearchSubmit = useCallback(() => {
+    const normalizedQuery = query.trim();
+    if (normalizedQuery.length < 3) return;
+
+    const params = new URLSearchParams({ q: normalizedQuery });
+    router.push(`/search?${params.toString()}`);
+
+    if (isMobile) {
+      if (onClose) onClose();
+      else closeAll();
+    } else {
+      closeAndResetDesktopSearch();
+    }
+  }, [query, router, isMobile, onClose, closeAll, closeAndResetDesktopSearch]);
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchSubmit();
+    }
+  };
+
 
   // Mobile: focus on mount and Escape to close
   useEffect(() => {
@@ -247,6 +277,7 @@ export function SearchInput({
         placeholder={placeholder}
         value={query}
         onChange={handleInputChange}
+        onKeyDown={handleInputKeyDown}
         onFocus={isMobile ? undefined : () => setDesktopDropdownVisible(true)}
       />
       {query && (
@@ -276,6 +307,12 @@ export function SearchInput({
           </svg>
         </button>
       )}
+      <button
+        type="button"
+        className={styles.searchButton}
+        onClick={handleSearchSubmit}
+        aria-label="Найти товары"
+      >
         {!isMobile && (
           <Image
             src="/icons/search.svg"
@@ -286,7 +323,7 @@ export function SearchInput({
           />
         )}
         {isMobile && (
-          <div className={styles.searchIcon}>
+          <div className={styles.searchIcon} aria-hidden="true">
             <svg
               width="20"
               height="20"
@@ -304,6 +341,7 @@ export function SearchInput({
             </svg>
           </div>
         )}
+      </button>
     </>
   );
 

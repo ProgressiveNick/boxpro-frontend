@@ -1,0 +1,27 @@
+@use "@/shared/styles/mixins" as *;
+@use "@/shared/styles/variables" as *;
+
+.wrapper {
+  width: 100%;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 1024px) {
+    gap: 1rem;
+  }
+
+  @media (max-width: 420px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}

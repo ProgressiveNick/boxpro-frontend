@@ -78,7 +78,9 @@ export function ShowroomsContent() {
           <div className={styles.contactItem}>
             <div>
               <p className={styles.contactLabel}>Режим работы:</p>
-              <p className={styles.contactValue}>Пн-Пт 09:00 - 18:00</p>
+              <p className={styles.contactValue}>
+                Пн-Пт 09:00 - 18:00 * По предварительной записи
+              </p>
             </div>
           </div>
         </div>
