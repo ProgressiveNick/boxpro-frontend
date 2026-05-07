@@ -273,6 +273,13 @@
   }
 }
 
+.submitError {
+  margin: 0;
+  color: #dc3545;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 @keyframes spin {
   0% {
     transform: translate(-50%, -50%) rotate(0deg);

@@ -3,8 +3,8 @@
  */
 
 import {
-  sendTelegramMessageWithFiles,
-} from "@/shared/lib/api/telegram";
+  sendEmailMessageWithFiles,
+} from "@/shared/lib/api/email";
 import { createStrapiRecord } from "@/shared/lib/api/strapi";
 
 export interface TestFormFile {
@@ -23,32 +23,34 @@ export interface TestFormData {
   files: TestFormFile[];
 }
 
-async function sendTestFormTelegramMessage(
+async function sendTestFormEmailMessage(
   formData: TestFormData
 ): Promise<boolean> {
-  const message = `
-🔔 *Новая заявка на бесплатное тестирование оборудования*
-
-👤 *Имя:* ${formData.name}
-🏢 *Компания:* ${formData.company}
-📞 *Телефон:* ${formData.phone}
-📝 *Описание продукта:* ${formData.message}
-*Отправлено со страницы:* ${formData.urlPage ?? ""}
-📅 *Дата заявки:* ${new Date().toLocaleString("ru-RU")}
-  `;
+  const message = [
+    "Новая заявка на бесплатное тестирование оборудования",
+    "",
+    `Имя: ${formData.name}`,
+    `Компания: ${formData.company}`,
+    `Телефон: ${formData.phone}`,
+    `Описание продукта: ${formData.message}`,
+    `Отправлено со страницы: ${formData.urlPage ?? ""}`,
+    `Дата заявки: ${new Date().toLocaleString("ru-RU")}`,
+  ].join("\n");
 
   const files =
     formData.files?.length > 0
       ? formData.files.map((file) => ({
-          buffer: file.buffer,
-          name: file.name,
-          type: file.type,
+          content: file.buffer,
+          filename: file.name,
+          contentType: file.type,
         }))
       : undefined;
 
-  return sendTelegramMessageWithFiles(message, files, {
-    parse_mode: "Markdown",
-  });
+  return sendEmailMessageWithFiles(
+    "Новая заявка на бесплатное тестирование оборудования",
+    message,
+    files
+  );
 }
 
 async function saveTestFormToStrapi(
@@ -78,14 +80,18 @@ export async function submitTestFormLogic(
   strapiId?: number;
   error?: string;
 }> {
-  const telegramSuccess = await sendTestFormTelegramMessage(formData);
-  if (!telegramSuccess) {
-    return { success: false, error: "Ошибка отправки уведомления в Telegram" };
+  const emailSuccess = await sendTestFormEmailMessage(formData);
+  if (!emailSuccess) {
+    return { success: false, error: "Ошибка отправки уведомления" };
   }
 
   const strapiResult = await saveTestFormToStrapi(formData);
   if (!strapiResult) {
-    return { success: false, error: "Ошибка сохранения данных" };
+    // Не блокируем пользователя, если уведомление ушло, но Strapi временно недоступен.
+    return {
+      success: true,
+      message: "Заявка успешно отправлена",
+    };
   }
 
   return {

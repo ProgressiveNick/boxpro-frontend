@@ -2,7 +2,7 @@
  * Бизнес-логика формы обратного звонка. Для использования из Server Actions.
  */
 
-import { sendTelegramMessage } from "@/shared/lib/api/telegram";
+import { sendEmailMessage } from "@/shared/lib/api/email";
 import { createStrapiRecord } from "@/shared/lib/api/strapi";
 
 export interface ReturnCallFormData {
@@ -10,18 +10,18 @@ export interface ReturnCallFormData {
   urlPage?: string;
 }
 
-async function sendReturnCallTelegramMessage(
+async function sendReturnCallEmailMessage(
   formData: ReturnCallFormData
 ): Promise<boolean> {
-  const message = `
-📞 *Новая заявка на обратный звонок*
+  const message = [
+    "Новая заявка на обратный звонок",
+    "",
+    `Телефон: ${formData.phone}`,
+    `Отправлено со страницы: ${formData.urlPage ?? ""}`,
+    `Дата заявки: ${new Date().toLocaleString("ru-RU")}`,
+  ].join("\n");
 
-📞 *Телефон:* ${formData.phone}
-*Отправлено со страницы:* ${formData.urlPage ?? ""}
-📅 *Дата заявки:* ${new Date().toLocaleString("ru-RU")}
-  `;
-
-  return sendTelegramMessage(message, { parse_mode: "Markdown" });
+  return sendEmailMessage("Новая заявка на обратный звонок", message);
 }
 
 async function saveReturnCallToStrapi(
@@ -52,9 +52,9 @@ export async function submitReturnCallLogic(
   strapiId?: number;
   error?: string;
 }> {
-  const telegramSuccess = await sendReturnCallTelegramMessage(formData);
-  if (!telegramSuccess) {
-    return { success: false, error: "Ошибка отправки уведомления в Telegram" };
+  const emailSuccess = await sendReturnCallEmailMessage(formData);
+  if (!emailSuccess) {
+    return { success: false, error: "Ошибка отправки уведомления" };
   }
 
   const strapiResult = await saveReturnCallToStrapi(formData);

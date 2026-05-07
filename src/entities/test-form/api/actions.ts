@@ -4,13 +4,13 @@ import { submitTestFormLogic } from "./testFormLogic";
 
 export async function submitTestForm(formData: FormData) {
   const name = formData.get("name") as string;
-  const company = formData.get("company") as string;
+  const company = (formData.get("company") as string) || "";
   const phone = formData.get("phone") as string;
-  const message = formData.get("message") as string;
+  const message = (formData.get("message") as string) || "";
   const urlPage = (formData.get("urlPage") as string) || undefined;
   const files = formData.getAll("files") as File[];
 
-  if (!name || !company || !phone || !message) {
+  if (!name || !phone) {
     return { success: false, error: "Не все обязательные поля заполнены" };
   }
 

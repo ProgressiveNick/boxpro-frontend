@@ -2,7 +2,7 @@
  * Бизнес-логика формы заявки (консультация). Для использования из Server Actions.
  */
 
-import { sendTelegramMessage } from "@/shared/lib/api/telegram";
+import { sendEmailMessage } from "@/shared/lib/api/email";
 import { createStrapiRecord } from "@/shared/lib/api/strapi";
 
 export interface LeadFormData {
@@ -12,20 +12,22 @@ export interface LeadFormData {
   urlPage?: string;
 }
 
-async function sendLeadFormTelegramMessage(
+async function sendLeadFormEmailMessage(
   formData: LeadFormData
 ): Promise<boolean> {
-  const message = `
-🔔 *Новая заявка с сайта*
+  const message = [
+    "Новая заявка с сайта",
+    "",
+    `Имя: ${formData.name}`,
+    `Телефон: +7 ${formData.phone}`,
+    formData.message ? `Сообщение: ${formData.message}` : "",
+    `Отправлено со страницы: ${formData.urlPage ?? ""}`,
+    `Дата заявки: ${new Date().toLocaleString("ru-RU")}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-👤 *Имя:* ${formData.name}
-📞 *Телефон:* +7 ${formData.phone}
-${formData.message ? `📝 *Сообщение:* ${formData.message}` : ""}
-*Отправлено со страницы:* ${formData.urlPage ?? ""}
-📅 *Дата заявки:* ${new Date().toLocaleString("ru-RU")}
-  `;
-
-  return sendTelegramMessage(message, { parse_mode: "Markdown" });
+  return sendEmailMessage("Новая заявка с сайта", message);
 }
 
 async function saveLeadToStrapi(
@@ -56,8 +58,8 @@ export async function submitLeadFormLogic(
   strapiId?: number;
   error?: string;
 }> {
-  const telegramSuccess = await sendLeadFormTelegramMessage(formData);
-  if (!telegramSuccess) {
+  const emailSuccess = await sendLeadFormEmailMessage(formData);
+  if (!emailSuccess) {
     return { success: false, error: "Ошибка отправки уведомления" };
   }
 

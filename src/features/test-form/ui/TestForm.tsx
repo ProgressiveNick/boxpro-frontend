@@ -32,6 +32,7 @@ export function TestForm({
 }: TestFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [showFileUpload, setShowFileUpload] = useState(false);
 
   const {
@@ -55,11 +56,13 @@ export function TestForm({
       setShowFileUpload(false);
       reset();
       setIsSuccess(false);
+      setSubmitError("");
     }
   }, [isOpen, reset]);
 
   const onSubmit = async (data: TestFormData) => {
     setIsSubmitting(true);
+    setSubmitError("");
 
     try {
       // Форматируем номер телефона для отправки
@@ -82,11 +85,11 @@ export function TestForm({
           setIsSuccess(false);
         }, 3000);
       } else {
-        alert(result.message);
+        setSubmitError(result.message);
       }
     } catch (error) {
       console.error("Ошибка отправки формы:", error);
-      alert("Произошла ошибка при отправке заявки. Попробуйте еще раз.");
+      setSubmitError("Произошла ошибка при отправке заявки. Попробуйте еще раз.");
     } finally {
       setIsSubmitting(false);
     }
@@ -256,6 +259,8 @@ export function TestForm({
           >
             {isSubmitting ? "Отправка..." : buttonText}
           </button>
+
+          {submitError && <p className={styles.submitError}>{submitError}</p>}
         </form>
       </div>
     </div>

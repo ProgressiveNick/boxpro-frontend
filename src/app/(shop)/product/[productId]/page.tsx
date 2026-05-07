@@ -1,5 +1,4 @@
 import styles from "./ProductPage.module.scss";
-import React from "react";
 import Link from "next/link";
 import breadcrumbStyles from "@/widgets/breadcrumbs/ui/Breadcrumbs.module.scss";
 import { ProductPageScroll } from "./ProductPageScroll";
@@ -81,8 +80,9 @@ export async function generateMetadata({
     const sku = getSku(product.harakteristici);
 
     const rawImageUrl = getProductImageUrl(product.pathsImgs?.[0]?.path);
-    const imageUrl =
-      rawImageUrl.startsWith("http") ? rawImageUrl : `${SITE_URL}${rawImageUrl}`;
+    const imageUrl = rawImageUrl.startsWith("http")
+      ? rawImageUrl
+      : `${SITE_URL}${rawImageUrl}`;
     const image = imageUrl || `${SITE_URL}/logo.svg`;
 
     return generateSEO({
@@ -137,7 +137,7 @@ export default async function ProductPage({
   if (categoryPathSlugs.length > 0 && categoryMap) {
     breadcrumbOverrides = getBreadcrumbOverridesFromMap(
       categoryMap,
-      categoryPathSlugs
+      categoryPathSlugs,
     );
     breadcrumbItems = [
       { position: 1, name: "Главная", item: SITE_URL },

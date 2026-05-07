@@ -35,6 +35,19 @@ export const TELEGRAM_CONFIG = {
 } as const;
 
 /**
+ * Конфигурация SMTP для отправки заявок на email
+ */
+export const SMTP_CONFIG = {
+  host: process.env.SMTP_HOST!,
+  port: Number(process.env.SMTP_PORT!),
+  secure: process.env.SMTP_SECURE === "true",
+  user: process.env.SMTP_USER!,
+  pass: process.env.SMTP_PASSWORD!,
+  from: process.env.SMTP_FROM_EMAIL!,
+  to: process.env.SMTP_TO_EMAIL!,
+} as const;
+
+/**
  * @deprecated Используйте STRAPI_API_CONFIG, STRAPI_CLIENT_CONFIG или TELEGRAM_CONFIG
  *  для обратной совместимости
  */
@@ -49,3 +62,4 @@ export const API_CONFIG = {
 export type StrapiApiConfig = typeof STRAPI_API_CONFIG;
 export type StrapiClientConfig = typeof STRAPI_CLIENT_CONFIG;
 export type TelegramConfig = typeof TELEGRAM_CONFIG;
+export type SmtpConfig = typeof SMTP_CONFIG;

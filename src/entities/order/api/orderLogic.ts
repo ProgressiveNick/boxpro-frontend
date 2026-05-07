@@ -4,9 +4,9 @@
  */
 
 import {
-  sendTelegramMessage,
-  sendTelegramMessageWithFiles,
-} from "@/shared/lib/api/telegram";
+  sendEmailMessage,
+  sendEmailMessageWithFiles,
+} from "@/shared/lib/api/email";
 import {
   getStrapiRecords,
   createStrapiRecord,
@@ -63,7 +63,7 @@ function getPaymentMethodText(method?: string): string {
   }
 }
 
-async function sendOrderTelegramMessage(orderData: OrderData): Promise<boolean> {
+async function sendOrderEmailMessage(orderData: OrderData): Promise<boolean> {
   const orderItems = orderData.order
     .map(
       (item: OrderItem) =>
@@ -76,37 +76,35 @@ async function sendOrderTelegramMessage(orderData: OrderData): Promise<boolean> 
     0
   );
 
-  const message = `
-🛒 *Новый заказ*
-
-👤 *Клиент:* ${orderData.fullName}
-📞 *Телефон:* ${orderData.phone}
-${
-  orderData.paymentMethod
-    ? `💳 *Способ оплаты:* ${getPaymentMethodText(orderData.paymentMethod)}`
-    : "💳 *Способ оплаты:* Не указан"
-}
-
-📋 *Товары:*
-${orderItems}
-
-💰 *Общая сумма:* ${totalSum} ₽
-
-📅 *Дата заказа:* ${new Date().toLocaleString("ru-RU")}
-  `;
+  const message = [
+    "Новый заказ",
+    "",
+    `Клиент: ${orderData.fullName}`,
+    `Телефон: ${orderData.phone}`,
+    `Способ оплаты: ${
+      orderData.paymentMethod
+        ? getPaymentMethodText(orderData.paymentMethod)
+        : "Не указан"
+    }`,
+    "",
+    "Товары:",
+    orderItems,
+    "",
+    `Общая сумма: ${totalSum} ₽`,
+    "",
+    `Дата заказа: ${new Date().toLocaleString("ru-RU")}`,
+  ].join("\n");
 
   const files =
     orderData.files && orderData.files.length > 0
       ? orderData.files.map((file) => ({
-          buffer: file.buffer,
-          name: file.name,
-          type: file.type,
+          content: file.buffer,
+          filename: file.name,
+          contentType: file.type,
         }))
       : undefined;
 
-  return sendTelegramMessageWithFiles(message, files, {
-    parse_mode: "Markdown",
-  });
+  return sendEmailMessageWithFiles("Новый заказ", message, files);
 }
 
 async function saveOrderToStrapi(orderData: OrderData) {
@@ -133,9 +131,9 @@ async function saveOrderToStrapi(orderData: OrderData) {
 export async function submitOrderLogic(
   orderData: OrderData
 ): Promise<{ success: boolean; orderId?: number; error?: string }> {
-  const telegramSuccess = await sendOrderTelegramMessage(orderData);
-  if (!telegramSuccess) {
-    return { success: false, error: "Ошибка отправки уведомления в Telegram" };
+  const emailSuccess = await sendOrderEmailMessage(orderData);
+  if (!emailSuccess) {
+    return { success: false, error: "Ошибка отправки уведомления" };
   }
 
   const strapiResult = await saveOrderToStrapi(orderData);
@@ -256,7 +254,7 @@ export async function createOrderDraftLogic(
   };
 }
 
-async function sendOrderUpdateTelegramMessage(
+async function sendOrderUpdateEmailMessage(
   orderId: string,
   orderData: UpdateOrderData,
   orderItems: OrderItem[]
@@ -273,37 +271,35 @@ async function sendOrderUpdateTelegramMessage(
     0
   );
 
-  const message = `
-🛒 *Заказ оформлен* (ID: ${orderId})
-
-👤 *Клиент:* ${orderData.fullName}
-📞 *Телефон:* ${orderData.phone}
-${
-  orderData.paymentMethod
-    ? `💳 *Способ оплаты:* ${getPaymentMethodText(orderData.paymentMethod)}`
-    : "💳 *Способ оплаты:* Не указан"
-}
-
-📋 *Товары:*
-${orderItemsText}
-
-💰 *Общая сумма:* ${totalSum} ₽
-
-📅 *Дата заказа:* ${new Date().toLocaleString("ru-RU")}
-  `;
+  const message = [
+    `Заказ оформлен (ID: ${orderId})`,
+    "",
+    `Клиент: ${orderData.fullName}`,
+    `Телефон: ${orderData.phone}`,
+    `Способ оплаты: ${
+      orderData.paymentMethod
+        ? getPaymentMethodText(orderData.paymentMethod)
+        : "Не указан"
+    }`,
+    "",
+    "Товары:",
+    orderItemsText,
+    "",
+    `Общая сумма: ${totalSum} ₽`,
+    "",
+    `Дата заказа: ${new Date().toLocaleString("ru-RU")}`,
+  ].join("\n");
 
   const files =
     orderData.files?.length > 0
       ? orderData.files.map((file) => ({
-          buffer: file.buffer,
-          name: file.name,
-          type: file.type,
+          content: file.buffer,
+          filename: file.name,
+          contentType: file.type,
         }))
       : undefined;
 
-  return sendTelegramMessageWithFiles(message, files, {
-    parse_mode: "Markdown",
-  });
+  return sendEmailMessageWithFiles(`Заказ оформлен (ID: ${orderId})`, message, files);
 }
 
 export async function updateOrderLogic(
@@ -327,7 +323,7 @@ export async function updateOrderLogic(
     },
   });
 
-  await sendOrderUpdateTelegramMessage(documentId, orderData, orderItems);
+  await sendOrderUpdateEmailMessage(documentId, orderData, orderItems);
 
   const data = strapiResult?.data;
   return {
@@ -351,7 +347,7 @@ export interface SubmitReviewInput {
   productFiles: Map<number, File[]>;
 }
 
-async function sendReviewTelegramNotification(
+async function sendReviewEmailNotification(
   orderDocumentId: string,
   order: {
     id: number;
@@ -401,22 +397,24 @@ async function sendReviewTelegramNotification(
     })
   );
 
-  const message = `
-⭐ *Новый отзыв о заказе* (ID: ${orderDocumentId})
+  const message = [
+    `Новый отзыв о заказе (ID: ${orderDocumentId})`,
+    "",
+    `Автор: ${buyerName}`,
+    `Заказ: #${orderDocumentId}`,
+    order.contact?.phone ? `Телефон: ${order.contact.phone}` : "",
+    order.contact?.email ? `Email: ${order.contact.email}` : "",
+    "",
+    "Отзывы о товарах:",
+    reviewsTextArray.join("\n"),
+    "",
+    `Всего отзывов: ${reviews.length}`,
+    `Дата: ${new Date().toLocaleString("ru-RU")}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-👤 *Автор:* ${buyerName}
-📋 *Заказ:* #${orderDocumentId}
-${order.contact?.phone ? `📞 *Телефон:* ${order.contact.phone}` : ""}
-${order.contact?.email ? `📧 *Email:* ${order.contact.email}` : ""}
-
-📝 *Отзывы о товарах:*
-${reviewsTextArray.join("\n")}
-
-📊 *Всего отзывов:* ${reviews.length}
-📅 *Дата:* ${new Date().toLocaleString("ru-RU")}
-  `;
-
-  return sendTelegramMessage(message, { parse_mode: "Markdown" });
+  return sendEmailMessage(`Новый отзыв о заказе (ID: ${orderDocumentId})`, message);
 }
 
 function generateBuyerName(): string {
@@ -554,7 +552,7 @@ export async function submitOrderReviewLogic(
       statuses: "Оставлен отзыв",
       publishedAt: new Date().toISOString(),
     });
-    await sendReviewTelegramNotification(
+    await sendReviewEmailNotification(
       documentId,
       order,
       createdReviews as Array<{ id: number; score?: number; product?: number | { data?: { id: number } } }>,
