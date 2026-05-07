@@ -44,6 +44,14 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NEXT_PUBLIC_STRAPI_API_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_API_URL }}
           NEXT_PUBLIC_STRAPI_URL: ${{ secrets.NEXT_PUBLIC_STRAPI_URL }}
+          REVALIDATION_SECRET: ${{ secrets.REVALIDATION_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
+          SMTP_TO_EMAIL: ${{ secrets.SMTP_TO_EMAIL }}
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
@@ -103,7 +111,15 @@ jobs:
                 --build-arg TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN" \
                 --build-arg TELEGRAM_CHAT_ID="$TELEGRAM_CHAT_ID" \
                 --build-arg NEXT_PUBLIC_STRAPI_API_URL="$NEXT_PUBLIC_STRAPI_API_URL" \
-                --build-arg NEXT_PUBLIC_STRAPI_URL="$NEXT_PUBLIC_STRAPI_URL"
+                --build-arg NEXT_PUBLIC_STRAPI_URL="$NEXT_PUBLIC_STRAPI_URL" \
+                --build-arg REVALIDATION_SECRET="$REVALIDATION_SECRET" \
+                --build-arg SMTP_HOST="$SMTP_HOST" \
+                --build-arg SMTP_PORT="$SMTP_PORT" \
+                --build-arg SMTP_SECURE="$SMTP_SECURE" \
+                --build-arg SMTP_USER="$SMTP_USER" \
+                --build-arg SMTP_PASSWORD="$SMTP_PASSWORD" \
+                --build-arg SMTP_FROM_EMAIL="$SMTP_FROM_EMAIL" \
+                --build-arg SMTP_TO_EMAIL="$SMTP_TO_EMAIL"
             else
               echo "⚠️  .env.frontend не найден, сборка без build args"
               docker-compose -f docker-compose.boxpro.yml rm -f boxpro 2>/dev/null || true
