@@ -52,7 +52,6 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
           SMTP_TO_EMAIL: ${{ secrets.SMTP_TO_EMAIL }}
-
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -63,8 +62,14 @@ jobs:
           script: |
             set -e
             cd /var/www/boxpro
+            # Принудительно очищаем локальные изменения в submodule перед обновлением
+            if [ -d "frontend" ]; then
+              git -C frontend reset --hard || true
+              git -C frontend clean -fd || true
+            fi
             # Обновляем submodule в основном репозитории
-            git submodule update --remote frontend
+            git submodule sync -- frontend
+            git submodule update --init --remote --force frontend
             cd frontend
             # Сохраняем storage перед обновлением
             if [ -d "public/storage" ]; then
