@@ -37,8 +37,8 @@ import {
   getBreadcrumbOverridesFromMap,
 } from "@/entities/categories/lib/categoryMap";
 
-// ISR: ревалидация каждые 60 минут (3600 секунд)
-export const revalidate = 3600;
+// Для карточки товара всегда отдаем актуальные цену и наличие из БД
+export const revalidate = 0;
 
 type Params = Promise<{ productId: string }>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
